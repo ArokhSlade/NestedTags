@@ -6,8 +6,10 @@ import sys
 from methods import print_error
 
 
-libname = "nested_tags"
-projectdir = "project"
+lib_name = "nested_tags"
+project_dir = "nested_tags-godot"
+addon_dir = "{}/addons/{}".format(project_dir, lib_name)
+lib_source = "{}-cpp".format(lib_name)
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 
@@ -38,12 +40,12 @@ Run the following command to download godot-cpp:
 
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
-env.Append(CPPPATH=["src/"])
-sources = Glob("src/*.cpp")
+env.Append(CPPPATH=["{}/".format(lib_source)])
+sources = Glob("{}/*.cpp".format(lib_source))
 
 if env["target"] in ["editor", "template_debug"]:
     try:
-        doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
+        doc_data = env.GodotCPPDocData("{}/gen/doc_data.gen.cpp".format(lib_source), source=Glob("doc_classes/*.xml"))
         sources.append(doc_data)
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
@@ -52,14 +54,14 @@ if env["target"] in ["editor", "template_debug"]:
 # .universal just means "compatible with all relevant arches" so we don't need to key it.
 suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
 
-lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), libname, suffix, env.subst('$SHLIBSUFFIX'))
+lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, env.subst('$SHLIBSUFFIX'))
 
 library = env.SharedLibrary(
-    "addons/{}/bin/{}/{}".format(libname,env['platform'], lib_filename),
+    "bin/{}/{}".format(env['platform'], lib_filename),
     source=sources,
 )
 
-copy = env.Install("{}/bin/{}/".format(projectdir, env["platform"]), library)
+copy = env.Install("{}/bin/".format(addon_dir), library)
 
 default_args = [library, copy]
 Default(*default_args)
