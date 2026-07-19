@@ -21,11 +21,14 @@ public:
     id_t get_id() const { return id; }
     void set_id(id_t p_id) { id = p_id; }
 
+    bool operator==(const NestedTag &other) const { return id == other.id; }
+
 protected:
     static void _bind_methods();
+    
+    bool _is_equal(const Variant &p_other) const;
 
 private:
     id_t id;
-
 };
 }
