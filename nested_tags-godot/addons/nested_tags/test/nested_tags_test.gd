@@ -12,3 +12,6 @@ func _ready():
 	print(tag_2.equals(tag))
 	tag_2.set_id(tag.get_id())
 	print(tag_2.equals(tag))
+	print("tag is valid? ", tag_2.is_valid())
+	tag_2.set_id(0)
+	print("tag is valid? ", tag_2.is_valid())

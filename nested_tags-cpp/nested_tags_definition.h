@@ -5,7 +5,7 @@
 #include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/wrapped.hpp>
-#include "nested_tag.h"
+#include "nested_tag_id.h"
 
 using namespace godot;
 
@@ -15,15 +15,26 @@ class NestedTagsDefinition : public Resource {
 	GDCLASS(NestedTagsDefinition, Resource)
 
 public:
-	NestedTagsDefinition()
-	: names(), parents() {
-	}
+	NestedTagsDefinition();
 	~NestedTagsDefinition() override = default;
+
+	bool is_id_valid(id_t p_id) const {
+		return p_id != 0 &&parents.size() > p_id;
+	}
+
+	void add(const StringName &p_name, id_t p_parent_id, id_t p_id = 0) {
+		if (p_id == 0) {
+			names.push_back(p_name);
+			parents.push_back(p_parent_id);
+		} else {
+			names.insert(p_id, p_name);
+			parents.insert(p_id, p_parent_id);
+		}
+	}
 
 protected:
 	static void _bind_methods();
 	String _to_string() const;
-
 
 protected:
 	Vector<StringName> names;
