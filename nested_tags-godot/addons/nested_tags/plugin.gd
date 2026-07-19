@@ -3,13 +3,11 @@ extends EditorPlugin
 
 
 func _enable_plugin():
-	# Add autoloads here.
-	pass
+	add_autoload_singleton("NestedTags", "./nested_tags.tscn")
 
 
 func _disable_plugin():
-	# Remove autoloads here.
-	pass
+	remove_autoload_singleton("NestedTags")
 
 
 func _enter_tree():
