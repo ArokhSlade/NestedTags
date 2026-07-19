@@ -1,4 +1,5 @@
 #include "register_types.h"
+#include "nested_tags_definition.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -10,6 +11,7 @@ void initialize_nested_tags_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+	GDREGISTER_CLASS(NestedTagsDefinition);
 }
 
 void uninitialize_nested_tags_module(ModuleInitializationLevel p_level) {
