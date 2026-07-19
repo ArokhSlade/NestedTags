@@ -5,12 +5,11 @@
 #include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/wrapped.hpp>
+#include "nested_tag.h"
 
 using namespace godot;
 
 namespace NestedTags {
-
-using id = uint32_t;
 
 class NestedTagsDefinition : public Resource {
 	GDCLASS(NestedTagsDefinition, Resource)
@@ -28,6 +27,6 @@ protected:
 
 protected:
 	Vector<StringName> names;
-	Vector<id> parents;
+	Vector<id_t> parents;
 };
 }
