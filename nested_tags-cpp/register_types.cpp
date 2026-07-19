@@ -11,7 +11,7 @@ void initialize_nested_tags_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
-	GDREGISTER_CLASS(NestedTagsDefinition);
+	GDREGISTER_CLASS(NestedTags::NestedTagsDefinition);
 }
 
 void uninitialize_nested_tags_module(ModuleInitializationLevel p_level) {
