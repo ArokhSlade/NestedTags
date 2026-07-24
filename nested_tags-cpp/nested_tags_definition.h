@@ -23,6 +23,9 @@ public:
 	}
 
 	void add(const StringName &p_name, id_t p_parent_id, id_t p_id = 0) {
+		if (names.size() != parents.size()) {
+			UtilityFunctions::printerr("NestedTagsDefinition: names and parents size mismatch");
+		}
 		if (p_id == 0) {
 			names.push_back(p_name);
 			parents.push_back(p_parent_id);
