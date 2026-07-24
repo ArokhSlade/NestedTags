@@ -1,8 +1,10 @@
 #pragma once
 
 #include <cstdint>
+#include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/classes/wrapped.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/templates/vector.hpp>
 #include "nested_tag_id.h"
 
 using namespace godot;
@@ -32,5 +34,7 @@ protected:
     bool _is_equal(const Variant &p_other) const;
     bool _is_valid() const;
     String _to_string() const;
+
+    Vector<StringName> get_parent_names() const;
 };
 }

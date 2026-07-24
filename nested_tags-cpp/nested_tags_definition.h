@@ -12,10 +12,10 @@ using namespace godot;
 
 namespace NestedTags {
 
-class NestedTag;
-
 class NestedTagsDefinition : public Resource {
 	GDCLASS(NestedTagsDefinition, Resource)
+
+	friend class NestedTag;
 
 public:
 	NestedTagsDefinition();
