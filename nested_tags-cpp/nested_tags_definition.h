@@ -6,10 +6,13 @@
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/wrapped.hpp>
 #include "nested_tag_id.h"
+#include "nested_tag.h"
 
 using namespace godot;
 
 namespace NestedTags {
+
+class NestedTag;
 
 class NestedTagsDefinition : public Resource {
 	GDCLASS(NestedTagsDefinition, Resource)
@@ -18,22 +21,19 @@ public:
 	NestedTagsDefinition();
 	~NestedTagsDefinition() override = default;
 
+	static Ref<NestedTagsDefinition> get_singleton();
+
 	bool is_id_valid(id_t p_id) const {
-		return p_id != 0 &&parents.size() > p_id;
+		return p_id != 0 && parents.size() > p_id;
 	}
 
-	void add(const StringName &p_name, id_t p_parent_id, id_t p_id = 0) {
-		if (names.size() != parents.size()) {
-			UtilityFunctions::printerr("NestedTagsDefinition: names and parents size mismatch");
-		}
-		if (p_id == 0) {
-			names.push_back(p_name);
-			parents.push_back(p_parent_id);
-		} else {
-			names.insert(p_id, p_name);
-			parents.insert(p_id, p_parent_id);
-		}
-	}
+	void add(const StringName &p_name, id_t p_parent_id, id_t p_id = 0);
+
+	Ref<NestedTag> get_tag(id_t p_id) const;
+
+	StringName get_name(id_t p_id) const;
+
+	id_t get_parent_id(id_t p_id) const;
 
 protected:
 	static void _bind_methods();

@@ -2,13 +2,16 @@ extends Node2D
 
 
 func _ready():
-	var def = NestedTagsDefinition.new()
+	var def = NestedTagsDefinition.get_singleton()
 	print(str(def))
-	var tag = NestedTag.new()
-	tag.set_id(12)
+	def.add("hello", 0)
+	def.add(" world", 1)
+	
+	var tag = def.get_tag(1)
 	print("tag id: ", tag.get_id())
+	print(tag)
 	var tag_2 = NestedTag.new()
-	tag.set_id(1)
+	tag.set_id(2)
 	print(tag_2.equals(tag))
 	tag_2.set_id(tag.get_id())
 	print(tag_2.equals(tag))

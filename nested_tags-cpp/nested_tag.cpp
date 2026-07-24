@@ -5,8 +5,6 @@
 using namespace godot;
 using namespace NestedTags;
 
-NestedTagsDefinition* NestedTag::nested_tags_definition = nullptr;
-
 void NestedTag::_bind_methods()
 {
     ClassDB::bind_method(D_METHOD("get_id"), &NestedTag::get_id);
@@ -25,10 +23,13 @@ bool NestedTag::_is_equal(const Variant &p_other) const {
     return this->id == other_tag->id;
 }
 
-bool NestedTags::NestedTag::_is_valid() const
+bool NestedTag::_is_valid() const
 {
-    if (!nested_tags_definition) {
-        return false;
-    }
-    return nested_tags_definition->is_id_valid(id);
+    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::get_singleton();
+    return singleton.is_valid() && singleton->is_id_valid(id);
+}
+
+String NestedTag::_to_string() const
+{
+    return String("NestedTag: ") + String::num_int64(id) + String(" (") + NestedTagsDefinition::get_singleton()->get_name(id) + String(")");
 }
