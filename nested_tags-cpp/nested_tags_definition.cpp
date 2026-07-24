@@ -14,7 +14,9 @@ NestedTagsDefinition::NestedTagsDefinition()
 void NestedTagsDefinition::_bind_methods() {
 		ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
 		ClassDB::bind_method(D_METHOD("is_id_valid", "p_id"), &NestedTagsDefinition::is_id_valid);
+		ClassDB::bind_method(D_METHOD("add", "p_name", "p_parent_id", "p_id"), &NestedTagsDefinition::add);
 }
+
 
 String NestedTagsDefinition::_to_string() const
 {
