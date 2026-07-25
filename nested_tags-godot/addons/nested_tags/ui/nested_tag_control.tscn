@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://fcoq4yaw7nl4"]
+
+[node name="NestedTagEditor" type="Label" unique_id=762095742]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "<NestedTag>"

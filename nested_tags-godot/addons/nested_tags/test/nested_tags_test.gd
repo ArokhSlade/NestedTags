@@ -1,6 +1,8 @@
 extends Node2D
 
 
+@export_custom(PROPERTY_HINT_NONE, "nested_tag") var nested : int
+
 func _ready():
 	var def = NestedTagsDefinition.get_singleton()
 	print(str(def))
@@ -17,3 +19,4 @@ func _ready():
 	print("tag is valid? ", tag_2.is_valid())
 	tag_2.set_id(0)
 	print("tag is valid? ", tag_2.is_valid())
+	nested = tag.get_id()
