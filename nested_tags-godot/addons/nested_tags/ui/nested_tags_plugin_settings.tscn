@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://bou2s5kt4dbb"]
+
+[ext_resource type="Script" uid="uid://xqwew7j5j6rh" path="res://addons/nested_tags/ui/nested_tags_plugin_settings.gd" id="1_1ntfr"]
+[ext_resource type="Script" uid="uid://bpnsr8ab8jhf1" path="res://addons/nested_tags/ui/gemini_sample_custom_property.gd" id="2_142kh"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_1ntfr"]
+color = Color(0.7195261, 0.28303358, 0.4833315, 1)
+thickness = 62
+vertical = true
+
+[node name="NestedTagsPluginSettings" type="Panel" unique_id=1222487835]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_1ntfr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=710440318]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 613.0
+size_flags_vertical = 3
+
+[node name="PickerParent" type="HBoxContainer" parent="VBoxContainer" unique_id=800514357]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Button" type="Button" parent="VBoxContainer/PickerParent" unique_id=1188829840]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxLine_1ntfr")
+text = "hello"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1180816751]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("2_142kh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=1972521181]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=202804662]
+layout_mode = 2
+text = "hello"
