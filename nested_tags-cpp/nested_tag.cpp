@@ -6,7 +6,7 @@ using namespace godot;
 using namespace NestedTags;
 
 id_t NestedTags::NestedTag::get_id() const {
-    return id_t();
+    return id;
 }
 
 void NestedTags::NestedTag::set_id(id_t p_id) {
@@ -14,13 +14,13 @@ void NestedTags::NestedTag::set_id(id_t p_id) {
 }
 
 Ref<NestedTag> NestedTags::NestedTag::get_parent() const {
-    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::get_singleton();
+    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     Ref<NestedTag> parent = singleton->get_tag(singleton->get_parent_id(id));
     return parent;
 }
 
 void NestedTags::NestedTag::set_parent(Ref<NestedTag> p_parent) {
-    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::get_singleton();
+    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     ERR_FAIL_COND_EDMSG(!singleton.is_valid(), "NestedTag::set_parent(): singleton is not valid");
     ERR_FAIL_COND_EDMSG(!singleton->is_id_valid(id), "NestedTag::set_parent(): current tag id is not valid");
     id_t parent_id = p_parent.is_valid() ? p_parent->get_id() : 0;
@@ -28,12 +28,12 @@ void NestedTags::NestedTag::set_parent(Ref<NestedTag> p_parent) {
 }
 
 StringName NestedTags::NestedTag::get_name() const {
-    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::get_singleton();
+    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     return singleton->get_name(id);
 }
 
 void NestedTags::NestedTag::set_name(const StringName &p_name) {
-    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::get_singleton();
+    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     ERR_FAIL_COND_EDMSG(!singleton.is_valid(), "NestedTag::set_name(): singleton is not valid");
     ERR_FAIL_COND_EDMSG(!singleton->is_id_valid(id), "NestedTag::set_name(): current tag id is not valid");
     singleton->names.write[id] = p_name;
@@ -67,7 +67,7 @@ bool NestedTag::_is_equal(const Variant &p_other) const {
 }
 
 bool NestedTag::_is_valid() const {
-    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::get_singleton();
+    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     return singleton.is_valid() && singleton->is_id_valid(id);
 }
 
@@ -88,7 +88,7 @@ String NestedTag::_to_string() const {
 
 Vector<StringName> NestedTag::get_parent_names() const {
     Vector<StringName> parent_names;
-    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::get_singleton();
+    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     id_t current_id = id;
     while (current_id != 0) {
         parent_names.push_back(singleton->get_name(current_id));

@@ -1,5 +1,7 @@
 @tool extends Control
 
+# TODO: this is misleading because internals are bound to the singleton. 
+# so there's no point in exposing any other instance.
 @export var definition : NestedTagsDefinition
 @onready var tree = $NestedTagsTree
 @onready var text_edit = %TextEdit

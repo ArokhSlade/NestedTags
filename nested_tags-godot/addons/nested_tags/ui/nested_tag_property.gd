@@ -15,7 +15,11 @@ func _init():
 
 func _update_property():
 	var tag_id = get_edited_object()[get_edited_property()]
-	var new_value = NestedTagsDefinition.get_singleton().get_tag(tag_id)
+	var definition = NestedTagsDefinition.try_get_singleton()
+	if null == definition:
+		return
+	
+	var new_value = definition.get_tag(tag_id)
 	if (new_value == current_value):
 		return
 

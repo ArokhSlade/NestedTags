@@ -20,10 +20,11 @@ class NestedTagsDefinition : public Resource {
 public:
 	NestedTagsDefinition();
 	~NestedTagsDefinition() override = default;
-
-	static Ref<NestedTagsDefinition> get_singleton();
+	static Ref<NestedTagsDefinition> try_get_singleton();
+	static void initialize_singleton(Ref<NestedTagsDefinition> p_singleton);
 
 	bool is_id_valid(id_t p_id) const {
+		UtilityFunctions::print("NestedTagsDefinition::is_id_valid(): p_id: " + String::num_int64(p_id));
 		return p_id != 0 && size() > p_id;
 	}
 
@@ -35,8 +36,8 @@ public:
 
 	id_t get_parent_id(id_t p_id) const;
 
-    Variant _iter_init(const Variant &p_iter);
-    Variant _iter_next(const Variant &p_iter);
+    Variant _iter_init(Array p__iter);
+    Variant _iter_next(Array p__iter);
     Variant _iter_get(const Variant &p_iter);
 
 	int size() const;
@@ -49,7 +50,6 @@ protected:
 	Vector<StringName> names;
 	Vector<id_t> parents;
 	Vector<Ref<NestedTag>> tags;
-	
-	int iterator_index = 0;
+	static Ref<NestedTagsDefinition> singleton;
 };
 }

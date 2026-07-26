@@ -11,4 +11,6 @@ func _on_button_pressed():
 
 func _on_editor_file_dialog_file_selected(path):
 	definition = load(path)
+	NestedTagsDefinition.initialize_singleton(definition)
+	print(str(NestedTagsDefinition.try_get_singleton()))
 	editor.set_definition(definition)

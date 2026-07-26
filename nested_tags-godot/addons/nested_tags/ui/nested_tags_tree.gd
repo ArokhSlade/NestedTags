@@ -13,11 +13,13 @@ func refresh(definition : NestedTagsDefinition):
 	var pending = []
 	
 	for tag : NestedTag in definition:
+		print("tag: ", str(tag))
 		pending.push_back(tag)
 	var old_max = pending.size()
 	
 	var add_tag = func(p_tag, p_parent):
 		var _item = create_item(p_parent)
+		print("adding tag for ", str(p_tag), " (id: ", p_tag.get_id(), ")")
 		_item.set_text(0, definition.get_name(p_tag.get_id()))
 		dict[p_tag] = _item
 	
