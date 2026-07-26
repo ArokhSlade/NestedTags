@@ -66,8 +66,11 @@ Variant NestedTagsDefinition::_iter_init(const Variant &p_iter) {
 	}
 	iterator_index = 1; // Start from 1 to skip the "null" tag
 
-	if (names.size() < 1)
+	UtilityFunctions::print("NestedTagsDefinition::_iter_init(): iterator_index set to 1, size: " + String::num_int64(names.size()));
+
+	if (names.size() <= 1)
 	{
+		UtilityFunctions::print("NestedTagsDefinition::_iter_init(): No valid tags to iterate over.");
 		return false;
 	}
 
