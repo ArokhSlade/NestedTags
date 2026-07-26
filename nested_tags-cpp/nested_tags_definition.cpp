@@ -99,6 +99,10 @@ void NestedTagsDefinition::_bind_methods() {
 		ClassDB::bind_method(D_METHOD("get_tag", "p_id"), &NestedTagsDefinition::get_tag);
 		ClassDB::bind_method(D_METHOD("get_name", "p_id"), &NestedTagsDefinition::get_name);
 		ClassDB::bind_method(D_METHOD("get_parent_id", "p_id"), &NestedTagsDefinition::get_parent_id);
+		ClassDB::bind_method(D_METHOD("size"), &NestedTagsDefinition::size);
+		ClassDB::bind_method(D_METHOD("_iter_init", "p_iter"), &NestedTagsDefinition::_iter_init);
+		ClassDB::bind_method(D_METHOD("_iter_next", "p_iter"), &NestedTagsDefinition::_iter_next);
+		ClassDB::bind_method(D_METHOD("_iter_get", "p_iter"), &NestedTagsDefinition::_iter_get);
 		ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("get_singleton"), &NestedTagsDefinition::get_singleton);
 }
 
