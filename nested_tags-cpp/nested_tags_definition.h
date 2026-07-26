@@ -35,6 +35,12 @@ public:
 
 	id_t get_parent_id(id_t p_id) const;
 
+    Variant _iter_init(const Variant &p_iter);
+    Variant _iter_next(const Variant &p_iter);
+    Variant _iter_get(const Variant &p_iter);
+
+	int size() const;
+
 protected:
 	static void _bind_methods();
 	String _to_string() const;
@@ -42,5 +48,8 @@ protected:
 protected:
 	Vector<StringName> names;
 	Vector<id_t> parents;
+	Vector<Ref<NestedTag>> tags;
+	
+	int iterator_index = 0;
 };
 }
