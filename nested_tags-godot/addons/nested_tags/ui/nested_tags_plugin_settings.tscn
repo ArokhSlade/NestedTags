@@ -2,8 +2,6 @@
 
 [ext_resource type="Script" uid="uid://xqwew7j5j6rh" path="res://addons/nested_tags/ui/nested_tags_plugin_settings.gd" id="1_1ntfr"]
 
-[sub_resource type="NestedTagsDefinition" id="NestedTagsDefinition_142kh"]
-
 [node name="NestedTagsPluginSettings" type="Panel" unique_id=1222487835]
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +11,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_1ntfr")
-resource = SubResource("NestedTagsDefinition_142kh")
 
 [node name="UIParent" type="VBoxContainer" parent="." unique_id=710440318]
 unique_name_in_owner = true
@@ -21,3 +18,19 @@ layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 613.0
 size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UIParent" unique_id=374056947]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="UIParent/HBoxContainer" unique_id=1690681040]
+layout_mode = 2
+text = "set Definition"
+
+[node name="EditorFileDialog" type="EditorFileDialog" parent="." unique_id=1618387443]
+unique_name_in_owner = true
+title = "Open a File"
+file_mode = 0
+filters = PackedStringArray("*.tres", "*.res")
+
+[connection signal="pressed" from="UIParent/HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="file_selected" from="EditorFileDialog" to="." method="_on_editor_file_dialog_file_selected"]

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://cbo7wtesmkas7"]
+
+[ext_resource type="Script" uid="uid://bcuoicet56hlj" path="res://addons/nested_tags/ui/nested_tags_definition_editor.gd" id="1_hgu4s"]
+
+[node name="NestedTagsDefinitionEditor" type="Tree" unique_id=73285138]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hgu4s")
