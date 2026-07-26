@@ -13,7 +13,7 @@ namespace NestedTags {
     
 class NestedTagsDefinition;
 
-class NestedTag : public RefCounted{
+class NestedTag : public RefCounted {
     GDCLASS(NestedTag, RefCounted)
     
 private:
@@ -24,8 +24,14 @@ public:
     NestedTag(id_t p_id) : id(p_id) {}
     ~NestedTag() = default;
 
-    id_t get_id() const { return id; }
-    void set_id(id_t p_id) { id = p_id; }
+    id_t get_id() const;
+    void set_id(id_t p_id);
+    Ref<NestedTag> get_parent() const;
+    void set_parent(Ref<NestedTag> p_parent);
+    StringName get_name() const;
+    void set_name(const StringName &p_name);
+
+    bool is_root() const;
 
     bool operator==(const NestedTag &other) const { return id == other.id; }
 

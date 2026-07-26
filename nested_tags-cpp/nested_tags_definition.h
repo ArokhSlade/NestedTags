@@ -24,7 +24,7 @@ public:
 	static Ref<NestedTagsDefinition> get_singleton();
 
 	bool is_id_valid(id_t p_id) const {
-		return p_id != 0 && parents.size() > p_id;
+		return p_id != 0 && size() > p_id;
 	}
 
 	void add(const StringName &p_name, id_t p_parent_id, id_t p_id = 0);

@@ -10,8 +10,7 @@ NestedTagsDefinition::NestedTagsDefinition()
 	, tags{Ref<NestedTag>(memnew(NestedTag{0}))} // Initialize with a default "null" tag
 	{}
 
-Ref<NestedTagsDefinition> NestedTagsDefinition::get_singleton()
-{
+Ref<NestedTagsDefinition> NestedTagsDefinition::get_singleton() {
     static Ref<NestedTagsDefinition> singleton_instance = Ref<NestedTagsDefinition>(memnew(NestedTagsDefinition{}));
 	return singleton_instance;
 }
@@ -35,7 +34,7 @@ void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id, id_t 
 	}
 }
 
-Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const{
+Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 	if (!is_id_valid(p_id)) {
 		UtilityFunctions::printerr("NestedTagsDefinition::get_tag(): invalid id");
 		return tags[0]; // Return a default "null" tag for invalid IDs
@@ -51,7 +50,7 @@ StringName NestedTagsDefinition::get_name(id_t p_id) const {
 	return names[p_id];
 }
 
-id_t NestedTagsDefinition::get_parent_id(id_t p_id) const{
+id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
 	if (!is_id_valid(p_id)) {
 		UtilityFunctions::printerr("NestedTagsDefinition::get_parent_id(): invalid id");
 		return parents[0]; // Return a default parent ID for invalid IDs
@@ -109,8 +108,7 @@ void NestedTagsDefinition::_bind_methods() {
 		ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("get_singleton"), &NestedTagsDefinition::get_singleton);
 }
 
-String NestedTagsDefinition::_to_string() const
-{
+String NestedTagsDefinition::_to_string() const {
     return String("NestedTagsDefinition");
 }
 }
