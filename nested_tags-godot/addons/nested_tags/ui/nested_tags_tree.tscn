@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ctyn5t3nmbts5"]
+
+[ext_resource type="Script" uid="uid://15q7yfb3gobl" path="res://addons/nested_tags/ui/nested_tags_tree.gd" id="1_yyw0h"]
+
+[node name="NestedTagsTree" type="Tree" unique_id=1177028698]
+script = ExtResource("1_yyw0h")

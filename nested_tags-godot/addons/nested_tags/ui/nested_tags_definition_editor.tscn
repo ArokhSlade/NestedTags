@@ -1,11 +1,33 @@
 [gd_scene format=3 uid="uid://cbo7wtesmkas7"]
 
 [ext_resource type="Script" uid="uid://bcuoicet56hlj" path="res://addons/nested_tags/ui/nested_tags_definition_editor.gd" id="1_hgu4s"]
+[ext_resource type="Script" uid="uid://15q7yfb3gobl" path="res://addons/nested_tags/ui/nested_tags_tree.gd" id="2_w0c68"]
 
-[node name="NestedTagsDefinitionEditor" type="Tree" unique_id=73285138]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="NestedTagsDefinitionEditor" type="VBoxContainer" unique_id=1920910668]
+offset_right = 40.0
+offset_bottom = 40.0
 script = ExtResource("1_hgu4s")
+
+[node name="NestedTagsTree" type="Tree" parent="." unique_id=73285138]
+layout_mode = 2
+script = ExtResource("2_w0c68")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=320276727]
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="HBoxContainer" unique_id=1340911090]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "<new tag>"
+scroll_fit_content_width = true
+
+[node name="AddButton" type="Button" parent="HBoxContainer" unique_id=1380661926]
+layout_mode = 2
+text = "Add Tag"
+
+[node name="RefreshButton" type="Button" parent="." unique_id=1781726059]
+layout_mode = 2
+text = "Refresh"
+
+[connection signal="pressed" from="HBoxContainer/AddButton" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="RefreshButton" to="." method="_on_refresh_button_pressed"]
