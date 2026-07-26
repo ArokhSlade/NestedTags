@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bou2s5kt4dbb"]
 
 [ext_resource type="Script" uid="uid://xqwew7j5j6rh" path="res://addons/nested_tags/ui/nested_tags_plugin_settings.gd" id="1_1ntfr"]
+[ext_resource type="PackedScene" uid="uid://cbo7wtesmkas7" path="res://addons/nested_tags/ui/nested_tags_definition_editor.tscn" id="2_142kh"]
 
 [node name="NestedTagsPluginSettings" type="Panel" unique_id=1222487835]
 anchors_preset = 15
@@ -26,11 +27,15 @@ layout_mode = 2
 layout_mode = 2
 text = "set Definition"
 
-[node name="EditorFileDialog" type="EditorFileDialog" parent="." unique_id=1618387443]
+[node name="NestedTagsDefinitionEditor" parent="UIParent" unique_id=73285138 instance=ExtResource("2_142kh")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EditorFileDialog" type="EditorFileDialog" parent="UIParent" unique_id=1618387443]
 unique_name_in_owner = true
 title = "Open a File"
 file_mode = 0
 filters = PackedStringArray("*.tres", "*.res")
 
 [connection signal="pressed" from="UIParent/HBoxContainer/Button" to="." method="_on_button_pressed"]
-[connection signal="file_selected" from="EditorFileDialog" to="." method="_on_editor_file_dialog_file_selected"]
+[connection signal="file_selected" from="UIParent/EditorFileDialog" to="." method="_on_editor_file_dialog_file_selected"]
