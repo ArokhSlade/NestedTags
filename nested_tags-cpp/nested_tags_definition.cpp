@@ -54,6 +54,20 @@ Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 	return tags[p_id];
 }
 
+void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id)
+{
+	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::reparent(): invalid id");
+	ERR_FAIL_COND_EDMSG(!is_id_valid(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id");
+	parents.write[p_id] = p_parent_id;
+}
+
+void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name)
+{
+	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::rename(): invalid id");
+	ERR_FAIL_COND_EDMSG(!p_name.is_empty(), "NestedTagsDefinition::rename(): invalid name (empty)");
+	names.write[p_id] = p_name;
+}
+
 StringName NestedTagsDefinition::get_name(id_t p_id) const {
 	if (!is_id_valid(p_id)) {
 		UtilityFunctions::printerr("NestedTagsDefinition::get_name(): invalid id");
@@ -118,6 +132,9 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_iter_init", "p_iter"), &NestedTagsDefinition::_iter_init);
 	ClassDB::bind_method(D_METHOD("_iter_next", "p_iter"), &NestedTagsDefinition::_iter_next);
 	ClassDB::bind_method(D_METHOD("_iter_get", "p_iter"), &NestedTagsDefinition::_iter_get);
+	ClassDB::bind_method(D_METHOD("reparent", "p_id", "p_parent_id"), &NestedTagsDefinition::reparent);
+	ClassDB::bind_method(D_METHOD("rename", "p_id", "p_name"), &NestedTagsDefinition::rename);
+
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("try_get_singleton"), &NestedTagsDefinition::try_get_singleton);
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("initialize_singleton", "p_singleton"), &NestedTagsDefinition::initialize_singleton);
 }
