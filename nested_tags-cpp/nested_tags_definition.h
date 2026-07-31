@@ -24,7 +24,6 @@ public:
 	static void initialize_singleton(Ref<NestedTagsDefinition> p_singleton);
 
 	bool is_id_valid(id_t p_id) const {
-		UtilityFunctions::print("NestedTagsDefinition::is_id_valid(): p_id: " + String::num_int64(p_id));
 		return p_id != 0 && size() > p_id;
 	}
 
