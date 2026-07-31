@@ -47,9 +47,9 @@ void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id, id_t 
 }
 
 Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
-	if (!is_id_valid(p_id)) {
-		UtilityFunctions::printerr("NestedTagsDefinition::get_tag(): invalid id");
-		return tags[0]; // Return a default "null" tag for invalid IDs
+	if (p_id >= size()) { 
+		UtilityFunctions::push_error("NestedTagsDefinition::get_tag(): id out of range");
+		return tags[0]; // Return a default "null" tag for IDs 
 	}
 	return tags[p_id];
 }

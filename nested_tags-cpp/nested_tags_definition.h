@@ -32,7 +32,7 @@ public:
 
 	Ref<NestedTag> get_tag(id_t p_id) const;
 
-	void reparent(id_t p_id, id_t p_parent_id);	
+	void reparent(id_t p_id, id_t p_parent_id);
 	void rename(id_t p_id, const StringName& p_name);
 
 	StringName get_name(id_t p_id) const;
