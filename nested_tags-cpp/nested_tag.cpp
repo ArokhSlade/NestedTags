@@ -22,9 +22,7 @@ Ref<NestedTag> NestedTags::NestedTag::get_parent() const {
 void NestedTags::NestedTag::set_parent(Ref<NestedTag> p_parent) {
     Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     ERR_FAIL_COND_EDMSG(!singleton.is_valid(), "NestedTag::set_parent(): singleton is not valid");
-    ERR_FAIL_COND_EDMSG(!singleton->is_id_valid(id), "NestedTag::set_parent(): current tag id is not valid");
-    id_t parent_id = p_parent.is_valid() ? p_parent->get_id() : 0;
-    singleton->parents.write[id] = parent_id;
+    singleton->reparent(this->id, p_parent->get_id());
 }
 
 StringName NestedTags::NestedTag::get_name() const {
@@ -35,8 +33,7 @@ StringName NestedTags::NestedTag::get_name() const {
 void NestedTags::NestedTag::set_name(const StringName &p_name) {
     Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     ERR_FAIL_COND_EDMSG(!singleton.is_valid(), "NestedTag::set_name(): singleton is not valid");
-    ERR_FAIL_COND_EDMSG(!singleton->is_id_valid(id), "NestedTag::set_name(): current tag id is not valid");
-    singleton->names.write[id] = p_name;
+    singleton->rename(this->id, p_name);
 }
 
 bool NestedTags::NestedTag::is_root() const
