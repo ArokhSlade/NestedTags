@@ -26,7 +26,7 @@ func _init():
 func refresh(definition : NestedTagsDefinition):
 	clear_all()
 	hide_root = true
-	var parent = null
+	var parent_item = null
 	var item
 	var pending_tags = []	
 	
@@ -38,15 +38,14 @@ func refresh(definition : NestedTagsDefinition):
 	
 	create_item() # invisible root()
 	
-	var add_tag = func(p_tag, p_parent):
-		var _item = create_item(p_parent)
+	var add_tag = func(p_tag, p_parent_item):
+		var _item = create_item(p_parent_item)
 		_item.set_text(0, definition.get_name(p_tag.get_id()))
 		dict[p_tag] = _item
 		dict[_item] = p_tag
 		
 		max_item_rect.position = max_item_rect.position.min(get_item_area_rect(_item).position)
 		max_item_rect.size = max_item_rect.size.min(get_item_area_rect(_item).size)
-		
 	
 	while old_max > 0:
 		var i = 0
@@ -55,18 +54,23 @@ func refresh(definition : NestedTagsDefinition):
 		while i < max:
 			var tag = pending_tags[i]
 			
-			if tag.is_root():
-				parent = null
+			var tag_id = tag.get_id()
+			var parent_id = definition.get_parent_id(tag_id)
+			var parent_tag = definition.get_tag(parent_id)
+			
+			if definition.is_root_tag(tag_id):
+				parent_item = null
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, get_root())
-			elif dict.has(tag.get_parent()):
-				parent = dict[tag.get_parent()]
+			else:
+				if not dict.has(parent_tag):
+					push_error("NestedTagsTree::refresh(): child tag's parent missing.")
+				parent_item = dict[parent_tag]
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
-				add_tag.call(tag, parent)
-			else:
-				pass
+				add_tag.call(tag, parent_item)
+			
 			i += 1
 		
 		if max == old_max:

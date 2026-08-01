@@ -8,6 +8,8 @@
 
 func set_definition(p_definition):
 	definition = p_definition
+	if not is_node_ready():
+		await ready
 	tree.refresh(definition)
 
 

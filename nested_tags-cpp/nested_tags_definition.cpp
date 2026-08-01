@@ -21,14 +21,22 @@ Ref<NestedTagsDefinition> NestedTagsDefinition::try_get_singleton() {
 	return singleton;
 }
 
-void NestedTagsDefinition::initialize_singleton(Ref<NestedTagsDefinition> p_singleton)
-{	
-	ERR_FAIL_COND_EDMSG(singleton.is_valid(), "NestedTagsDefinition::initialize_singleton(): singleton is already initialized.");
+void NestedTagsDefinition::initialize_singleton(Ref<NestedTagsDefinition> p_singleton) {	
+	//ERR_FAIL_COND_EDMSG(singleton.is_valid(), "NestedTagsDefinition::initialize_singleton(): singleton is already initialized.");
+	WARN_PRINT_ED("NestedTagsDefinition::initialize_singleton(): singleton is already initialized");
 	singleton = p_singleton;
 }
 
+bool NestedTagsDefinition::is_id_valid(id_t p_id) const {
+		return p_id != 0 && size() > p_id;
+	}
+
+bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
+    return 0 == get_parent_id(p_id);
+}
+
 void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id, id_t p_id) {
-	if (names.size() != parents.size()) {
+    if (names.size() != parents.size()) {
 		ERR_PRINT("NestedTagsDefinition: names and parents size mismatch.");
 		return;
 	}
@@ -54,15 +62,13 @@ Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 	return tags[p_id];
 }
 
-void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id)
-{
+void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::reparent(): invalid id");
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id");
 	parents.write[p_id] = p_parent_id;
 }
 
-void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name)
-{
+void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::rename(): invalid id");
 	ERR_FAIL_COND_EDMSG(!p_name.is_empty(), "NestedTagsDefinition::rename(): invalid name (empty)");
 	names.write[p_id] = p_name;
@@ -124,6 +130,7 @@ int NestedTagsDefinition::size() const {
 void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
 	ClassDB::bind_method(D_METHOD("is_id_valid", "p_id"), &NestedTagsDefinition::is_id_valid);
+	ClassDB::bind_method(D_METHOD("is_root_tag", "p_id"), &NestedTagsDefinition::is_root_tag);
 	ClassDB::bind_method(D_METHOD("add", "p_name", "p_parent_id", "p_id"), &NestedTagsDefinition::add, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_tag", "p_id"), &NestedTagsDefinition::get_tag);
 	ClassDB::bind_method(D_METHOD("get_name", "p_id"), &NestedTagsDefinition::get_name);

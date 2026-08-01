@@ -23,9 +23,9 @@ public:
 	static Ref<NestedTagsDefinition> try_get_singleton();
 	static void initialize_singleton(Ref<NestedTagsDefinition> p_singleton);
 
-	bool is_id_valid(id_t p_id) const {
-		return p_id != 0 && size() > p_id;
-	}
+	bool is_id_valid(id_t p_id) const;
+
+	bool is_root_tag(id_t p_id) const;
 
 	void add(const StringName &p_name, id_t p_parent_id, id_t p_id = 0);
 
