@@ -28,17 +28,25 @@ func refresh(definition : NestedTagsDefinition):
 	hide_root = true
 	var parent = null
 	var item
-	var pending_tags = []
+	var pending_tags = []	
 	
 	for tag : NestedTag in definition:
 		pending_tags.push_back(tag)
 	var old_max = pending_tags.size()
+	
+	var max_item_rect = Rect2i()
+	
+	create_item() # invisible root()
 	
 	var add_tag = func(p_tag, p_parent):
 		var _item = create_item(p_parent)
 		_item.set_text(0, definition.get_name(p_tag.get_id()))
 		dict[p_tag] = _item
 		dict[_item] = p_tag
+		
+		max_item_rect.position = max_item_rect.position.min(get_item_area_rect(_item).position)
+		max_item_rect.size = max_item_rect.size.min(get_item_area_rect(_item).size)
+		
 	
 	while old_max > 0:
 		var i = 0
@@ -49,12 +57,12 @@ func refresh(definition : NestedTagsDefinition):
 			
 			if tag.is_root():
 				parent = null
-				max = max-1
+				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, get_root())
 			elif dict.has(tag.get_parent()):
 				parent = dict[tag.get_parent()]
-				max = max-1
+				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, parent)
 			else:

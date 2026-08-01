@@ -12,15 +12,18 @@ func _enable_plugin():
 
 func _disable_plugin():
 	remove_autoload_singleton("NestedTags")
-	
+
+var test_ui_split = preload("uid://bv3c5ic4iq7a2").instantiate()
 
 func _enter_tree():
 	nested_tag_inspector = NESTED_TAG_INSPECTOR.new()
 	add_inspector_plugin(nested_tag_inspector)
 	nested_tags_plugin_settings = NESTED_TAGS_PLUGIN_SETTINGS.instantiate()
 	add_control_to_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, nested_tags_plugin_settings)
+	add_control_to_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, test_ui_split)
 
 
 func _exit_tree():
 	remove_inspector_plugin(nested_tag_inspector)
 	remove_control_from_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, nested_tags_plugin_settings)
+	remove_control_from_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, test_ui_split)

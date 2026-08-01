@@ -4,7 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://cfjiybf32gcr4" path="res://addons/nested_tags/ui/manipulator.tscn" id="2_wsv23"]
 
 [node name="NestedTagsTree" type="Tree" unique_id=203260917]
-clip_contents = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/scroll_hint_color = Color(0.93933225, 0.81543183, 0.487068, 1)
 scroll_hint_mode = 1

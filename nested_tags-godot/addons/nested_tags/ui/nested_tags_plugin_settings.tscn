@@ -16,8 +16,6 @@ script = ExtResource("1_1ntfr")
 [node name="UIParent" type="VBoxContainer" parent="." unique_id=710440318]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UIParent" unique_id=374056947]
 layout_mode = 2
