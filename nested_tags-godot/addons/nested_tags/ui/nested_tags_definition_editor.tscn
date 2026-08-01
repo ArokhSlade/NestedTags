@@ -15,58 +15,49 @@ size_flags_vertical = 3
 theme = ExtResource("3_f608l")
 script = ExtResource("1_hgu4s")
 
-[node name="HBoxContainer" type="HSplitContainer" parent="." unique_id=675294941]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=363969645]
 layout_mode = 2
-split_offsets = PackedInt32Array(119)
-split_offset = 119
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=363969645]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="NestedTagsTree" parent="HBoxContainer/VBoxContainer" unique_id=203260917 instance=ExtResource("3_n6uhh")]
+[node name="NestedTagsTree" parent="VBoxContainer" unique_id=203260917 instance=ExtResource("3_n6uhh")]
 unique_name_in_owner = true
+clip_contents = false
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=320276727]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=320276727]
 layout_mode = 2
 
-[node name="TextEdit" type="LineEdit" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1906684815]
+[node name="TextEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer" unique_id=1906684815]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "<new tag>"
 expand_to_text_length = true
 
-[node name="AddButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1380661926]
+[node name="AddButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1380661926]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Add Tag"
 
-[node name="RefreshButton" type="Button" parent="HBoxContainer/VBoxContainer" unique_id=1781726059]
+[node name="RefreshButton" type="Button" parent="VBoxContainer" unique_id=1781726059]
 layout_mode = 2
 text = "Refresh"
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=1379981838]
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1379981838]
 unique_name_in_owner = true
 layout_mode = 2
 text = "(0, 23)"
 
-[node name="Label2" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=614900994]
+[node name="Label2" type="Label" parent="VBoxContainer" unique_id=614900994]
 unique_name_in_owner = true
 layout_mode = 2
 text = "(280.0344, 295.8039)"
 
-[node name="Label3" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=478078019]
+[node name="Label3" type="Label" parent="VBoxContainer" unique_id=478078019]
 unique_name_in_owner = true
 layout_mode = 2
 text = "(0.0, 0.0)"
 
-[node name="Control" type="Control" parent="HBoxContainer" unique_id=235776221]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[connection signal="add_tag_requested" from="HBoxContainer/VBoxContainer/NestedTagsTree" to="." method="_on_nested_tags_tree_add_tag_requested"]
-[connection signal="rename_tag_requested" from="HBoxContainer/VBoxContainer/NestedTagsTree" to="." method="_on_nested_tags_tree_rename_tag_requested"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/HBoxContainer/AddButton" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]
+[connection signal="add_tag_requested" from="VBoxContainer/NestedTagsTree" to="." method="_on_nested_tags_tree_add_tag_requested"]
+[connection signal="rename_tag_requested" from="VBoxContainer/NestedTagsTree" to="." method="_on_nested_tags_tree_rename_tag_requested"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/AddButton" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]

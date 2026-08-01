@@ -22,13 +22,29 @@ func _init():
 		states[_state].owner = self
 
 
+func compute_height():
+	var item = get_root().get_next_visible()
+	if not item:
+		return 0
+	var visible_count = 1
+	while item:
+		visible_count += 1
+		item = item.get_next_visible()
+	var row_height = get_theme_constant("v_separation")
+	row_height += get_theme_constant("inner_item_margin_top")
+	row_height += get_theme_constant("inner_item_margin_bottom")
+	row_height += get_theme_font("font").get_height(get_theme_font_size("font_size"))
+	var height = row_height * visible_count
+	return height
+
+
 ## constructs tree from tags. caches those "pending" tags whose parents it hasn't seen yet
 func refresh(definition : NestedTagsDefinition):
 	clear_all()
 	hide_root = true
 	var parent_item = null
 	var item
-	var pending_tags = []	
+	var pending_tags = []
 	
 	for tag : NestedTag in definition:
 		pending_tags.push_back(tag)
@@ -63,13 +79,13 @@ func refresh(definition : NestedTagsDefinition):
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, get_root())
-			else:
-				if not dict.has(parent_tag):
-					push_error("NestedTagsTree::refresh(): child tag's parent missing.")
+			elif dict.has(parent_tag):
 				parent_item = dict[parent_tag]
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, parent_item)
+			else:
+				pass # continue with pending_tags
 			
 			i += 1
 		
@@ -77,6 +93,10 @@ func refresh(definition : NestedTagsDefinition):
 			push_error("NestedTagsTree.refresh(): child tag without parent tag found")
 			return
 		old_max = max
+	var new_height = compute_height()
+	print(new_height)
+	custom_minimum_size.y = new_height
+	#set_size(Vector2i(0, 599))
 
 
 func clear_all():
