@@ -1,12 +1,9 @@
 @tool extends Tree
 
-var root : TreeItem
-
 var dict = {}
 
 func refresh(definition : NestedTagsDefinition):
 	clear_all()
-	root = create_item()
 	hide_root = true
 	var parent = null
 	var item
@@ -34,7 +31,7 @@ func refresh(definition : NestedTagsDefinition):
 				parent = null
 				max = max-1
 				pending[i] = pending[max]
-				add_tag.call(tag, root)
+				add_tag.call(tag, get_root())
 			elif dict.has(tag.get_parent()):
 				parent = dict[tag.get_parent()]
 				max = max-1
@@ -53,3 +50,12 @@ func refresh(definition : NestedTagsDefinition):
 func clear_all():
 	clear()
 	dict.clear()
+
+
+func depth(root : TreeItem):
+	var depth = 0
+	var cur = root
+	for child in cur.get_children():
+		depth = maxi(depth, depth(child))
+	depth = depth + 1
+	return depth
