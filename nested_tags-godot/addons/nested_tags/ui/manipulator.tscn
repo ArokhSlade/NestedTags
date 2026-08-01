@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cfjiybf32gcr4"]
+
+[ext_resource type="Script" uid="uid://crrr3lkwp4tpe" path="res://addons/nested_tags/ui/manipulator.gd" id="1_rxg5t"]
+
+[node name="Manipulator" type="BoxContainer" unique_id=468111030]
+offset_right = 100.0
+offset_bottom = 31.0
+vertical = true
+script = ExtResource("1_rxg5t")
+
+[node name="AddButton" type="Button" parent="." unique_id=423923127]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+text = "[+]"
+
+[node name="TagEdit" type="LineEdit" parent="." unique_id=466160327]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+placeholder_text = "TagName"
+expand_to_text_length = true
+
+[connection signal="pressed" from="AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="text_submitted" from="TagEdit" to="." method="_on_tag_edit_text_submitted"]

@@ -1,6 +1,31 @@
 [gd_scene format=3 uid="uid://ctyn5t3nmbts5"]
 
 [ext_resource type="Script" uid="uid://15q7yfb3gobl" path="res://addons/nested_tags/ui/nested_tags_tree.gd" id="1_yyw0h"]
+[ext_resource type="PackedScene" uid="uid://cfjiybf32gcr4" path="res://addons/nested_tags/ui/manipulator.tscn" id="2_wsv23"]
 
-[node name="NestedTagsTree" type="Tree" unique_id=1177028698]
+[node name="NestedTagsTree" type="Tree" unique_id=203260917]
+clip_contents = false
+size_flags_vertical = 3
+theme_override_colors/scroll_hint_color = Color(0.93933225, 0.81543183, 0.487068, 1)
+scroll_hint_mode = 1
 script = ExtResource("1_yyw0h")
+
+[node name="Manipulator" parent="." unique_id=121123391 instance=ExtResource("2_wsv23")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 115.0
+offset_top = 67.0
+offset_right = 215.0
+offset_bottom = 133.0
+
+[node name="PopupTimer" type="Timer" parent="." unique_id=1998705739]
+unique_name_in_owner = true
+wait_time = 0.4
+one_shot = true
+ignore_time_scale = true
+
+[connection signal="item_edited" from="." to="." method="_on_item_edited"]
+[connection signal="add_button_pressed" from="Manipulator" to="." method="_on_manipulator_add_button_pressed"]
+[connection signal="text_changed" from="Manipulator" to="." method="_on_manipulator_text_changed"]
+[connection signal="timeout" from="PopupTimer" to="." method="_on_popup_timer_timeout"]
