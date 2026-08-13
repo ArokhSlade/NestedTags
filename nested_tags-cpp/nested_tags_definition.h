@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <godot_cpp/templates/vector.hpp>
+#include <godot_cpp/variant/array.hpp>
 #include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/classes/wrapped.hpp>
@@ -42,16 +42,20 @@ public:
     Variant _iter_next(Array p__iter);
     Variant _iter_get(const Variant &p_iter);
 
+	
 	int size() const;
-
+	
 protected:
 	static void _bind_methods();
 	String _to_string() const;
+	bool _set(const StringName &p_name, const Variant &p_value);
+	bool _get(const StringName &p_name, Variant &r_ret) const;
+	void _get_property_list(List<PropertyInfo> *p_list) const;
 
 protected:
-	Vector<StringName> names;
-	Vector<id_t> parents;
-	Vector<Ref<NestedTag>> tags;
+	Array names;	
+	Array parents;
+	Array tags;
 	static Ref<NestedTagsDefinition> singleton;
 };
 }

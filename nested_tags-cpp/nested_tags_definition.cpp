@@ -1,5 +1,6 @@
 #include "nested_tags_definition.h"
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/variant/string_name.hpp>
 #include "nested_tag.h"
 
 namespace NestedTags {
@@ -65,13 +66,13 @@ Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::reparent(): invalid id");
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id");
-	parents.write[p_id] = p_parent_id;
+	parents[p_id] = p_parent_id;
 }
 
 void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::rename(): invalid id");
 	ERR_FAIL_COND_EDMSG(!p_name.is_empty(), "NestedTagsDefinition::rename(): invalid name (empty)");
-	names.write[p_id] = p_name;
+	names[p_id] = p_name;
 }
 
 StringName NestedTagsDefinition::get_name(id_t p_id) const {
@@ -148,5 +149,32 @@ void NestedTagsDefinition::_bind_methods() {
 
 String NestedTagsDefinition::_to_string() const {
     return String("NestedTagsDefinition");
+}
+
+bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value)
+{
+    return false;
+}
+
+bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const
+{
+	if (p_name == StringName("names")) {
+		r_ret = names;
+	} else if (p_name == StringName("parents")) {
+		r_ret = parents;
+	} else if (p_name == StringName("tags")) {
+		r_ret = tags;
+	} else {
+		return false;
+	}
+
+    return true;
+}
+
+void NestedTagsDefinition::_get_property_list(List<PropertyInfo> *p_list) const
+{
+	p_list->push_back(PropertyInfo(Variant::ARRAY, "names", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+	p_list->push_back(PropertyInfo(Variant::ARRAY, "parents", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+	p_list->push_back(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
 }
 }

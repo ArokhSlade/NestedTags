@@ -1,3 +1,8 @@
 [gd_resource type="NestedTagsDefinition" format=3 uid="uid://b1hw7fb24xu81"]
 
 [resource]
+names = [&"<NULL>", &"qwe"]
+parents = [0, 0]
+tags = [Object(NestedTag,"script":null)
+, Object(NestedTag,"script":null)
+]
