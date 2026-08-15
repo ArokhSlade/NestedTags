@@ -16,5 +16,5 @@ tracks/0/keys = {
 
 [resource]
 _data = {
-&"test": SubResource("Animation_djqwj")
+&"tests": SubResource("Animation_djqwj")
 }

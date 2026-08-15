@@ -1,16 +1,22 @@
 #include "nested_tags_definition.h"
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/string_name.hpp>
+#include <godot_cpp/variant/array.hpp>
 #include "nested_tag.h"
 
 namespace NestedTags {
 
 NestedTagsDefinition::NestedTagsDefinition()
-	: names{StringName("<NULL>")}
-	, parents{0}
+	: names{}
+	, parents{}
 	, tags{Ref<NestedTag>(memnew(NestedTag{0}))} // Initialize with a default "null" tag
+	, last_tag_id{0}
 	{
-		singleton = Ref<NestedTagsDefinition>{};
+		names.push_back(StringName("<NULL>"));
+		parents.push_back(0);
+		if (!singleton.is_valid()) {
+			singleton = Ref<NestedTagsDefinition>{};
+		}
 	}
 
 Ref<NestedTagsDefinition> NestedTagsDefinition::singleton = Ref<NestedTagsDefinition>{};
@@ -24,7 +30,9 @@ Ref<NestedTagsDefinition> NestedTagsDefinition::try_get_singleton() {
 
 void NestedTagsDefinition::initialize_singleton(Ref<NestedTagsDefinition> p_singleton) {	
 	//ERR_FAIL_COND_EDMSG(singleton.is_valid(), "NestedTagsDefinition::initialize_singleton(): singleton is already initialized.");
-	WARN_PRINT_ED("NestedTagsDefinition::initialize_singleton(): singleton is already initialized");
+	if (singleton.is_valid()) {
+		WARN_PRINT_ED("NestedTagsDefinition::initialize_singleton(): singleton is already initialized");
+	}
 	singleton = p_singleton;
 }
 
@@ -36,6 +44,7 @@ bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
     return 0 == get_parent_id(p_id);
 }
 
+// TODO: why is p_id needed?
 void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id, id_t p_id) {
     if (names.size() != parents.size()) {
 		ERR_PRINT("NestedTagsDefinition: names and parents size mismatch.");
@@ -47,7 +56,7 @@ void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id, id_t 
 	if (p_id == 0) {
 		names.push_back(p_name);
 		parents.push_back(p_parent_id);
-		tags.push_back(Ref<NestedTag>(memnew(NestedTag{id_t(names.size() - 1)})));
+		tags.push_back(Ref<NestedTag>(memnew(NestedTag{id_t(++last_tag_id)})));
 	} else {
 		names.insert(p_id, p_name);
 		parents.insert(p_id, p_parent_id);
@@ -151,13 +160,31 @@ String NestedTagsDefinition::_to_string() const {
     return String("NestedTagsDefinition");
 }
 
-bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value)
-{
-    return false;
+bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value) {
+    if (p_name == StringName("names")) {
+		names = p_value;
+		update_tags();
+		return true;
+	} else if (p_name == StringName("parents")) {
+		parents = p_value;
+		update_tags();
+		return true;
+	}
+	return false;
 }
 
-bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const
-{
+void NestedTagsDefinition::update_tags() {
+	tags.clear();
+	last_tag_id = -1;
+	if (names.size() == parents.size()) {
+		int tags_count = size();
+		for (int i = 0 ; i < tags_count; i++) {
+			tags.push_back(Ref<NestedTag>(memnew(NestedTag{id_t(++last_tag_id)})));
+		}
+	}
+}
+
+bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const {
 	if (p_name == StringName("names")) {
 		r_ret = names;
 	} else if (p_name == StringName("parents")) {
@@ -171,10 +198,9 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const
     return true;
 }
 
-void NestedTagsDefinition::_get_property_list(List<PropertyInfo> *p_list) const
-{
+void NestedTagsDefinition::_get_property_list(List<PropertyInfo> *p_list) const {
 	p_list->push_back(PropertyInfo(Variant::ARRAY, "names", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
 	p_list->push_back(PropertyInfo(Variant::ARRAY, "parents", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
-	p_list->push_back(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+	p_list->push_back(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE));
 }
 }
