@@ -14,10 +14,18 @@ config/name="Nested Tags Plugin Project"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+NestedTags="*uid://cqm1sstepwtis"
+
 [display]
 
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/nested_tags/plugin.cfg")
 
 [physics]
 
