@@ -30,3 +30,11 @@ Each incur a higher memory cost and more importantly, unfeasible maintenance cos
 - assign a project-wide NestedTagsDefinition in project settings
 - add, rename, reparent and delete NestedTags from a Definition
 - Godot-cpp Backend to save GDScript performance overhead
+
+## Build Info
+To generate debug info (pdb files),  
+add custom.py in root folder with these contents:
+>>>
+target = "template_debug"
+dev_build = "yes"
+debug_symbols = "yes"
