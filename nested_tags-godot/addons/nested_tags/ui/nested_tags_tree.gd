@@ -107,7 +107,7 @@ func clear_all():
 func request_add_tag(name):
 	var item = manipulated_item
 	if null == item:
-		push_error("invalid item position?")
+		push_error("request_add_tag(%s): invalid item position?" % [name])
 		return
 	var parent_tag : NestedTag = dict[item]
 	add_tag_requested.emit(name, parent_tag.get_id())
