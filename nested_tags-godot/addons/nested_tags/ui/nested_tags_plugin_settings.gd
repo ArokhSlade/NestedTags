@@ -14,3 +14,9 @@ func _on_editor_file_dialog_file_selected(path):
 	NestedTagsDefinition.initialize_singleton(definition)
 	print(str(NestedTagsDefinition.try_get_singleton()))
 	editor.set_definition(definition)
+	store_project_setting(definition, path)
+
+
+func store_project_setting(definition, path):
+	ProjectSettings.set_setting("nested_tags/nested_tags_definition", path)
+	ProjectSettings.save()
