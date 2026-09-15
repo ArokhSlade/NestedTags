@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://bou2s5kt4dbb"]
 
-[ext_resource type="Script" uid="uid://xqwew7j5j6rh" path="res://addons/nested_tags/ui/nested_tags_plugin_settings.gd" id="1_1ntfr"]
-[ext_resource type="PackedScene" uid="uid://cbo7wtesmkas7" path="res://addons/nested_tags/ui/nested_tags_definition_editor.tscn" id="2_142kh"]
+[ext_resource type="Script" uid="uid://xqwew7j5j6rh" path="res://addons/nested_tags/ui/nested_tags_plugin_settings_tab.gd" id="1_qx3p6"]
+[ext_resource type="PackedScene" uid="uid://cbo7wtesmkas7" path="res://addons/nested_tags/ui/nested_tags_definition_editor.tscn" id="2_s8nxe"]
 
-[node name="NestedTagsPluginSettings" type="PanelContainer" unique_id=1752325257]
+[node name="NestedTagsPluginSettingsTab" type="PanelContainer" unique_id=1752325257]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("1_1ntfr")
+script = ExtResource("1_qx3p6")
 
 [node name="UIParent" type="VBoxContainer" parent="." unique_id=710440318]
 unique_name_in_owner = true
@@ -24,7 +24,7 @@ layout_mode = 2
 layout_mode = 2
 text = "set Definition"
 
-[node name="NestedTagsDefinitionEditor" parent="UIParent" unique_id=73285138 instance=ExtResource("2_142kh")]
+[node name="NestedTagsDefinitionEditor" parent="UIParent" unique_id=73285138 instance=ExtResource("2_s8nxe")]
 unique_name_in_owner = true
 layout_mode = 2
 
