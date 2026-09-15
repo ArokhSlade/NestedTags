@@ -1,5 +1,5 @@
 [gd_resource type="NestedTagsDefinition" format=3 uid="uid://p5hnqnysccvd"]
 
 [resource]
-tags = [Object(NestedTag,"script":null)
-]
+names = [&"<NULL>", &"Game", &"World", &"UI"]
+parents = [0, 0, 1, 1]
