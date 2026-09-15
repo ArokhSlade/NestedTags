@@ -1,8 +1,0 @@
-[gd_scene format=3 uid="uid://cqm1sstepwtis"]
-
-[ext_resource type="Script" uid="uid://cccga8o21pfq5" path="res://addons/nested_tags/nested_tags.gd" id="1_ob58l"]
-[ext_resource type="NestedTagsDefinition" uid="uid://b1hw7fb24xu81" path="res://addons/nested_tags/nested_tags.tres" id="2_i2j1f"]
-
-[node name="NestedTags" type="Node" unique_id=295094364]
-script = ExtResource("1_ob58l")
-nested_tags = ExtResource("2_i2j1f")
