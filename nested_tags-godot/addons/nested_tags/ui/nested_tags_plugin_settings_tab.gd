@@ -9,14 +9,12 @@ func _on_button_pressed():
 	%EditorFileDialog.popup_centered()
 
 
-func _on_editor_file_dialog_file_selected(path):
-	definition = load(path)
-	NestedTagsDefinition.initialize_singleton(definition)
-	print(str(NestedTagsDefinition.try_get_singleton()))
+func refresh():
+	definition = NestedTags.get_definition()
 	editor.set_definition(definition)
-	store_project_setting(definition, path)
 
 
-func store_project_setting(definition, path):
-	ProjectSettings.set_setting("nested_tags/nested_tags_definition", path)
-	ProjectSettings.save()
+func _on_editor_file_dialog_file_selected(path):
+	NestedTags.load_definition(path)
+	NestedTags.store_project_setting(path)
+	refresh()

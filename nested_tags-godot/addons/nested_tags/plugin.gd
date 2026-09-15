@@ -11,22 +11,14 @@ var nested_tags_definition_inspector
 
 
 func _enable_plugin():
-	add_autoload_singleton("NestedTags", "./nested_tags.tscn")
+	pass
 
 
 func _disable_plugin():
-	remove_autoload_singleton("NestedTags")
-	
+	pass
+
 
 func _enter_tree():
-	if not ProjectSettings.has_setting("nested_tags/nested_tags_definition"):
-		ProjectSettings.set_setting("nested_tags/nested_tags_definition", "")
-	ProjectSettings.set_as_basic("nested_tags/nested_tags_definition", true)
-	# TODO: plugin should not clutter project settings when disabled.
-	# remove from project settings on exit. 
-	# store & load the last plugin settings with a plugin-specific file 
-	# leave it in for now to avoid having to re-set the setting manually frequently
-	
 	nested_tag_inspector = NestedTagInspector.new()
 	add_inspector_plugin(nested_tag_inspector)
 	
@@ -35,9 +27,16 @@ func _enter_tree():
 	
 	nested_tags_plugin_settings_tab = NESTED_TAGS_PLUGIN_SETTINGS_TAB.instantiate()
 	add_control_to_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, nested_tags_plugin_settings_tab)
+	
+	add_autoload_singleton("NestedTags", "./nested_tags.tscn")
+	nested_tags_plugin_settings_tab.refresh()
+	
+	print("enter tree")
 
 
 func _exit_tree():
-	remove_inspector_plugin(nested_tag_inspector)
-	remove_inspector_plugin(nested_tags_definition_inspector)
 	remove_control_from_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, nested_tags_plugin_settings_tab)
+	remove_inspector_plugin(nested_tags_definition_inspector)
+	remove_inspector_plugin(nested_tag_inspector)
+	
+	remove_autoload_singleton("NestedTags")
