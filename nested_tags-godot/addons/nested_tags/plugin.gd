@@ -9,17 +9,10 @@ var nested_tags_plugin_settings_tab
 const NESTED_TAGS_DEFINITION_INSPECTOR = preload("uid://ds5nxhwe3g0a8")
 var nested_tags_definition_inspector
 
-const NESTED_TAGS = preload("uid://cqm1sstepwtis")
-var nested_tags
-
-
-func _on_nested_tags_plugin_settings_tab_definition_file_changed(path):
-	nested_tags._on_definition_file_changed(path)
-
-
-func _on_nested_tags_definition_loaded(definition):
-	nested_tags_plugin_settings_tab.refresh(definition)
-
+const NestedTagsPresenter = preload("uid://cccga8o21pfq5")
+var presenter
+const NestedTagsModel = preload("uid://5kgpf4gwx3qd")
+var model
 
 func _enter_tree():
 	print("enter tree")
@@ -32,19 +25,16 @@ func _enter_tree():
 	nested_tags_plugin_settings_tab = NESTED_TAGS_PLUGIN_SETTINGS_TAB.instantiate()
 	add_control_to_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, nested_tags_plugin_settings_tab)
 	
-	nested_tags = NESTED_TAGS.instantiate()
-	add_child(nested_tags)
-
-	nested_tags_plugin_settings_tab.definition_file_changed.connect(_on_nested_tags_plugin_settings_tab_definition_file_changed)
-	nested_tags.definition_loaded.connect(_on_nested_tags_definition_loaded)
+	model = NestedTagsModel.new()
+	add_child(model)
+	presenter = NestedTagsPresenter.new()
+	presenter.initialize(model, nested_tags_plugin_settings_tab)
+	add_child(presenter)
 	
-	nested_tags.load_project_setting()
+	presenter.load_project_setting()
 
 
 func _exit_tree():
-	nested_tags.definition_loaded.disconnect(_on_nested_tags_definition_loaded)
-	nested_tags_plugin_settings_tab.definition_file_changed.disconnect(_on_nested_tags_plugin_settings_tab_definition_file_changed)
-	
 	remove_control_from_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, nested_tags_plugin_settings_tab)
 	remove_inspector_plugin(nested_tags_definition_inspector)
 	remove_inspector_plugin(nested_tag_inspector)
