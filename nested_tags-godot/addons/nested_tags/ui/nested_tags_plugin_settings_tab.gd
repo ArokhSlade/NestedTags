@@ -1,4 +1,7 @@
-@tool extends Control
+@tool 
+extends Control
+
+signal definition_file_changed(path)
 
 const NestedTags = preload("uid://cccga8o21pfq5")
 
@@ -16,12 +19,9 @@ func initialize(nested_tags):
 	_nested_tags = nested_tags
 
 
-func refresh():
-	_definition = _nested_tags.get_definition()
-	editor.set_definition(_definition)
+func refresh(definition):
+	editor.set_definition(definition)
 
 
 func _on_editor_file_dialog_file_selected(path):
-	_nested_tags.load_definition(path)
-	_nested_tags.store_project_setting(path)
-	refresh()
+	definition_file_changed.emit(path)

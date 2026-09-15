@@ -1,10 +1,17 @@
 @tool
 extends Node
 
+signal definition_loaded(definition)
+
 var _definition : NestedTagsDefinition
 
 func get_definition():
 	return _definition
+
+
+func _on_definition_file_changed(path):
+	load_definition(path)
+	store_project_setting(path)
 
 
 func _init():
@@ -34,6 +41,7 @@ func load_definition(path : String):
 		
 	NestedTagsDefinition.initialize_singleton(_definition)
 	print(str(NestedTagsDefinition.try_get_singleton()))
+	definition_loaded.emit(_definition)
 
 
 func load_project_setting():
