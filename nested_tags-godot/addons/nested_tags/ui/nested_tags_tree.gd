@@ -55,8 +55,10 @@ func refresh(definition : NestedTagsDefinition):
 	create_item() # invisible root()
 	
 	var add_tag = func(p_tag, p_parent_item):
-		var _item = create_item(p_parent_item)
+		var _item : TreeItem = create_item(p_parent_item)
+		_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		_item.set_text(0, definition.get_name(p_tag.get_id()))
+		_item.set_editable(0, true)
 		dict[p_tag] = _item
 		dict[_item] = p_tag
 		
@@ -123,8 +125,9 @@ func _gui_input(event):
 
 func _on_item_edited():
 	var new_name = get_edited().get_text(get_edited_column())
-	var tag = dict[get_edited()]
-	rename_tag_requested.emit(tag.get_id(), new_name)
+	var tag : NestedTag = dict[get_edited()]
+	if tag.get_name() != new_name:
+		rename_tag_requested.emit(tag.get_id(), new_name)
 
 
 func _on_manipulator_add_button_pressed():
