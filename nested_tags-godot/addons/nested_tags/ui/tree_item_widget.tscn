@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cf6gquhp4lyak"]
+
+[node name="TreeItemWidget" type="PanelContainer" unique_id=173050066]
+offset_right = 300.0
+offset_bottom = 45.0
+
+[node name="BoxContainer" type="BoxContainer" parent="." unique_id=556352390]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="BoxContainer" unique_id=1157075397]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="BoxContainer" unique_id=72778626]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "hello"
+
+[node name="OptionButton" type="OptionButton" parent="BoxContainer" unique_id=772880249]
+layout_mode = 2
