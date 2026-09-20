@@ -4,6 +4,8 @@ signal add_tag_requested(name, parent_id)
 signal rename_tag_requested(tag_id, new_name)
 
 const Manipulator = preload("uid://crrr3lkwp4tpe")
+const TREE_ITEM_WIDGET = preload("uid://cf6gquhp4lyak")
+
 
 var states = {
 	DefaultState.id() : DefaultState.new(),
@@ -56,9 +58,14 @@ func refresh(definition : NestedTagsDefinition):
 	
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
-		_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+		var widget : Control = TREE_ITEM_WIDGET.instantiate()
+		add_child(widget)
+		
+		_item.set_metadata(0, {"widget"  : widget})
+		_item.set_cell_mode(0, TreeItem.CELL_MODE_CUSTOM)
 		_item.set_text(0, definition.get_name(p_tag.get_id()))
 		_item.set_editable(0, true)
+		_item.set_custom_draw_callback(0, draw_custom_tree_item)
 		dict[p_tag] = _item
 		dict[_item] = p_tag
 		
@@ -101,7 +108,26 @@ func refresh(definition : NestedTagsDefinition):
 	#set_size(Vector2i(0, 599))
 
 
+func draw_custom_tree_item(item : TreeItem, rect : Rect2i):
+	var widget = item.get_metadata(0).widget
+	
+	widget.size = rect.size
+	widget.position = rect.position
+	
+	print(item.get_text(0))
+
+
 func clear_all():
+	var item = get_root()
+	if not item:
+		return
+	item = item.get_next_in_tree()
+	
+	while item:
+		var widget = item.get_metadata(0).widget
+		widget.queue_free()
+		item = item.get_next_in_tree()
+	
 	clear()
 	dict.clear()
 

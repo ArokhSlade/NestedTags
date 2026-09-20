@@ -1,8 +1,16 @@
 [gd_scene format=3 uid="uid://cf6gquhp4lyak"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ydoc0"]
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.15686275, 1)
+
 [node name="TreeItemWidget" type="PanelContainer" unique_id=173050066]
 offset_right = 300.0
 offset_bottom = 45.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ydoc0")
 
 [node name="BoxContainer" type="BoxContainer" parent="." unique_id=556352390]
 layout_mode = 2
