@@ -35,6 +35,7 @@ one_shot = true
 ignore_time_scale = true
 
 [connection signal="item_edited" from="." to="." method="_on_item_edited"]
+[connection signal="item_selected" from="." to="." method="_on_item_selected"]
 [connection signal="add_button_pressed" from="Manipulator" to="." method="_on_manipulator_add_button_pressed"]
 [connection signal="text_changed" from="Manipulator" to="." method="_on_manipulator_text_changed"]
 [connection signal="timeout" from="PopupTimer" to="." method="_on_popup_timer_timeout"]

@@ -66,7 +66,7 @@ func refresh(definition : NestedTagsDefinition):
 		_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 		_item.set_cell_mode(2, TreeItem.CELL_MODE_CUSTOM)
 		_item.set_text(0, definition.get_name(p_tag.get_id()))
-		_item.set_editable(0, true)
+		_item.set_selectable(0, true)
 		_item.set_editable(1, true)
 		_item.set_editable(2, true)
 		dict[p_tag] = _item
@@ -142,11 +142,18 @@ func _gui_input(event):
 			%Manipulator.global_position = event.global_position
 
 
+func _on_item_selected() -> void:
+	match get_selected_column():
+		0:
+			get_selected().set_editable.call_deferred(0, true)
+
+
 func _on_item_edited():
 	var new_name = get_edited().get_text(get_edited_column())
 	var tag : NestedTag = dict[get_edited()]
 	if tag.get_name() != new_name:
 		rename_tag_requested.emit(tag.get_id(), new_name)
+		get_selected().set_editable(0, false)
 
 
 func _on_manipulator_add_button_pressed():
