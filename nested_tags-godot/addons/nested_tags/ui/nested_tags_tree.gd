@@ -156,7 +156,7 @@ func _on_item_edited():
 			var tag : NestedTag = dict[get_edited()]
 			if tag.get_name() != new_name:
 				rename_tag_requested.emit(tag.get_id(), new_name)
-			get_selected().set_editable(0, false)
+			get_edited().set_editable(0, false)
 
 
 func _on_manipulator_add_button_pressed():
