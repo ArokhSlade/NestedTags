@@ -149,11 +149,13 @@ func _on_item_selected() -> void:
 
 
 func _on_item_edited():
-	var new_name = get_edited().get_text(get_edited_column())
-	var tag : NestedTag = dict[get_edited()]
-	if tag.get_name() != new_name:
-		rename_tag_requested.emit(tag.get_id(), new_name)
-		get_selected().set_editable(0, false)
+	match get_edited_column():
+		0:
+			var new_name = get_edited().get_text(get_edited_column())
+			var tag : NestedTag = dict[get_edited()]
+			if tag.get_name() != new_name:
+				rename_tag_requested.emit(tag.get_id(), new_name)
+			get_selected().set_editable(0, false)
 
 
 func _on_manipulator_add_button_pressed():
