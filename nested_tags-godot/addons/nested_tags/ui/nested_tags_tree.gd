@@ -43,7 +43,10 @@ func compute_height():
 ## constructs tree from tags. caches those "pending" tags whose parents it hasn't seen yet
 func refresh(definition : NestedTagsDefinition):
 	clear_all()
+	
 	hide_root = true
+	columns = 3
+	
 	var parent_item = null
 	var item
 	var pending_tags = []
@@ -58,14 +61,14 @@ func refresh(definition : NestedTagsDefinition):
 	
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
-		var widget : Control = TREE_ITEM_WIDGET.instantiate()
-		add_child(widget)
 		
-		_item.set_metadata(0, {"widget"  : widget})
-		_item.set_cell_mode(0, TreeItem.CELL_MODE_CUSTOM)
+		_item.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+		_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
+		_item.set_cell_mode(2, TreeItem.CELL_MODE_CUSTOM)
 		_item.set_text(0, definition.get_name(p_tag.get_id()))
 		_item.set_editable(0, true)
-		_item.set_custom_draw_callback(0, draw_custom_tree_item)
+		_item.set_editable(1, true)
+		_item.set_editable(2, true)
 		dict[p_tag] = _item
 		dict[_item] = p_tag
 		
@@ -118,16 +121,6 @@ func draw_custom_tree_item(item : TreeItem, rect : Rect2i):
 
 
 func clear_all():
-	var item = get_root()
-	if not item:
-		return
-	item = item.get_next_in_tree()
-	
-	while item:
-		var widget = item.get_metadata(0).widget
-		widget.queue_free()
-		item = item.get_next_in_tree()
-	
 	clear()
 	dict.clear()
 
