@@ -134,12 +134,13 @@ func request_add_tag(name):
 	add_tag_requested.emit(name, parent_tag.get_id())
 
 
-func _gui_input(event):
-	if event.global_position != %Manipulator.global_position:
-		if get_item_at_position(get_local_mouse_position()):
-			%Manipulator.hide()
-			%PopupTimer.start()
-			%Manipulator.global_position = event.global_position
+func _gui_input(event : InputEvent):
+	if event is InputEventMouse:
+		if event.global_position != %Manipulator.global_position:
+			if get_item_at_position(get_local_mouse_position()):
+				%Manipulator.hide()
+				%PopupTimer.start()
+				%Manipulator.global_position = event.global_position
 
 
 func _on_item_selected() -> void:
