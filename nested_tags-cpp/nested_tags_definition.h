@@ -43,9 +43,9 @@ public:
 
 	id_t get_parent_id(id_t p_id) const;
 
-    Variant _iter_init(Array p__iter);
-    Variant _iter_next(Array p__iter);
-    Variant _iter_get(const Variant &p_iter);
+    Variant _iter_init(Array p__iter) const;
+    Variant _iter_next(Array p__iter) const;
+    Variant _iter_get(const Variant &p_iter) const;
 	
 	int size() const;
 	

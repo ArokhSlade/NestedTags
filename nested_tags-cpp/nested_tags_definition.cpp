@@ -92,7 +92,7 @@ id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
 	return data[p_id].parent_id;
 }
 
-Variant NestedTagsDefinition::_iter_init(Array p_iter) {
+Variant NestedTagsDefinition::_iter_init(Array p_iter) const {
 	if (names.size() != parents.size()) {
 		ERR_PRINT("NestedTagsDefinition: names and parents size mismatch.");
 		return false;
@@ -110,12 +110,12 @@ Variant NestedTagsDefinition::_iter_init(Array p_iter) {
 	return true;
 }
 
-Variant NestedTagsDefinition::_iter_next(Array p_iter) {
+Variant NestedTagsDefinition::_iter_next(Array p_iter) const {
 	p_iter[0] = Variant(int64_t(p_iter[0]) + 1); 
 	return (int64_t((p_iter)[0]) < data.size());
 }
 
-Variant NestedTagsDefinition::_iter_get(const Variant& p_iter) {
+Variant NestedTagsDefinition::_iter_get(const Variant& p_iter) const{
 	UtilityFunctions::print("NestedTagsDefinition::_iter_get(): iterator_index: " + String::num_int64(int64_t(p_iter)));
 	Ref<NestedTag> tag = get_tag(int64_t(p_iter));
 	return tag;
@@ -158,7 +158,7 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
 		r_ret = names;
 	} else if (p_name == StringName("parents")) {
 		Array parent_ids = get_parent_ids();
-		r_ret = parents;
+		r_ret = parent_ids;
 	} else if (p_name == StringName("tags")) {
 		r_ret = tags;
 	} else
@@ -168,7 +168,7 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
     return true;
 }
 	
-Array NestedTagsDefinition::get_names()  const{
+Array NestedTagsDefinition::get_names() const {
 	Array retval{};
 	for (auto& tag_data : data)
 	{
@@ -177,7 +177,7 @@ Array NestedTagsDefinition::get_names()  const{
 	return retval;
 }
 	
-Array NestedTagsDefinition::get_parent_ids()  const{
+Array NestedTagsDefinition::get_parent_ids() const {
 	Array retval{};
 	for (auto& tag_data : data)
 	{
