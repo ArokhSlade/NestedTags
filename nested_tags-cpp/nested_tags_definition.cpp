@@ -11,9 +11,11 @@ NestedTagsDefinition::NestedTagsDefinition()
 	, parents{}
 	, tags{Ref<NestedTag>(memnew(NestedTag{0}))} // Initialize with a default "null" tag
 	, last_tag_id{0}
+	, data{}
 	{
 		names.push_back(StringName("<NULL>"));
 		parents.push_back(0);
+		data.insert(0, TagData{0, StringName{"<NULL>"}});
 		if (!singleton.is_valid()) {
 			singleton = Ref<NestedTagsDefinition>{};
 		}
@@ -37,7 +39,7 @@ void NestedTagsDefinition::initialize_singleton(Ref<NestedTagsDefinition> p_sing
 }
 
 bool NestedTagsDefinition::is_id_valid(id_t p_id) const {
-		return p_id != 0 && size() > p_id;
+		return p_id != 0 && data.has(p_id);
 	}
 
 bool NestedTagsDefinition::is_root_tag(id_t p_id) const {

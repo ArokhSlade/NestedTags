@@ -11,6 +11,11 @@
 using namespace godot;
 
 namespace NestedTags {
+	
+struct TagData {
+	int parent_id;
+	String name;
+};	
 
 class NestedTagsDefinition : public Resource {
 	GDCLASS(NestedTagsDefinition, Resource)
@@ -60,5 +65,7 @@ private:
 	Array tags;
 	int last_tag_id;
 	static Ref<NestedTagsDefinition> singleton;
+	
+	HashMap<int, TagData> data;
 };
 }
