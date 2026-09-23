@@ -214,3 +214,6 @@ cmake-build*/
 
 # CMake related
 CMakeUserPresets.json
+
+# JetBrains Rider
+*DotSettings*
