@@ -198,9 +198,11 @@ func _on_popup_timer_timeout():
 
 
 func move_buttons_to_current_item():
-	remove_buttons(last_hovered_item)
+	if last_hovered_item:
+		remove_buttons(last_hovered_item)
 	last_hovered_item = get_item_under_cursor()
-	add_buttons(last_hovered_item)
+	if last_hovered_item:
+		add_buttons(last_hovered_item)
 
 
 func remove_buttons(item):
