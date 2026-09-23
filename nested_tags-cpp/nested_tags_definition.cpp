@@ -46,24 +46,9 @@ bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
     return 0 == get_parent_id(p_id);
 }
 
-// TODO: why is p_id needed?
-void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id, id_t p_id) {
-    if (names.size() != parents.size()) {
-		ERR_PRINT("NestedTagsDefinition: names and parents size mismatch.");
-		return;
-	}
-	if (p_id >= names.size()) {
-		p_id = 0; // If the provided ID is out of bounds, treat it as 0 (add to the end)
-	} 
-	if (p_id == 0) {
-		names.push_back(p_name);
-		parents.push_back(p_parent_id);
-		tags.push_back(Ref<NestedTag>(memnew(NestedTag{id_t(++last_tag_id)})));
-	} else {
-		names.insert(p_id, p_name);
-		parents.insert(p_id, p_parent_id);
-		tags.insert(p_id, Ref<NestedTag>(memnew(NestedTag{p_id})));
-	}
+void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id) {
+	id_t new_id = ++last_tag_id;
+	tags.push_back(Ref<NestedTag>(memnew(NestedTag{new_id})));
 }
 
 Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
