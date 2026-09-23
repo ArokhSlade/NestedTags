@@ -101,7 +101,7 @@ Variant NestedTagsDefinition::_iter_init(Array p_iter) {
 
 	UtilityFunctions::print("NestedTagsDefinition::_iter_init(): iterator index set to 1, size: " + String::num_int64(names.size()));
 
-	if (names.size() <= 1)
+	if (data.size() <= 1)
 	{
 		UtilityFunctions::print("NestedTagsDefinition::_iter_init(): No valid tags to iterate over.");
 		return false;
@@ -112,7 +112,7 @@ Variant NestedTagsDefinition::_iter_init(Array p_iter) {
 
 Variant NestedTagsDefinition::_iter_next(Array p_iter) {
 	p_iter[0] = Variant(int64_t(p_iter[0]) + 1); 
-	return (int64_t((p_iter)[0]) < names.size());
+	return (int64_t((p_iter)[0]) < data.size());
 }
 
 Variant NestedTagsDefinition::_iter_get(const Variant& p_iter) {
@@ -129,7 +129,7 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
 	ClassDB::bind_method(D_METHOD("is_id_valid", "p_id"), &NestedTagsDefinition::is_id_valid);
 	ClassDB::bind_method(D_METHOD("is_root_tag", "p_id"), &NestedTagsDefinition::is_root_tag);
-	ClassDB::bind_method(D_METHOD("add", "p_name", "p_parent_id", "p_id"), &NestedTagsDefinition::add, DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("add", "p_name", "p_parent_id"), &NestedTagsDefinition::add, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("get_tag", "p_id"), &NestedTagsDefinition::get_tag);
 	ClassDB::bind_method(D_METHOD("get_name", "p_id"), &NestedTagsDefinition::get_name);
 	ClassDB::bind_method(D_METHOD("get_parent_id", "p_id"), &NestedTagsDefinition::get_parent_id);
