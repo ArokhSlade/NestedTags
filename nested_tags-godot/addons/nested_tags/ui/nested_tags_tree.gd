@@ -5,7 +5,7 @@ signal rename_tag_requested(tag_id, new_name)
 
 const Manipulator = preload("uid://crrr3lkwp4tpe")
 const TREE_ITEM_WIDGET = preload("uid://cf6gquhp4lyak")
-
+const BUTTON_ERASE = 1
 
 var states = {
 	DefaultState.id() : DefaultState.new(),
@@ -18,6 +18,7 @@ var dict = {}
 var manipulated_item
 var manipulated_column
 
+var last_hovered_item
 
 func _init():
 	for _state in states:
@@ -144,6 +145,7 @@ func _gui_input(event : InputEvent):
 				%Manipulator.hide()
 				%PopupTimer.start()
 				%Manipulator.global_position = event.global_position
+	move_buttons_to_current_item()
 
 
 func _on_item_selected() -> void:
@@ -194,6 +196,27 @@ func _on_popup_timer_timeout():
 		manipulated_column = get_column_at_position(get_local_mouse_position())
 		%Manipulator.show()
 
+
+func move_buttons_to_current_item():
+	remove_buttons(last_hovered_item)
+	last_hovered_item = get_item_under_cursor()
+	add_buttons(last_hovered_item)
+
+
+func remove_buttons(item):
+	item.clear_buttons()
+
+
+func get_item_under_cursor():
+	var item = get_item_at_position(get_local_mouse_position())
+	return item
+
+
+func  add_buttons(item):
+	var theme = EditorInterface.get_editor_theme()
+	var icon = theme.get_icon("Eraser", "EditorIcons")
+	item.add_button(0, icon, BUTTON_ERASE, false, "Delete this tag.", "Delete this tag. Will not mess up other tags, but any variables with this value will cause errors.")
+	
 
 func depth(root : TreeItem):
 	var depth = 0
