@@ -149,27 +149,7 @@ String NestedTagsDefinition::_to_string() const {
 }
 
 bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value) {
-    if (p_name == StringName("names")) {
-		names = p_value;
-		update_tags();
-		return true;
-	} else if (p_name == StringName("parents")) {
-		parents = p_value;
-		update_tags();
-		return true;
-	}
 	return false;
-}
-
-void NestedTagsDefinition::update_tags() {
-	tags.clear();
-	last_tag_id = -1;
-	if (names.size() == parents.size()) {
-		int tags_count = size();
-		for (int i = 0 ; i < tags_count; i++) {
-			tags.push_back(Ref<NestedTag>(memnew(NestedTag{id_t(++last_tag_id)})));
-		}
-	}
 }
 
 bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const {
