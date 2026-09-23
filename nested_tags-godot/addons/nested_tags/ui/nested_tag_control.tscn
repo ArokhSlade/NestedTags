@@ -1,9 +1,15 @@
 [gd_scene format=3 uid="uid://fcoq4yaw7nl4"]
 
-[node name="NestedTagEditor" type="Label" unique_id=762095742]
+[ext_resource type="Script" uid="uid://dbakyt24mldy4" path="res://addons/nested_tags/ui/nested_tag_control.gd" id="1_3peeu"]
+[ext_resource type="PackedScene" uid="uid://dddfu3ykf234s" path="res://addons/nested_tags/ui/nested_tags_tree_user.tscn" id="1_yqua3"]
+
+[node name="NestedTagEditor" type="PanelContainer" unique_id=477439940]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "<NestedTag>"
+script = ExtResource("1_3peeu")
+
+[node name="NestedTagsTreeUser" parent="." unique_id=203260917 instance=ExtResource("1_yqua3")]
+layout_mode = 2

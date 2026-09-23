@@ -10,7 +10,7 @@ func _init():
 	nested_tag_control = NESTED_TAG_CONTROL.instantiate()
 	add_child(nested_tag_control)
 	add_focusable(nested_tag_control)
-	refresh_control_text()
+	refresh_value_view()
 	
 
 func _update_property():
@@ -25,9 +25,11 @@ func _update_property():
 
 	updating = true
 	current_value = new_value
-	refresh_control_text()
+	refresh_value_view()
 	updating = false
 
 
-func refresh_control_text():
-	nested_tag_control.text = str(current_value)
+func refresh_value_view():
+	var definition = NestedTagsDefinition.try_get_singleton()
+	nested_tag_control.refresh_tree(definition)
+	nested_tag_control.set_tag(current_value)

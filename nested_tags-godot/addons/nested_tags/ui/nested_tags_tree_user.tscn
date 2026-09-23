@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dddfu3ykf234s"]
+
+[ext_resource type="Theme" uid="uid://7ehek2fws6x" path="res://addons/nested_tags/ui/nested_tags.theme" id="1_tpf40"]
+[ext_resource type="Script" uid="uid://byokjsfaecetc" path="res://addons/nested_tags/ui/nested_tags_tree_user.gd" id="2_tpf40"]
+
+[node name="NestedTagsTreeUser" type="Tree" unique_id=203260917]
+propagate_maximum_size = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_tpf40")
+theme_override_colors/scroll_hint_color = Color(0.93933225, 0.81543183, 0.487068, 1)
+scroll_hint_mode = 1
+script = ExtResource("2_tpf40")
+
+[connection signal="item_edited" from="." to="." method="_on_item_edited"]
+[connection signal="item_selected" from="." to="." method="_on_item_selected"]
