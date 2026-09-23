@@ -58,6 +58,8 @@ protected:
 	
 private:
 	void update_tags();
+	Array get_parent_ids();
+	Array get_names();
 
 private:
 	Array names;	

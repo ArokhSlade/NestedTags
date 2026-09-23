@@ -154,18 +154,38 @@ bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value
 
 bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const {
 	if (p_name == StringName("names")) {
+		Array names = get_names();
 		r_ret = names;
 	} else if (p_name == StringName("parents")) {
+		Array parent_ids = get_parent_ids();
 		r_ret = parents;
 	} else if (p_name == StringName("tags")) {
 		r_ret = tags;
-	} else {
+	} else
+	{
 		return false;
 	}
-
     return true;
 }
-
+	
+Array NestedTagsDefinition::get_names() {
+	Array retval{};
+	for (auto& tag_data : data)
+	{
+		retval.push_back(tag_data.value.parent_id);
+	}
+	return retval;
+}
+	
+Array NestedTagsDefinition::get_parent_ids() {
+	Array retval{};
+	for (auto& tag_data : data)
+	{
+		retval.push_back(tag_data.value.name);
+	}
+	return retval;
+}
+	
 void NestedTagsDefinition::_get_property_list(List<PropertyInfo> *p_list) const {
 	p_list->push_back(PropertyInfo(Variant::ARRAY, "names", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
 	p_list->push_back(PropertyInfo(Variant::ARRAY, "parents", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
