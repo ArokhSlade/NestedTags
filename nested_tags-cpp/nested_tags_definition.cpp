@@ -64,13 +64,16 @@ void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id");
 	TagData tag_data = data[p_id];
 	tag_data.parent_id = p_parent_id;
-	data[p_id]= tag_data;
+	data[p_id] = tag_data;
 }
 
 void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::rename(): invalid id");
 	ERR_FAIL_COND_EDMSG(p_name.is_empty(), "NestedTagsDefinition::rename(): invalid name (empty)");
-	names[p_id] = p_name;
+	// TODO: see if we can modify data in place.
+	TagData tag_data = data[p_id];
+	tag_data.name = p_name;
+	data[p_id] = tag_data;
 }
 
 StringName NestedTagsDefinition::get_name(id_t p_id) const {
@@ -78,15 +81,15 @@ StringName NestedTagsDefinition::get_name(id_t p_id) const {
 		UtilityFunctions::printerr("NestedTagsDefinition::get_name(): invalid id");
 		return names[0]; // Return a default name for invalid IDs
 	}
-	return names[p_id];
+	return data[p_id].name;
 }
 
 id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
 	if (!is_id_valid(p_id)) {
 		UtilityFunctions::printerr("NestedTagsDefinition::get_parent_id(): invalid id");
-		return parents[0]; // Return a default parent ID for invalid IDs
+		return data[0].parent_id; // Return a default parent ID for invalid IDs
 	}
-	return parents[p_id];
+	return data[p_id].parent_id;
 }
 
 Variant NestedTagsDefinition::_iter_init(Array p_iter) {
