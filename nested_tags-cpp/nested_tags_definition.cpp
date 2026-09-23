@@ -52,7 +52,7 @@ void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id) {
 }
 
 Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
-	if (p_id >= size()) { 
+	if (!data.has(p_id)) { 
 		UtilityFunctions::push_error("NestedTagsDefinition::get_tag(): id out of range");
 		return tags[0]; // Return a default "null" tag for IDs 
 	}
@@ -62,7 +62,9 @@ Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::reparent(): invalid id");
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id");
-	parents[p_id] = p_parent_id;
+	TagData tag_data = data[p_id];
+	tag_data.parent_id = p_parent_id;
+	data[p_id]= tag_data;
 }
 
 void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
@@ -117,11 +119,7 @@ Variant NestedTagsDefinition::_iter_get(const Variant& p_iter) {
 }
 
 int NestedTagsDefinition::size() const {
-	if (names.size() != parents.size()) {
-		ERR_PRINT("NestedTagsDefinition: names and parents size mismatch.");
-		return 0;
-	}
-	return names.size(); 
+	return data.size(); 
 }
 
 void NestedTagsDefinition::_bind_methods() {
