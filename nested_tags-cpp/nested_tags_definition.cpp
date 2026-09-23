@@ -80,7 +80,7 @@ void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
 
 void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
 	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::rename(): invalid id");
-	ERR_FAIL_COND_EDMSG(!p_name.is_empty(), "NestedTagsDefinition::rename(): invalid name (empty)");
+	ERR_FAIL_COND_EDMSG(p_name.is_empty(), "NestedTagsDefinition::rename(): invalid name (empty)");
 	names[p_id] = p_name;
 }
 
