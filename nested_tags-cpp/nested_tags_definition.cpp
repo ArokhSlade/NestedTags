@@ -48,6 +48,7 @@ bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
 
 void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id) {
 	id_t new_id = ++last_tag_id;
+	data[new_id] = TagData{p_parent_id, p_name};
 	tags.push_back(Ref<NestedTag>(memnew(NestedTag{new_id})));
 }
 
