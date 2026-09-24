@@ -32,7 +32,7 @@ public:
 
 	bool is_root_tag(id_t p_id) const;
 
-	void add(const StringName &p_name, id_t p_parent_id, id_t p_id = 0);
+	void add(const StringName &p_name, id_t p_parent_id = 0);
 
 	Ref<NestedTag> get_tag(id_t p_id) const;
 
