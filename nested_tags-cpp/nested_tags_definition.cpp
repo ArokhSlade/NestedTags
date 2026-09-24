@@ -152,6 +152,7 @@ String NestedTagsDefinition::_to_string() const {
 bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value) {
 	if (p_name == StringName("data"))
 	{
+		tags.clear();
 		data.clear();
 		Dictionary _data = Dictionary(p_value);
 		auto keys = _data.keys();
@@ -159,8 +160,8 @@ bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value
 		{
 			Dictionary data_k = _data[k]; 
 			id_t parent_id = data_k["parent_id"];
-			TagData tag_data{parent_id, Dictionary(_data[k])["name"]};
-			data[k] = tag_data; 
+			StringName name = data_k["name"];
+			add(name, parent_id);
 		}
 		return true;
 	}
