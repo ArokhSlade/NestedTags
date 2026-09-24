@@ -1,0 +1,31 @@
+[gd_resource type="NestedTagsDefinition" format=3 uid="uid://q8hrkrivdqsa"]
+
+[resource]
+names = [0, 0, 1, 0, 3, 4]
+parents = [&"<NULL>", &"acc", &"qwe", &"xvfds", &"qwe", &"rewtwer"]
+data = {
+0: {
+"name": &"<NULL>",
+"parent_id": 0
+},
+1: {
+"name": &"acc",
+"parent_id": 0
+},
+2: {
+"name": &"qwe",
+"parent_id": 1
+},
+3: {
+"name": &"xvfds",
+"parent_id": 0
+},
+4: {
+"name": &"qwe",
+"parent_id": 3
+},
+5: {
+"name": &"rewtwer",
+"parent_id": 4
+}
+}

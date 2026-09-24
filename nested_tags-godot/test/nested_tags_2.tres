@@ -1,5 +1,27 @@
 [gd_resource type="NestedTagsDefinition" format=3 uid="uid://p5hnqnysccvd"]
 
 [resource]
-names = [&"<NULL>", &"Game", &"World", &"UI"]
-parents = [0, 0, 1, 1]
+names = [0, 0, 1, 1, 1]
+parents = [&"<NULL>", &"hello", &"lizzy", &"tommy", &"sasha"]
+data = {
+0: {
+"name": &"<NULL>",
+"parent_id": 0
+},
+1: {
+"name": &"hello",
+"parent_id": 0
+},
+2: {
+"name": &"lizzy",
+"parent_id": 1
+},
+3: {
+"name": &"tommy",
+"parent_id": 1
+},
+4: {
+"name": &"sasha",
+"parent_id": 1
+}
+}

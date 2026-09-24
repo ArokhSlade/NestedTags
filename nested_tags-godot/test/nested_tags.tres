@@ -1,5 +1,23 @@
 [gd_resource type="NestedTagsDefinition" format=3 uid="uid://dddtpig1uh6c1"]
 
 [resource]
-names = [&"<NULL>", &"qwe", &"asd", &"ert"]
-parents = [0, 0, 0, 1]
+names = [0, 0, 1, 0]
+parents = [&"<NULL>", &"asd", &"qwe", &"ert"]
+data = {
+0: {
+"name": &"<NULL>",
+"parent_id": 0
+},
+1: {
+"name": &"asd",
+"parent_id": 0
+},
+2: {
+"name": &"qwe",
+"parent_id": 1
+},
+3: {
+"name": &"ert",
+"parent_id": 0
+}
+}

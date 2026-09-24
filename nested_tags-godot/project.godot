@@ -29,7 +29,7 @@ enabled=PackedStringArray("res://addons/nested_tags/plugin.cfg")
 
 [nested_tags]
 
-nested_tags_definition=""
+nested_tags_definition="res://test/nested_tags_3.tres"
 
 [physics]
 
