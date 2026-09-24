@@ -168,7 +168,7 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
     return true;
 }
 	
-Array NestedTagsDefinition::get_names() {
+Array NestedTagsDefinition::get_names()  const{
 	Array retval{};
 	for (auto& tag_data : data)
 	{
@@ -177,7 +177,7 @@ Array NestedTagsDefinition::get_names() {
 	return retval;
 }
 	
-Array NestedTagsDefinition::get_parent_ids() {
+Array NestedTagsDefinition::get_parent_ids()  const{
 	Array retval{};
 	for (auto& tag_data : data)
 	{
