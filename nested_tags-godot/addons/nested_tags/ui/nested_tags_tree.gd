@@ -49,6 +49,9 @@ func refresh(definition : NestedTagsDefinition):
 	hide_root = true
 	columns = 3
 	
+	if not definition:
+		return
+	
 	var parent_item = null
 	var item
 	var pending_tags = []
