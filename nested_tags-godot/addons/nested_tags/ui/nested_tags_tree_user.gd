@@ -13,11 +13,29 @@ func _init():
 
 
 func set_tag(tag : NestedTag):
+	if tag.get_id() == 0:
+		switch_to_null_view(tag)
+		return
 	var item = dict.get(tag)
 	if not item:
 		push_error("NestedTagTreeUser::set_tag(%s:%s): tag not found." % [tag.get_id(), str(tag)])
 		return
 	item.set_checked(0, true)
+
+
+func switch_to_null_view(tag):
+	clear_all()
+	create_item()
+	select_mode = SelectMode.SELECT_MULTI
+	hide_root = false
+	columns = 1
+	
+	get_root().set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+	get_root().set_checked(0, true)
+	get_root().set_editable(0, false)
+	get_root().set_text(0, tag.get_name())
+	
+	custom_minimum_size.y = compute_height()
 
 
 func compute_height():
@@ -102,7 +120,6 @@ func refresh(definition : NestedTagsDefinition):
 			return
 		old_max = max
 	var new_height = compute_height()
-	print(new_height)
 	custom_minimum_size.y = new_height
 
 

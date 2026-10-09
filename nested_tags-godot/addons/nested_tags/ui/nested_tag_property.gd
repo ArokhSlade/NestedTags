@@ -35,9 +35,6 @@ func _update_property():
 func refresh_value_view():
 	var definition = NestedTagsDefinition.try_get_singleton()
 	nested_tag_control.refresh_tree(definition)
-	if current_tag_id == 0:
-		push_warning("nested_tag_property::refresh_value_view(): I was called for the null tag which is invisible.")
-		return
 	if not definition.has_tag(current_tag_id):
 		push_error("nested_tag_property::refresh_value_view(): non-existent tag with id %s cannot be disiplayed." % [current_tag_id])
 		return
