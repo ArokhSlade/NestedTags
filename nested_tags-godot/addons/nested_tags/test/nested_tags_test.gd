@@ -1,17 +1,17 @@
 extends Node2D
 
 
-@export_custom(PROPERTY_HINT_NONE, "nested_tag") var nested : int = 1
+@export_custom(PROPERTY_HINT_NONE, "nested_tag") var nested : int = 0
 
 func _ready():
 	var def = NestedTagsDefinition.try_get_singleton()
 	if null == def:
 		return
 	
-	print(str(def))
+	print("nested tags test::_ready(): ", str(def))
 	def.add("hello", 0)
 	def.add("world", 1)
-		
+	
 	var tag = def.get_tag(1)
 	print(tag)
 	var tag_2 = def.get_tag(2)

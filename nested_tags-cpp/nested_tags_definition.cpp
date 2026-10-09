@@ -11,14 +11,11 @@ NestedTagsDefinition::NestedTagsDefinition()
 	, parents{}
 	, tags{Ref<NestedTag>(memnew(NestedTag{0}))} // Initialize with a default "null" tag
 	, last_tag_id{0}
-	, data{}
+	, data(HashMap<id_t, TagData>())
 	{
 		names.push_back(StringName("<NULL>"));
 		parents.push_back(0);
 		data.insert(0, TagData{0, StringName{"<NULL>"}});
-		if (!singleton.is_valid()) {
-			singleton = Ref<NestedTagsDefinition>{};
-		}
 	}
 
 Ref<NestedTagsDefinition> NestedTagsDefinition::singleton = Ref<NestedTagsDefinition>{};
@@ -48,16 +45,18 @@ bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
 
 void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id) {
 	id_t new_id = ++last_tag_id;
-	data[new_id] = TagData{p_parent_id, p_name};
-	tags.push_back(Ref<NestedTag>(memnew(NestedTag{new_id})));
+	Ref<NestedTag> tag = memnew(NestedTag{new_id});
+	tags.push_back(Ref<NestedTag>(tag));
+	data[new_id] = TagData{p_parent_id, p_name, tag};
 }
 
 Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 	if (!data.has(p_id)) { 
-		UtilityFunctions::push_error("NestedTagsDefinition::get_tag(): id out of range");
+		UtilityFunctions::push_error("NestedTagsDefinition::get_tag(): id ", p_id, " out of range");
 		return tags[0]; // Return a default "null" tag for IDs 
 	}
-	return tags[p_id];
+	TagData tag_data = data[p_id];
+	return tag_data.tag;
 }
 
 void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
@@ -90,6 +89,7 @@ id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
 		UtilityFunctions::printerr("NestedTagsDefinition::get_parent_id(): invalid id");
 		return data[0].parent_id; // Return a default parent ID for invalid IDs
 	}
+	UtilityFunctions::print("get_parent_id(", p_id, ") -> ", data[p_id].parent_id);
 	return data[p_id].parent_id;
 }
 
@@ -156,12 +156,12 @@ bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value
 		data.clear();
 		Dictionary _data = Dictionary(p_value);
 		auto keys = _data.keys();
-		for (auto& k : keys)
+		for (id_t id : keys)
 		{
-			Dictionary data_k = _data[k]; 
-			id_t parent_id = data_k["parent_id"];
-			StringName name = data_k["name"];
-			add(name, parent_id);
+			Dictionary data_dict = _data[id];
+			id_t parent_id = data_dict["parent_id"];
+			StringName name = data_dict["name"];
+			try_add_explicit(id, name, parent_id);
 		}
 		return true;
 	}
@@ -174,10 +174,11 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
 		Dictionary _data = Dictionary{};
 		for (auto& kv : data)
 		{
-			Dictionary tag_data{};
-			tag_data["parent_id"] = kv.value.parent_id;
-			tag_data["name"] = kv.value.name;
-			_data[kv.key] = tag_data;
+			id_t id = kv.key;
+			Dictionary data_dict{};
+			data_dict["parent_id"] = kv.value.parent_id;
+			data_dict["name"] = kv.value.name;
+			_data[id] = data_dict;
 		}
 		r_ret = _data;
 	}
@@ -195,6 +196,21 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
 	}
     return true;
 }
+
+bool NestedTagsDefinition::try_add_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id) {
+	if (data.has(p_id)) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": tried adding existing tag: ", p_id, " (name: ", p_name, " parent: ", p_parent_id, ")");
+		return false;
+	}
+	if (p_id > last_tag_id) {
+		last_tag_id = p_id;
+	}
+	Ref<NestedTag> tag = Ref<NestedTag>(memnew(NestedTag{p_id}));
+	tags.push_back(tag);
+	data[p_id] = TagData{p_parent_id, p_name, tag};
+
+	return true;
+}
 	
 Array NestedTagsDefinition::get_names() const {
 	Array retval{};
@@ -204,7 +220,7 @@ Array NestedTagsDefinition::get_names() const {
 	}
 	return retval;
 }
-	
+
 Array NestedTagsDefinition::get_parent_ids() const {
 	Array retval{};
 	for (auto& tag_data : data)

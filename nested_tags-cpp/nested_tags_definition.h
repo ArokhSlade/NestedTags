@@ -15,6 +15,7 @@ namespace NestedTags {
 struct TagData {
 	id_t parent_id;
 	StringName name;
+	Ref<NestedTag> tag;
 };	
 
 class NestedTagsDefinition : public Resource {
@@ -60,6 +61,7 @@ private:
 	void update_tags();
 	Array get_parent_ids() const;
 	Array get_names() const;
+	bool try_add_explicit(id_t p_id, const StringName &p_name, id_t p_parent_id);
 
 private:
 	Array names;	

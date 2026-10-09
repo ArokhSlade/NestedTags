@@ -13,8 +13,9 @@ func _init():
 
 
 func set_tag(tag : NestedTag):
-	var item = dict[tag]
+	var item = dict.get(tag)
 	if not item:
+		push_error("NestedTagTreeUser::set_tag(%s): tag not found." % [str(tag)])
 		return
 	item.set_checked(0, true)
 

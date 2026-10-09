@@ -43,13 +43,14 @@ func load_definition_from_path(path):
 		_definition = old_definition
 	else:
 		NestedTagsDefinition.initialize_singleton(_definition)
-		print(str(NestedTagsDefinition.try_get_singleton()))
+		print("settings::load_definition_from_path(): ",str(NestedTagsDefinition.try_get_singleton()))
 		save_definition_to_project_settings(path)
 
 
 func save_definition_to_project_settings(path):
 	ProjectSettings.set_setting("nested_tags/nested_tags_definition", path)
 	ProjectSettings.save()
+	print("settings::save_definition_to_project_settings(%s) done." % [path])
 
 
 func load_definition_from_project_settings():

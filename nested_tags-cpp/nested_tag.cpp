@@ -68,6 +68,34 @@ bool NestedTag::_is_valid() const {
     return singleton.is_valid() && singleton->is_id_valid(id);
 }
 
+bool NestedTag::_get(const StringName &p_name, Variant &r_ret) const
+{
+    if (p_name == StringName("name"))
+    {
+        r_ret = Variant(get_name());
+    } 
+    else if (p_name == StringName("id"))
+    {
+        r_ret = Variant(get_id());
+    }
+    else if (p_name == StringName("parent"))
+    {
+        r_ret = Variant(get_parent());
+    }
+    else
+    {
+        return false;
+    }
+    return true;
+}
+
+void NestedTag::_get_property_list(List<PropertyInfo> *p_list) const
+{
+    p_list->push_back(PropertyInfo(Variant::INT, "id", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+    p_list->push_back(PropertyInfo(Variant::STRING_NAME, "name", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+    p_list->push_back(PropertyInfo(Variant::INT, "parent", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+}
+
 String NestedTag::_to_string() const {
     String result = String("(");
     Vector<StringName> parent_names = get_parent_names();
@@ -90,7 +118,7 @@ Vector<StringName> NestedTag::get_parent_names() const {
     while (current_id != 0) {
         parent_names.push_back(singleton->get_name(current_id));
         current_id = singleton->get_parent_id(current_id);
-        parent_names.reverse(); // Reverse the order to have the root parent first
     }
+    parent_names.reverse(); // Reverse the order to have the root parent first
     return parent_names;
 }

@@ -43,6 +43,7 @@ func compute_height():
 
 ## constructs tree from tags. caches those "pending" tags whose parents it hasn't seen yet
 func refresh(definition : NestedTagsDefinition):
+	print("nested_tags_tree::refresh(): start!")
 	clear_all()
 	
 	select_mode = SelectMode.SELECT_MULTI
@@ -57,6 +58,7 @@ func refresh(definition : NestedTagsDefinition):
 	var pending_tags = []
 	
 	for tag : NestedTag in definition:
+		print("tag: ", tag)
 		pending_tags.push_back(tag)
 	var old_max = pending_tags.size()
 	

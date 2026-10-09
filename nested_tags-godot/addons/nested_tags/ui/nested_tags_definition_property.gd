@@ -18,6 +18,6 @@ func _update_property():
 	
 	updating = true
 	NestedTagsDefinition.initialize_singleton(definition)
-	print(str(NestedTagsDefinition.try_get_singleton()))
+	print("NTD property::_update_property(): ", str(NestedTagsDefinition.try_get_singleton()))
 	nested_tags_definition_editor.set_definition(definition)
 	updating = false

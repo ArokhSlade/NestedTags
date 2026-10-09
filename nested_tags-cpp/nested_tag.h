@@ -39,6 +39,9 @@ protected:
     static void _bind_methods();    
     bool _is_equal(const Variant &p_other) const;
     bool _is_valid() const;
+    
+    bool _get(const StringName &p_name, Variant &r_ret) const;
+    void _get_property_list(List<PropertyInfo> *p_list) const;
     String _to_string() const;
 
     Vector<StringName> get_parent_names() const;

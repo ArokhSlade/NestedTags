@@ -2,7 +2,7 @@
 
 [resource]
 names = [0, 0, 1, 0, 3, 4]
-parents = [&"<NULL>", &"acc", &"qwe", &"xvfds", &"qwe", &"rewtwer"]
+parents = [&"<NULL>", &"acc", &"qwe", &"xvfds", &"tre", &"rewtwer"]
 data = {
 0: {
 "name": &"<NULL>",
@@ -21,7 +21,7 @@ data = {
 "parent_id": 0
 },
 4: {
-"name": &"qwe",
+"name": &"tre",
 "parent_id": 3
 },
 5: {
