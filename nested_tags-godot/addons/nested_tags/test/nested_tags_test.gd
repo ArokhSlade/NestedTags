@@ -10,10 +10,11 @@ func _ready():
 	
 	print("nested tags test::_ready(): ", str(def))
 	def.add("hello", 0)
-	def.add("world", 1)
+	def.add("world", 1) 
 	
 	var tag = def.get_tag(1)
 	print(tag)
+	print("hello: ", tag.is_valid())
 	var tag_2 = def.get_tag(2)
 	print(tag_2)
 	print(tag_2.equals(tag))

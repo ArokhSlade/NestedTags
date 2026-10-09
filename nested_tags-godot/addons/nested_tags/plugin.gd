@@ -29,9 +29,12 @@ func _enter_tree():
 	
 	settings_tab.initialize(settings)
 	settings_tab.refresh()
+	
+	add_autoload_singleton("NestedTagsRuntime", "res://addons/nested_tags/nested_tags_runtime.gd")
 
 
 func _exit_tree():
+	remove_autoload_singleton("NestedTagsRuntime")
 	remove_control_from_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, settings_tab)
 	remove_inspector_plugin(nested_tags_definition_inspector)
 	remove_inspector_plugin(nested_tag_inspector)

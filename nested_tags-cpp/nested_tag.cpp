@@ -49,7 +49,7 @@ void NestedTag::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_name"), &NestedTag::get_name);
     ClassDB::bind_method(D_METHOD("set_name", "p_name"), &NestedTag::set_name);
     ClassDB::bind_method(D_METHOD("equals", "other"), &NestedTag::_is_equal);
-    ClassDB::bind_method(D_METHOD("is_valid"), &NestedTag::_is_valid);
+    ClassDB::bind_method(D_METHOD("is_valid"), &NestedTag::is_valid);
     ClassDB::bind_method(D_METHOD("is_root"), &NestedTag::is_root);
 }
 
@@ -63,9 +63,9 @@ bool NestedTag::_is_equal(const Variant &p_other) const {
     return this->id == other_tag->id;
 }
 
-bool NestedTag::_is_valid() const {
+bool NestedTag::is_valid() const {
     Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
-    return singleton.is_valid() && singleton->is_id_valid(id);
+    return singleton.is_valid() && singleton->get_tag(id) == this;
 }
 
 bool NestedTag::_get(const StringName &p_name, Variant &r_ret) const

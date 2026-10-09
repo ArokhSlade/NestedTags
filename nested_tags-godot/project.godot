@@ -14,14 +14,14 @@ config/name="Nested Tags Plugin Project"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+NestedTagsRuntime="*uid://dixytet3nf0ri"
+
 [display]
 
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-
-[editor]
-
-run/main_run_args="--editor"
 
 [editor_plugins]
 
@@ -29,7 +29,7 @@ enabled=PackedStringArray("res://addons/nested_tags/plugin.cfg")
 
 [nested_tags]
 
-nested_tags_definition="res://test/nested_tags_2.tres"
+nested_tags_definition="res://test/nested_tags_3.tres"
 
 [physics]
 

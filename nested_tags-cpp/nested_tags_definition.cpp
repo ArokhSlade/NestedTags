@@ -33,11 +33,8 @@ void NestedTagsDefinition::initialize_singleton(Ref<NestedTagsDefinition> p_sing
 	if (singleton.is_valid()) {
 		WARN_PRINT_ED("NestedTagsDefinition::initialize_singleton(): singleton is already initialized");
 	}
+	UtilityFunctions::print(FUNCTION_STR, " hello");
 	singleton = p_singleton;
-}
-
-bool NestedTagsDefinition::is_id_valid(id_t p_id) const {
-	return p_id != 0 && data.has(p_id);
 }
 
 bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
@@ -67,15 +64,15 @@ Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 }
 
 void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
-	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::reparent(): invalid id");
-	ERR_FAIL_COND_EDMSG(!is_id_valid(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id");
+	ERR_FAIL_COND_EDMSG(!has_tag(p_id) || 0 == p_id, "NestedTagsDefinition::reparent(): invalid id: " + p_id);
+	ERR_FAIL_COND_EDMSG(!has_tag(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id: " + p_parent_id);
 	TagData tag_data = data[p_id];
 	tag_data.parent_id = p_parent_id;
 	data[p_id] = tag_data;
 }
 
 void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
-	ERR_FAIL_COND_EDMSG(!is_id_valid(p_id), "NestedTagsDefinition::rename(): invalid id");
+	ERR_FAIL_COND_EDMSG(!has_tag(p_id) || 0 == p_id, "NestedTagsDefinition::rename(): invalid id: " + p_id);
 	ERR_FAIL_COND_EDMSG(p_name.is_empty(), "NestedTagsDefinition::rename(): invalid name (empty)");
 	// TODO: see if we can modify data in place.
 	TagData tag_data = data[p_id];
@@ -84,7 +81,7 @@ void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
 }
 
 StringName NestedTagsDefinition::get_name(id_t p_id) const {
-	if (!is_id_valid(p_id)) {
+	if (!has_tag(p_id)) {
 		UtilityFunctions::printerr("NestedTagsDefinition::get_name(): invalid id");
 		return names[0]; // Return a default name for invalid IDs
 	}
@@ -92,7 +89,7 @@ StringName NestedTagsDefinition::get_name(id_t p_id) const {
 }
 
 id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
-	if (!is_id_valid(p_id)) {
+	if (!has_tag(p_id)) {
 		UtilityFunctions::printerr("NestedTagsDefinition::get_parent_id(): invalid id");
 		return data[0].parent_id; // Return a default parent ID for invalid IDs
 	}
@@ -135,7 +132,6 @@ int NestedTagsDefinition::size() const {
 
 void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
-	ClassDB::bind_method(D_METHOD("is_id_valid", "p_id"), &NestedTagsDefinition::is_id_valid);
 	ClassDB::bind_method(D_METHOD("is_root_tag", "p_id"), &NestedTagsDefinition::is_root_tag);
 	ClassDB::bind_method(D_METHOD("add", "p_name", "p_parent_id"), &NestedTagsDefinition::add, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("has_tag", "p_id"), &NestedTagsDefinition::has_tag);
