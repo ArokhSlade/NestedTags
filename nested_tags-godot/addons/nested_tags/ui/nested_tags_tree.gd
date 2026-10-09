@@ -58,7 +58,7 @@ func refresh(definition : NestedTagsDefinition):
 	var pending_tags = []
 	
 	for tag : NestedTag in definition:
-		print("tag: ", tag)
+		print("nested_tags_tree::refresh(): tag: ", tag)
 		pending_tags.push_back(tag)
 	var old_max = pending_tags.size()
 	

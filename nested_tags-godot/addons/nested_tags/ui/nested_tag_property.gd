@@ -3,7 +3,8 @@ extends EditorProperty
 const NESTED_TAG_CONTROL = preload("uid://fcoq4yaw7nl4")
 
 var nested_tag_control
-var current_value : NestedTag = NestedTag.new()
+var current_tag_id : int ## TODO: currently safer / more idiomatic to use the id of a tag. don't write code that calls ctor directly
+var current_tag : NestedTag = null # TODO: invoking the NestedTag ctor is currently semantically wrong and will lead to errors down the line because it will create another object with the same tag id
 var updating = false
 
 func _init():
@@ -19,12 +20,14 @@ func _update_property():
 	if null == definition:
 		return
 	
-	var new_value = definition.get_tag(tag_id)
-	if (new_value == current_value):
+	var new_tag = definition.get_tag(tag_id)
+	if (new_tag == current_tag):
 		return
 
 	updating = true
-	current_value = new_value
+	current_tag = new_tag
+	current_tag_id = new_tag.get_id()
+	
 	refresh_value_view()
 	updating = false
 
@@ -32,4 +35,11 @@ func _update_property():
 func refresh_value_view():
 	var definition = NestedTagsDefinition.try_get_singleton()
 	nested_tag_control.refresh_tree(definition)
-	nested_tag_control.set_tag(current_value)
+	if current_tag_id == 0:
+		push_warning("nested_tag_property::refresh_value_view(): I was called for the null tag which is invisible.")
+		return
+	if not definition.has_tag(current_tag_id):
+		push_error("nested_tag_property::refresh_value_view(): non-existent tag with id %s cannot be disiplayed." % [current_tag_id])
+		return
+	current_tag = definition.get_tag(current_tag_id)
+	nested_tag_control.set_tag(current_tag)

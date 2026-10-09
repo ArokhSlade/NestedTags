@@ -34,7 +34,8 @@ public:
 	bool is_root_tag(id_t p_id) const;
 
 	void add(const StringName &p_name, id_t p_parent_id = 0);
-
+	
+	bool has_tag(id_t p_id) const;
 	Ref<NestedTag> get_tag(id_t p_id) const;
 
 	void reparent(id_t p_id, id_t p_parent_id);

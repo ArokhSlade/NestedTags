@@ -98,7 +98,7 @@ void NestedTag::_get_property_list(List<PropertyInfo> *p_list) const
 
 String NestedTag::_to_string() const {
     String result = String("(");
-    Vector<StringName> parent_names = get_parent_names();
+    Vector<StringName> parent_names = get_lineage_names();
     int parent_names_size = parent_names.size();
     for (int i = 0; i < parent_names_size-1  ; i++) {
         result += parent_names[i];
@@ -111,7 +111,7 @@ String NestedTag::_to_string() const {
     return result;
 }
 
-Vector<StringName> NestedTag::get_parent_names() const {
+Vector<StringName> NestedTag::get_lineage_names() const {
     Vector<StringName> parent_names;
     Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     id_t current_id = id;

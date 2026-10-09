@@ -20,6 +20,7 @@ private:
     id_t id;
 
 public:
+    // TODO: protect users from trying to call constructors directly. tags are not supposed to be real objects to begin with. just ints that live somewhere
     NestedTag() : id(0) {}
     NestedTag(id_t p_id) : id(p_id) {}
     ~NestedTag() = default;
@@ -44,6 +45,7 @@ protected:
     void _get_property_list(List<PropertyInfo> *p_list) const;
     String _to_string() const;
 
-    Vector<StringName> get_parent_names() const;
+    /** list names of ancestors follwed by own name. */
+    Vector<StringName> get_lineage_names() const;
 };
 }
