@@ -30,10 +30,10 @@ func test_basics():
 
 
 func test_match():
-	var tag_1 = NestedTag.make("creature.animal.badger")
+	var tag_1 = NestedTag.from_string("creature.animal.badger")
 	print(tag_1.get_name())
-	var tag_2 = NestedTag.make("creature.animal.bird")
-	var tag_3 = NestedTag.make("creature.animal")
+	var tag_2 = NestedTag.from_string("creature.animal.bird")
+	var tag_3 = NestedTag.from_string("creature.animal")
 	var common_ancestor = tag_1.get_closest_shared_ancestor(tag_2)
 	var equals_not = tag_1.equals(tag_2)
 	var equals = tag_1.equals(tag_1)

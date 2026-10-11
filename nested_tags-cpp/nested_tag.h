@@ -20,7 +20,7 @@ private:
     id_t id;
     
 public:
-    static Ref<NestedTag> make(const String &p_tag_string);
+    static Ref<NestedTag> from_string(const String &p_tag_string);
     
 public:
     // TODO: protect users from trying to call constructors directly. tags are not supposed to be real objects to begin with. just ints that live somewhere

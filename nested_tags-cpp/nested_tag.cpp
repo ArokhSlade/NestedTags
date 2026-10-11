@@ -23,7 +23,7 @@ bool NestedTag::contains(Ref<NestedTag> other) const {
     return ret_val;
 }
 
-Ref<NestedTag> NestedTag::make(const String &p_tag_string)
+Ref<NestedTag> NestedTag::from_string(const String &p_tag_string)
 {
     Ref<NestedTag> ret_val;
     bool succeess = parse_tag(p_tag_string, ret_val);
@@ -78,7 +78,7 @@ void NestedTag::_bind_methods() {
     ClassDB::bind_method(D_METHOD("equals", "other"), &NestedTag::_is_equal);
     ClassDB::bind_method(D_METHOD("is_valid"), &NestedTag::is_valid);
     ClassDB::bind_method(D_METHOD("is_root"), &NestedTag::is_root);
-    ClassDB::bind_static_method(StringName("NestedTag"), D_METHOD("make", "p_tag_string"), &NestedTag::make);
+    ClassDB::bind_static_method(StringName("NestedTag"), D_METHOD("from_string", "p_tag_string"), &NestedTag::from_string);
 }
 
 bool NestedTag::_is_equal(const Variant &p_other) const {
