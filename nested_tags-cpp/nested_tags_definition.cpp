@@ -258,4 +258,40 @@ void NestedTagsDefinition::_get_property_list(List<PropertyInfo> *p_list) const 
 	p_list->push_back(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE));
 	p_list->push_back(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
 }
+
+Ref<NestedTag> NestedTagsDefinition::get_closest_shared_ancestor(Ref<NestedTag> tag_1, Ref<NestedTag> tag_2) {
+	Ref<NestedTag> ret_val = get_tag(0);
+	
+	Array lineage_1 = get_lineage_ids(tag_1);
+	Array lineage_2 = get_lineage_ids(tag_2);
+	
+	int max_count = std::min(lineage_1.size(), lineage_2.size());
+	
+	id_t ancestor_id = 0;
+	for (int i = 0; i < max_count; i++) {
+		if (lineage_1[i] == lineage_2[i]) {
+			ancestor_id = lineage_1[i];
+		} else {
+			break;
+		}
+	}
+	ret_val = get_tag(ancestor_id);
+		
+	return ret_val;
+}
+
+Array NestedTagsDefinition::get_lineage_ids(const Ref<NestedTag> &tag) {
+	Array ret_val;
+	
+	id_t current = tag->get_id();
+	while (0 != current) {
+		ret_val.push_back(current);
+		current = get_parent_id(current);
+	}
+	ret_val.push_back(0);
+	
+	ret_val.reverse();	
+	return ret_val;
+}
+
 }

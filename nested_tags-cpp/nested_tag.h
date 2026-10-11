@@ -28,6 +28,9 @@ public:
     NestedTag(id_t p_id) : id(p_id) {}
     ~NestedTag() = default;
 
+
+    Ref<NestedTag> get_closest_shared_ancestor(Ref<NestedTag> other) const;
+    
     id_t get_id() const;
     void set_id(id_t p_id);
     Ref<NestedTag> get_parent() const;

@@ -51,12 +51,16 @@ public:
 	
 	int size() const;
 	
+	Ref<NestedTag> get_closest_shared_ancestor(Ref<NestedTag> tag_1, Ref<NestedTag> tag_2);
+	
 protected:
 	static void _bind_methods();
 	String _to_string() const;
 	bool _set(const StringName &p_name, const Variant &p_value);
 	bool _get(const StringName &p_name, Variant &r_ret) const;
 	void _get_property_list(List<PropertyInfo> *p_list) const;
+	
+	Array get_lineage_ids(const Ref<NestedTag> &tag);
 	
 private:
 	void update_tags();
