@@ -24,3 +24,14 @@ func _ready():
 	tag_2.set_id(0)
 	print("tag is valid? ", tag_2.is_valid())
 	nested = tag.get_id()
+
+func test_match():
+	var tag_1 = NestedTag.make("creature.animal.badger")
+	var tag_2 = NestedTag.make("creature.animal.bird")
+	var tag_3 = NestedTag.make("creature.animal")
+	var common_ancestor = tag_1.get_closest_shared_ancestor(tag_2)
+	var equals = tag_1.equals(tag_2)
+	var is_contained = tag_2.is_contained_in(tag_3)
+	var contains = tag_3.contains(tag_2)
+	pass
+	return
