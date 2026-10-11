@@ -142,6 +142,7 @@ Variant NestedTagsDefinition::_iter_init(Array p_iter) const {
 	}
 	
 	p_iter[0] = get_ids();
+	
 
 	return true;
 }
@@ -322,9 +323,12 @@ Array NestedTagsDefinition::get_ids() const
 	Array ret_val{};
 	
 	for (auto& item : data) {
+		if (0 == item.key) {
+			continue;
+		}
 		ret_val.push_back(int64_t(item.key));
 	}
-	
+		
 	return ret_val;
 }
 }
