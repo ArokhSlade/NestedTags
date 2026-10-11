@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://ctyn5t3nmbts5"]
 
 [ext_resource type="Theme" uid="uid://7ehek2fws6x" path="res://addons/nested_tags/ui/nested_tags.theme" id="1_nafhi"]
-[ext_resource type="Script" uid="uid://15q7yfb3gobl" path="res://addons/nested_tags/ui/nested_tags_tree.gd" id="1_yyw0h"]
+[ext_resource type="Script" uid="uid://15q7yfb3gobl" path="res://addons/nested_tags/ui/nested_tags_definition_tree.gd" id="1_yyw0h"]
 [ext_resource type="PackedScene" uid="uid://cfjiybf32gcr4" path="res://addons/nested_tags/ui/manipulator.tscn" id="2_wsv23"]
 
-[node name="NestedTagsTree" type="Tree" unique_id=203260917]
+[node name="NestedTagsDefinitionTree" type="Tree" unique_id=203260917]
 propagate_maximum_size = true
 anchors_preset = 15
 anchor_right = 1.0

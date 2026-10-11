@@ -3,7 +3,7 @@
 # TODO: this is misleading because internals are bound to the singleton. 
 # so there's no point in exposing any other instance.
 @export var definition : NestedTagsDefinition
-@onready var tree = %NestedTagsTree
+@onready var tree = %NestedTagsDefinitionTree
 @onready var text_edit = %TextEdit
 
 func set_definition(p_definition):
@@ -31,11 +31,11 @@ func _on_refresh_button_pressed():
 	tree.refresh(definition)
 
 
-func _on_nested_tags_tree_add_tag_requested(tag_name, parent_id):
+func _on_nested_tags_definition_tree_add_tag_requested(tag_name, parent_id):
 	add_tag(tag_name, parent_id)
 
 
-func _on_nested_tags_tree_rename_tag_requested(tag_id, new_name):
+func _on_nested_tags_definition_tree_rename_tag_requested(tag_id, new_name):
 	rename_tag(tag_id, new_name)
 
 
