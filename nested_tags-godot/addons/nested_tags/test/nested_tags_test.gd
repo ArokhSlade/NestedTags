@@ -4,6 +4,9 @@ extends Node2D
 @export_custom(PROPERTY_HINT_NONE, "nested_tag") var nested : int = 0
 
 func _ready():
+	test_match()
+
+func test_basics():
 	var def = NestedTagsDefinition.try_get_singleton()
 	if null == def:
 		return
@@ -24,6 +27,7 @@ func _ready():
 	tag_2.set_id(0)
 	print("tag is valid? ", tag_2.is_valid())
 	nested = tag.get_id()
+
 
 func test_match():
 	var tag_1 = NestedTag.make("creature.animal.badger")

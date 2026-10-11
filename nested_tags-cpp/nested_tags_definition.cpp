@@ -21,6 +21,7 @@ NestedTagsDefinition::NestedTagsDefinition()
 
 Ref<NestedTagsDefinition> NestedTagsDefinition::singleton = Ref<NestedTagsDefinition>{};
 
+// TODO: currently, this is not a try method. the result cannot be used in a boolean expression.
 Ref<NestedTagsDefinition> NestedTagsDefinition::try_get_singleton() {
 	if (!singleton.is_valid()) {
 		UtilityFunctions::push_error("NestedTagsDefinition::try_get_singleton(): singleton is invalid.");

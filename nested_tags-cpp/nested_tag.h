@@ -18,7 +18,10 @@ class NestedTag : public RefCounted {
     
 private:
     id_t id;
-
+    
+public:
+    static Ref<NestedTag> make(const String &p_tag_string);
+    
 public:
     // TODO: protect users from trying to call constructors directly. tags are not supposed to be real objects to begin with. just ints that live somewhere
     NestedTag() : id(0) {}
@@ -28,13 +31,16 @@ public:
     id_t get_id() const;
     void set_id(id_t p_id);
     Ref<NestedTag> get_parent() const;
+
     void set_parent(Ref<NestedTag> p_parent);
+
     StringName get_name() const;
+
     void set_name(const StringName &p_name);
 
     bool is_root() const;
     bool is_valid() const;
-
+    
     bool operator==(const NestedTag &other) const { return id == other.id; }
 
 protected:

@@ -5,6 +5,20 @@
 using namespace godot;
 using namespace NestedTags;
 
+bool parse_tag(const String &p_tag_string, Ref<NestedTag> &p_result_tag) {
+    bool ret_val = false;
+    auto definition = NestedTagsDefinition::try_get_singleton();
+    p_result_tag = definition->get_tag(0); 
+    return ret_val;
+}
+
+Ref<NestedTag> NestedTag::make(const String &p_tag_string)
+{
+    Ref<NestedTag> ret_val;
+    bool succeess = parse_tag(p_tag_string, ret_val);
+    return ret_val;
+}  
+
 id_t NestedTags::NestedTag::get_id() const {
     return id;
 }
@@ -51,6 +65,7 @@ void NestedTag::_bind_methods() {
     ClassDB::bind_method(D_METHOD("equals", "other"), &NestedTag::_is_equal);
     ClassDB::bind_method(D_METHOD("is_valid"), &NestedTag::is_valid);
     ClassDB::bind_method(D_METHOD("is_root"), &NestedTag::is_root);
+    ClassDB::bind_static_method(StringName("NestedTag"), D_METHOD("make", "p_tag_string"), &NestedTag::make);
 }
 
 bool NestedTag::_is_equal(const Variant &p_other) const {
