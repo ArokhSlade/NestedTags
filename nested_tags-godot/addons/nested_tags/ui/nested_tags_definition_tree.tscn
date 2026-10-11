@@ -34,6 +34,7 @@ wait_time = 0.4
 one_shot = true
 ignore_time_scale = true
 
+[connection signal="button_clicked" from="." to="." method="_on_button_clicked"]
 [connection signal="item_edited" from="." to="." method="_on_item_edited"]
 [connection signal="item_selected" from="." to="." method="_on_item_selected"]
 [connection signal="add_button_pressed" from="Manipulator" to="." method="_on_manipulator_add_button_pressed"]

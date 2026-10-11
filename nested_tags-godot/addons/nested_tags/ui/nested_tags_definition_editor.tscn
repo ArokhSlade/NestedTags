@@ -58,6 +58,7 @@ layout_mode = 2
 text = "(0.0, 0.0)"
 
 [connection signal="add_tag_requested" from="VBoxContainer/NestedTagsDefinitionTree" to="." method="_on_nested_tags_definition_tree_add_tag_requested"]
+[connection signal="erase_tag_requested" from="VBoxContainer/NestedTagsDefinitionTree" to="." method="_on_nested_tags_definition_tree_erase_tag_requested"]
 [connection signal="rename_tag_requested" from="VBoxContainer/NestedTagsDefinitionTree" to="." method="_on_nested_tags_definition_tree_rename_tag_requested"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddButton" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]

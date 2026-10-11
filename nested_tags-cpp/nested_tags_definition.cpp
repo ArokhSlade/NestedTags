@@ -49,6 +49,18 @@ void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id) {
 	data[new_id] = TagData{p_parent_id, p_name, tag};
 }
 
+void NestedTagsDefinition::erase(id_t p_id) {
+	if (!has_tag(p_id)) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": could not erase item with id ", p_id, " because it does not exist.");
+	}
+	if (0 == p_id) {
+		UtilityFunctions::push_warning(FUNCTION_STR, ": request to erase null-tag denied because it's meant to exist at all times.");
+		return;
+	}
+	data.erase(p_id);
+	tags.erase(p_id);
+}
+
 bool NestedTagsDefinition::has_tag(id_t p_id) const {
 	bool ret_val = data.has(p_id);
 	UtilityFunctions::print(FUNCTION_STR, ": ", p_id, " : ", ret_val);
@@ -146,6 +158,7 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
 	ClassDB::bind_method(D_METHOD("is_root_tag", "p_id"), &NestedTagsDefinition::is_root_tag);
 	ClassDB::bind_method(D_METHOD("add", "p_name", "p_parent_id"), &NestedTagsDefinition::add, DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("erase", "p_id"), &NestedTagsDefinition::erase);
 	ClassDB::bind_method(D_METHOD("has_tag", "p_id"), &NestedTagsDefinition::has_tag);
 	ClassDB::bind_method(D_METHOD("get_tag", "p_id"), &NestedTagsDefinition::get_tag);
 	ClassDB::bind_method(D_METHOD("get_name", "p_id"), &NestedTagsDefinition::get_name);

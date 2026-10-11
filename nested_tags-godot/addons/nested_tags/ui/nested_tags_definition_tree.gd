@@ -2,6 +2,7 @@
 
 signal add_tag_requested(name, parent_id)
 signal rename_tag_requested(tag_id, new_name)
+signal erase_tag_requested(tag_id)
 
 const Manipulator = preload("uid://crrr3lkwp4tpe")
 const TREE_ITEM_WIDGET = preload("uid://cf6gquhp4lyak")
@@ -164,7 +165,13 @@ func _on_item_edited():
 			var new_name = item.get_text(get_edited_column())
 			var tag : NestedTag = dict[item]
 			if tag.get_name() != new_name:
-				rename_tag_requested.emit(tag.get_id(), new_name)
+				rename_tag_requested.emit(tag.get_id(), new_name) 
+
+
+func _on_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
+	if id == BUTTON_ERASE:
+		var tag = dict[item]
+		erase_tag_requested.emit(tag.get_id())
 
 
 func _on_manipulator_add_button_pressed():
@@ -222,7 +229,7 @@ func get_item_under_cursor():
 func  add_buttons(item):
 	var theme = EditorInterface.get_editor_theme()
 	var icon = theme.get_icon("Eraser", "EditorIcons")
-	item.add_button(0, icon, BUTTON_ERASE, false, "Delete this tag.", "Delete this tag. Will not mess up other tags, but any variables with this value will cause errors.")
+	item.add_button(0, icon, BUTTON_ERASE, false, "Erase this tag.", "Erase this tag. Will not mess up other tags, but any variables with this value will cause errors.")
 	
 
 func depth(root : TreeItem):
