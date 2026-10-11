@@ -2,7 +2,7 @@ extends Node2D
 
 
 @export_custom(PROPERTY_HINT_NONE, "nested_tag") var nested : int = 0
-@onready var tag : NestedTag = NestedTagsDefinition.try_get_singleton().get_tag(2)
+@onready var tag : NestedTag = NestedTagsDefinition.try_get_singleton().get_tag(0)
 
 func _ready():
 	test_match()

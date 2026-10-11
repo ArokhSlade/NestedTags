@@ -33,6 +33,7 @@ public:
 
 	void add(const StringName &p_name, id_t p_parent_id = 0);
 	void erase(id_t p_id);
+	void NestedTagsDefinition::_erase_recursively(id_t p_id);
 	
 	bool has_tag(id_t p_id) const;
 	Ref<NestedTag> get_tag(id_t p_id) const;

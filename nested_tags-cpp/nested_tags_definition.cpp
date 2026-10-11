@@ -57,8 +57,21 @@ void NestedTagsDefinition::erase(id_t p_id) {
 		UtilityFunctions::push_warning(FUNCTION_STR, ": request to erase null-tag denied because it's meant to exist at all times.");
 		return;
 	}
-	data.erase(p_id);
-	tags.erase(p_id);
+	_erase_recursively(p_id);	
+}
+
+void NestedTagsDefinition::_erase_recursively(id_t p_id) {
+	if (0 == p_id) {
+		return;
+	}
+	for (auto& item : data) {
+		TagData tag_data = item.value;
+		if (tag_data.parent_id == p_id) {
+			_erase_recursively(item.key);
+		}
+		data.erase(p_id);
+		tags.erase(p_id);
+	}
 }
 
 bool NestedTagsDefinition::has_tag(id_t p_id) const {

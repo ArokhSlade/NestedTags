@@ -75,6 +75,7 @@ void NestedTag::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_parent", "p_parent"), &NestedTag::set_parent);
     ClassDB::bind_method(D_METHOD("get_name"), &NestedTag::get_name);
     ClassDB::bind_method(D_METHOD("set_name", "p_name"), &NestedTag::set_name);
+    ClassDB::bind_method(D_METHOD("as_string", "p_definition"), &NestedTag::as_string);
     ClassDB::bind_method(D_METHOD("equals", "other"), &NestedTag::_is_equal);
     ClassDB::bind_method(D_METHOD("is_valid"), &NestedTag::is_valid);
     ClassDB::bind_method(D_METHOD("is_root"), &NestedTag::is_root);
@@ -94,6 +95,21 @@ bool NestedTag::_is_equal(const Variant &p_other) const {
 bool NestedTag::is_valid() const {
     Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     return singleton.is_valid() && singleton->get_tag(id) == this;
+}
+
+String NestedTag::as_string(const Ref<NestedTagsDefinition> &definition) const {
+    String result = String("(");
+    Vector<StringName> parent_names = get_lineage_names(definition);
+    int parent_names_size = parent_names.size();
+    for (int i = 0; i < parent_names_size-1  ; i++) {
+        result += parent_names[i];
+        result += String(".");
+    }
+    if (parent_names_size > 0) {
+        result += parent_names[parent_names_size - 1];
+    }
+    result += String(")");
+    return result;
 }
 
 bool NestedTag::_get(const StringName &p_name, Variant &r_ret) const
@@ -124,28 +140,12 @@ void NestedTag::_get_property_list(List<PropertyInfo> *p_list) const
     p_list->push_back(PropertyInfo(Variant::INT, "parent", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
 }
 
-String NestedTag::_to_string() const {
-    String result = String("(");
-    Vector<StringName> parent_names = get_lineage_names();
-    int parent_names_size = parent_names.size();
-    for (int i = 0; i < parent_names_size-1  ; i++) {
-        result += parent_names[i];
-        result += String(" -> ");
-    }
-    if (parent_names_size > 0) {
-        result += parent_names[parent_names_size - 1];
-    }
-    result += String(")");
-    return result;
-}
-
-Vector<StringName> NestedTag::get_lineage_names() const {
+Vector<StringName> NestedTag::get_lineage_names(const Ref<NestedTagsDefinition> &definition) const {
     Vector<StringName> parent_names;
-    Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     id_t current_id = id;
     while (current_id != 0) {
-        parent_names.push_back(singleton->get_name(current_id));
-        current_id = singleton->get_parent_id(current_id);
+        parent_names.push_back(definition->get_name(current_id));
+        current_id = definition->get_parent_id(current_id);
     }
     parent_names.reverse(); // Reverse the order to have the root parent first
     return parent_names;

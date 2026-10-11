@@ -34,16 +34,17 @@ public:
     
     id_t get_id() const;
     void set_id(id_t p_id);
+    
     Ref<NestedTag> get_parent() const;
-
     void set_parent(Ref<NestedTag> p_parent);
 
     StringName get_name() const;
-
     void set_name(const StringName &p_name);
 
     bool is_root() const;
     bool is_valid() const;
+    
+    String as_string(const Ref<NestedTagsDefinition> &definition) const;
     
     bool operator==(const NestedTag &other) const { return id == other.id; }
 
@@ -53,10 +54,9 @@ protected:
     
     bool _get(const StringName &p_name, Variant &r_ret) const;
     void _get_property_list(List<PropertyInfo> *p_list) const;
-    String _to_string() const;
 
     /** list names of ancestors follwed by own name. */
-    Vector<StringName> get_lineage_names() const;
+    Vector<StringName> get_lineage_names(const Ref<NestedTagsDefinition> &definition) const;
     
     // TODO: move to nested tags definition
     static bool parse_tag(const String &p_tag_string, Ref<NestedTag> &p_result_tag);
