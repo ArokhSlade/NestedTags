@@ -9,7 +9,18 @@ Ref<NestedTag> NestedTag::get_closest_shared_ancestor(Ref<NestedTag> other) cons
     Ref<NestedTagsDefinition> definition = NestedTagsDefinition::try_get_singleton();
     Ref<NestedTag> self = definition->get_tag(id);
     Ref<NestedTag> ret_val = definition->get_closest_shared_ancestor(self, other);
-    return ret_val; 
+    return ret_val;
+}
+
+bool NestedTag::contains(Ref<NestedTag> other) const {
+    bool ret_val = false;
+    Ref<NestedTagsDefinition> definition = NestedTagsDefinition::try_get_singleton();    
+    Ref<NestedTag> self = definition->get_tag(id);
+    
+    Ref<NestedTag> shared_anc = get_closest_shared_ancestor(other);
+    ret_val = (self == shared_anc);
+    
+    return ret_val;
 }
 
 Ref<NestedTag> NestedTag::make(const String &p_tag_string)
@@ -57,6 +68,7 @@ bool NestedTags::NestedTag::is_root() const
 
 void NestedTag::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_closest_shared_ancestor", "other"), &NestedTag::get_closest_shared_ancestor);
+    ClassDB::bind_method(D_METHOD("contains", "other"), &NestedTag::contains);
     ClassDB::bind_method(D_METHOD("get_id"), &NestedTag::get_id);
     ClassDB::bind_method(D_METHOD("set_id", "p_id"), &NestedTag::set_id);
     ClassDB::bind_method(D_METHOD("get_parent"), &NestedTag::get_parent);

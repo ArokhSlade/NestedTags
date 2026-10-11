@@ -30,6 +30,7 @@ public:
 
 
     Ref<NestedTag> get_closest_shared_ancestor(Ref<NestedTag> other) const;
+    bool contains(Ref<NestedTag> other) const;
     
     id_t get_id() const;
     void set_id(id_t p_id);

@@ -37,7 +37,7 @@ func test_match():
 	var common_ancestor = tag_1.get_closest_shared_ancestor(tag_2)
 	var equals_not = tag_1.equals(tag_2)
 	var equals = tag_1.equals(tag_1)
-	var is_contained = tag_2.is_contained_in(tag_3)
+	var not_contains = tag_2.contains(tag_3)
 	var contains = tag_3.contains(tag_2)
 	pass
 	return
