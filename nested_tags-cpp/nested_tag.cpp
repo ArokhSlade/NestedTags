@@ -119,7 +119,7 @@ bool NestedTag::_get(const StringName &p_name, Variant &r_ret) const
 
 void NestedTag::_get_property_list(List<PropertyInfo> *p_list) const
 {
-    p_list->push_back(PropertyInfo(Variant::INT, "id", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+    p_list->push_back(PropertyInfo(Variant::INT, "id", PROPERTY_HINT_NONE, "nested_tag", PROPERTY_USAGE_DEFAULT));
     p_list->push_back(PropertyInfo(Variant::STRING_NAME, "name", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
     p_list->push_back(PropertyInfo(Variant::INT, "parent", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
 }
