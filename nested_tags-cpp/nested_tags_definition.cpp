@@ -135,31 +135,28 @@ id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
 }
 
 Variant NestedTagsDefinition::_iter_init(Array p_iter) const {
-	if (names.size() != parents.size()) {
-		ERR_PRINT("NestedTagsDefinition: names and parents size mismatch.");
-		return false;
-	}
-	p_iter[0] = Variant(1);
-
-	UtilityFunctions::print("NestedTagsDefinition::_iter_init(): iterator index set to 1, size: " + String::num_int64(names.size()));
-
 	if (data.size() <= 1)
 	{
 		UtilityFunctions::print("NestedTagsDefinition::_iter_init(): No valid tags to iterate over.");
 		return false;
 	}
+	
+	p_iter[0] = get_ids();
 
 	return true;
 }
 
 Variant NestedTagsDefinition::_iter_next(Array p_iter) const {
-	p_iter[0] = Variant(int64_t(p_iter[0]) + 1); 
-	return (int64_t((p_iter)[0]) < data.size());
+	Array ids = p_iter[0];
+	ids.pop_front();
+	p_iter[0] = ids;
+	return (ids.size() > 0);
 }
 
 Variant NestedTagsDefinition::_iter_get(const Variant& p_iter) const{
-	UtilityFunctions::print("NestedTagsDefinition::_iter_get(): iterator_index: " + String::num_int64(int64_t(p_iter)));
-	Ref<NestedTag> tag = get_tag(int64_t(p_iter));
+	Array ids = p_iter;
+	id_t id = id_t(ids[0]);
+	Ref<NestedTag> tag = get_tag(int64_t(id));
 	return tag;
 }
 
@@ -320,4 +317,14 @@ Array NestedTagsDefinition::get_lineage_ids(const Ref<NestedTag> &tag) {
 	return ret_val;
 }
 
+Array NestedTagsDefinition::get_ids() const
+{
+	Array ret_val{};
+	
+	for (auto& item : data) {
+		ret_val.push_back(int64_t(item.key));
+	}
+	
+	return ret_val;
+}
 }

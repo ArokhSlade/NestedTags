@@ -63,6 +63,7 @@ protected:
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 	
 	Array get_lineage_ids(const Ref<NestedTag> &tag);
+	Array get_ids() const;
 	
 private:
 	void update_tags();
