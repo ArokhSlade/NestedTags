@@ -46,6 +46,8 @@ public:
     Variant _iter_init(Array p__iter) const;
     Variant _iter_next(Array p__iter) const;
     Variant _iter_get(const Variant &p_iter) const;
+    
+    Ref<NestedTag> get_child_tag_by_name(String& p_name, id_t p_parent_id) const;  
 	
 	int size() const;
 	

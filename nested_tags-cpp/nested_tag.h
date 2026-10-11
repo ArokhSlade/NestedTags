@@ -53,5 +53,8 @@ protected:
 
     /** list names of ancestors follwed by own name. */
     Vector<StringName> get_lineage_names() const;
+    
+    // TODO: move to nested tags definition
+    static bool parse_tag(const String &p_tag_string, Ref<NestedTag> &p_result_tag);
 };
 }

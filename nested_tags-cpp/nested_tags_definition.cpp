@@ -64,6 +64,17 @@ Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 	return tag_data.tag;
 }
 
+
+Ref<NestedTag> NestedTagsDefinition::get_child_tag_by_name(String& p_name, id_t p_parent_id) const {
+	for (auto& id_and_data : data) {
+		TagData tag_data = id_and_data.value;
+		if (tag_data.name == p_name && tag_data.parent_id == p_parent_id) {
+			return tag_data.tag;	
+		}		
+	}
+	return tags[0];
+}  
+
 void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
 	ERR_FAIL_COND_EDMSG(!has_tag(p_id) || 0 == p_id, "NestedTagsDefinition::reparent(): invalid id: " + p_id);
 	ERR_FAIL_COND_EDMSG(!has_tag(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id: " + p_parent_id);

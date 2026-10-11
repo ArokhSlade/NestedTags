@@ -5,13 +5,6 @@
 using namespace godot;
 using namespace NestedTags;
 
-bool parse_tag(const String &p_tag_string, Ref<NestedTag> &p_result_tag) {
-    bool ret_val = false;
-    auto definition = NestedTagsDefinition::try_get_singleton();
-    p_result_tag = definition->get_tag(0); 
-    return ret_val;
-}
-
 Ref<NestedTag> NestedTag::make(const String &p_tag_string)
 {
     Ref<NestedTag> ret_val;
@@ -136,4 +129,22 @@ Vector<StringName> NestedTag::get_lineage_names() const {
     }
     parent_names.reverse(); // Reverse the order to have the root parent first
     return parent_names;
+}
+
+bool NestedTag::parse_tag(const String &p_tag_string, Ref<NestedTag> &p_result_tag) {
+    bool ret_val = true;
+    auto definition = NestedTagsDefinition::try_get_singleton();
+    p_result_tag = definition->get_tag(0);
+    
+    PackedStringArray strings = p_tag_string.split(String("."));
+    id_t last_tag_id = 0;
+    for (String& string : strings) {
+        p_result_tag = definition->get_child_tag_by_name(string, last_tag_id);
+        last_tag_id = p_result_tag->get_id(); 
+        if (last_tag_id == 0) {
+            ret_val = false;
+            break;
+        }
+    }
+    return ret_val;
 }
