@@ -32,6 +32,11 @@ func rename_tag(tag_id, new_name):
 	tree.refresh(definition)
 
 
+func reparent_tag(tag_id, new_parent_id):
+	definition.reparent(tag_id, new_parent_id)
+	tree.refresh(definition)
+
+
 func _on_refresh_button_pressed():
 	tree.refresh(definition)
 
@@ -45,6 +50,10 @@ func _on_nested_tags_definition_tree_erase_tag_requested(tag_id):
 
 func _on_nested_tags_definition_tree_rename_tag_requested(tag_id, new_name):
 	rename_tag(tag_id, new_name)
+
+
+func _on_nested_tags_definition_tree_reparent_tag_requested(tag_id, new_parent_id):
+	reparent_tag(tag_id, new_parent_id)
 
 
 func _gui_input(event):

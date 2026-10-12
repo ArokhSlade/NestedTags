@@ -3,6 +3,7 @@
 signal add_tag_requested(name, parent_id)
 signal rename_tag_requested(tag_id, new_name)
 signal erase_tag_requested(tag_id)
+signal reparent_tag_requested(tag_id, new_parent_id)
 
 const Manipulator = preload("uid://crrr3lkwp4tpe")
 const TREE_ITEM_WIDGET = preload("uid://cf6gquhp4lyak")
@@ -37,6 +38,7 @@ func refresh(definition : NestedTagsDefinition):
 	select_mode = SelectMode.SELECT_MULTI
 	hide_root = true
 	columns = 3
+	enable_drag_unfolding = true
 	
 	if not definition:
 		return
@@ -200,6 +202,28 @@ func _on_tag_adder_text_canceled(text):
 func _on_mouse_exited():
 	if last_hovered_item:
 		remove_buttons(last_hovered_item)
+
+
+func _get_drag_data(at_position):
+	var target_item = get_item_at_position(at_position)
+	if not target_item:
+		return null
+	return dict[last_hovered_item]
+
+
+func _can_drop_data(at_position, data):
+	drop_mode_flags = DROP_MODE_ON_ITEM
+	var drop_section = get_drop_section_at_position(at_position)
+	const NO_DROP = 100
+	var target_item = get_item_at_position(at_position)
+	return drop_section != NO_DROP
+
+
+func _drop_data(at_position, data):
+	if not data is NestedTag:
+		return
+	var target_item = get_item_at_position(at_position)
+	reparent_tag_requested.emit(data.id, dict[target_item].id)
 
 
 func depth(root : TreeItem):
