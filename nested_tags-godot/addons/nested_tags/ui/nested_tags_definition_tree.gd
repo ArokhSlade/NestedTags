@@ -197,6 +197,11 @@ func _on_tag_adder_text_canceled(text):
 	$TagAdder.close()
 
 
+func _on_mouse_exited():
+	if last_hovered_item:
+		remove_buttons(last_hovered_item)
+
+
 func depth(root : TreeItem):
 	var depth = 0
 	var cur = root
