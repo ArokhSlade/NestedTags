@@ -13,6 +13,7 @@ func _init():
 	add_focusable(nested_tag_control)
 	refresh_value_view()
 	nested_tag_control.tag_selected.connect(_on_nested_tag_editor_tag_selected)
+	var color = Color(0.639, 0.635, 0.502, 1.0)
 
 
 func _on_nested_tag_editor_tag_selected(tag):
