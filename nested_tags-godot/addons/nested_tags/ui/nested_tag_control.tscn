@@ -13,3 +13,5 @@ script = ExtResource("1_3peeu")
 
 [node name="NestedTagSelectorTree" parent="." unique_id=203260917 instance=ExtResource("1_yqua3")]
 layout_mode = 2
+
+[connection signal="tag_checked" from="NestedTagSelectorTree" to="." method="_on_nested_tag_selector_tree_tag_checked"]

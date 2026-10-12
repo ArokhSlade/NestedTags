@@ -1,11 +1,16 @@
-@tool extends Tree
+@tool extends "res://addons/nested_tags/utility/iter_tree.gd"
+
+signal tag_checked(tag)
+
+const COLUMN_CHECK = 0
 
 var states = {
 	DefaultState.id() : DefaultState.new(),
 }
+
 var state : State = states[DefaultState.id()]
 
-var dict = {}
+var items_and_tags = {}
 
 func _init():
 	for _state in states:
@@ -16,11 +21,11 @@ func set_tag(tag : NestedTag):
 	if tag.get_id() == 0:
 		switch_to_null_view(tag)
 		return
-	var item = dict.get(tag)
+	var item = items_and_tags.get(tag)
 	if not item:
 		push_error("NestedTagSelectorTree::set_tag(%s:%s): tag not found." % [tag.get_id(), str(tag)])
 		return
-	item.set_checked(0, true)
+	update_checks(item)
 
 
 func switch_to_null_view(tag):
@@ -83,8 +88,8 @@ func refresh(definition : NestedTagsDefinition):
 		_item.set_selectable(0, true)
 		
 		_item.set_editable(0, true)
-		dict[p_tag] = _item
-		dict[_item] = p_tag
+		items_and_tags[p_tag] = _item
+		items_and_tags[_item] = p_tag
 		
 		max_item_rect.position = max_item_rect.position.min(get_item_area_rect(_item).position)
 		max_item_rect.size = max_item_rect.size.min(get_item_area_rect(_item).size)
@@ -105,8 +110,8 @@ func refresh(definition : NestedTagsDefinition):
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, get_root())
-			elif dict.has(parent_tag):
-				parent_item = dict[parent_tag]
+			elif items_and_tags.has(parent_tag):
+				parent_item = items_and_tags[parent_tag]
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, parent_item)
@@ -125,7 +130,7 @@ func refresh(definition : NestedTagsDefinition):
 
 func clear_all():
 	clear()
-	dict.clear()
+	items_and_tags.clear()
 
 
 func _on_item_selected() -> void:
@@ -135,9 +140,27 @@ func _on_item_selected() -> void:
 func _on_item_edited():
 	var item = get_edited()
 	match get_edited_column():
-		0:
-			pass
-			# TODO
+		COLUMN_CHECK:
+			update_checks(item)
+		_:
+			push_error("NestedTagsTest::_on_item_edited(): unexpected column edited: %s" % [get_edited_column()])
+
+
+func update_checks(item):
+	clear_checks()
+	check_tags_up_to_root(item)
+	tag_checked.emit(items_and_tags[item])
+
+
+func clear_checks():
+	for item in self:
+		item.set_checked(COLUMN_CHECK, false)
+
+
+func check_tags_up_to_root(item):
+	while get_root() != item and null != item:
+		item.set_checked(COLUMN_CHECK, true)
+		item = item.get_parent()
 
 
 func check_switch_state(old_state, new_state):

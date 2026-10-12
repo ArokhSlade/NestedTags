@@ -23,10 +23,6 @@ NestedTagsRuntime="*uid://dixytet3nf0ri"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
-[editor]
-
-run/main_run_args="--editor"
-
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/nested_tags/plugin.cfg")

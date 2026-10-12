@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dtkhllf01e8gl"]
+
+[ext_resource type="Script" uid="uid://dbgmy83ml8jrx" path="res://addons/nested_tags/test/test_tree.gd" id="1_2dx2h"]
+
+[node name="TestTree" type="Tree" unique_id=1005008739]
+script = ExtResource("1_2dx2h")
