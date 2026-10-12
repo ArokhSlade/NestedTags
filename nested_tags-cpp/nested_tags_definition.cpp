@@ -100,26 +100,36 @@ Ref<NestedTag> NestedTagsDefinition::get_child_tag_by_name(String& p_name, id_t 
 	return tags[0];
 }  
 
-void NestedTagsDefinition::reparent(id_t p_id, id_t p_parent_id) {
-	ERR_FAIL_COND_EDMSG(!has_tag(p_id) || 0 == p_id, "NestedTagsDefinition::reparent(): invalid id: " + p_id);
-	ERR_FAIL_COND_EDMSG(!has_tag(p_parent_id), "NestedTagsDefinition::reparent(): invalid parent id: " + p_parent_id);
-	TagData tag_data = data[p_id];
-	tag_data.parent_id = p_parent_id;
-	data[p_id] = tag_data;
+bool NestedTagsDefinition::try_reparent(id_t p_id, id_t p_parent_id) {
+	bool ret_val = false;
+	if (!has_tag(p_id) || 0 == p_id) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": invalid id: ", p_id);
+	} else if (!has_tag(p_parent_id)) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": invalid parent id: ", p_parent_id);
+	} else {
+		id_t ancestor_id = get_closest_shared_ancestor(p_id, p_parent_id);
+		if (p_id !=	ancestor_id) {
+			data[p_id].parent_id = p_parent_id;
+			ret_val = true;
+		}
+	}
+	return ret_val;
 }
 
+// TODO: name checking, no duplicate siblings. strip outside spaces. only alpha-numerics.
 void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
-	ERR_FAIL_COND_EDMSG(!has_tag(p_id) || 0 == p_id, "NestedTagsDefinition::rename(): invalid id: " + p_id);
-	ERR_FAIL_COND_EDMSG(p_name.is_empty(), "NestedTagsDefinition::rename(): invalid name (empty)");
-	// TODO: see if we can modify data in place.
-	TagData tag_data = data[p_id];
-	tag_data.name = p_name;
-	data[p_id] = tag_data;
+	if (!has_tag(p_id) || 0 == p_id) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": invalid id: ", p_id);
+	} else if (p_name.is_empty()) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": invalid name (empty)");
+	} else {
+		data[p_id].name = p_name;
+	}
 }
 
 StringName NestedTagsDefinition::get_name(id_t p_id) const {
 	if (!has_tag(p_id)) {
-		UtilityFunctions::printerr("NestedTagsDefinition::get_name(): invalid id");
+		UtilityFunctions::printerr(FUNCTION_STR, ": invalid id");
 		return names[0]; // Return a default name for invalid IDs
 	}
 	return data[p_id].name;
@@ -127,7 +137,7 @@ StringName NestedTagsDefinition::get_name(id_t p_id) const {
 
 id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
 	if (!has_tag(p_id)) {
-		UtilityFunctions::printerr("NestedTagsDefinition::get_parent_id(): invalid id");
+		UtilityFunctions::printerr(FUNCTION_STR, ": invalid id");
 		return data[0].parent_id; // Return a default parent ID for invalid IDs
 	}
 	UtilityFunctions::print("get_parent_id(", p_id, ") -> ", data[p_id].parent_id);
@@ -137,13 +147,11 @@ id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
 Variant NestedTagsDefinition::_iter_init(Array p_iter) const {
 	if (data.size() <= 1)
 	{
-		UtilityFunctions::print("NestedTagsDefinition::_iter_init(): No valid tags to iterate over.");
+		UtilityFunctions::print(FUNCTION_STR, ": No valid tags to iterate over.");
 		return false;
 	}
-	
 	p_iter[0] = get_ids();
 	
-
 	return true;
 }
 
@@ -178,7 +186,7 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_iter_init", "p_iter"), &NestedTagsDefinition::_iter_init);
 	ClassDB::bind_method(D_METHOD("_iter_next", "p_iter"), &NestedTagsDefinition::_iter_next);
 	ClassDB::bind_method(D_METHOD("_iter_get", "p_iter"), &NestedTagsDefinition::_iter_get);
-	ClassDB::bind_method(D_METHOD("reparent", "p_id", "p_parent_id"), &NestedTagsDefinition::reparent);
+	ClassDB::bind_method(D_METHOD("try_reparent", "p_id", "p_parent_id"), &NestedTagsDefinition::try_reparent);
 	ClassDB::bind_method(D_METHOD("rename", "p_id", "p_name"), &NestedTagsDefinition::rename);
 
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("try_get_singleton"), &NestedTagsDefinition::try_get_singleton);
@@ -282,12 +290,12 @@ void NestedTagsDefinition::_get_property_list(List<PropertyInfo> *p_list) const 
 	p_list->push_back(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE));
 	p_list->push_back(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
 }
-
-Ref<NestedTag> NestedTagsDefinition::get_closest_shared_ancestor(Ref<NestedTag> tag_1, Ref<NestedTag> tag_2) {
-	Ref<NestedTag> ret_val = get_tag(0);
-	
-	Array lineage_1 = get_lineage_ids(tag_1);
-	Array lineage_2 = get_lineage_ids(tag_2);
+ 
+id_t NestedTagsDefinition::get_closest_shared_ancestor(id_t p_id_1, id_t p_id_2) const {
+	id_t ret_val = id_t{0};
+		
+	Array lineage_1 = get_lineage_ids(p_id_1);
+	Array lineage_2 = get_lineage_ids(p_id_2);
 	
 	int max_count = std::min(lineage_1.size(), lineage_2.size());
 	
@@ -299,15 +307,14 @@ Ref<NestedTag> NestedTagsDefinition::get_closest_shared_ancestor(Ref<NestedTag> 
 			break;
 		}
 	}
-	ret_val = get_tag(ancestor_id);
-		
+	ret_val = ancestor_id;
 	return ret_val;
 }
 
-Array NestedTagsDefinition::get_lineage_ids(const Ref<NestedTag> &tag) {
+Array NestedTagsDefinition::get_lineage_ids(id_t p_id) const {
 	Array ret_val;
 	
-	id_t current = tag->get_id();
+	id_t current = p_id;
 	while (0 != current) {
 		ret_val.push_back(current);
 		current = get_parent_id(current);

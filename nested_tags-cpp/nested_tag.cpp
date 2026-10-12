@@ -7,8 +7,9 @@ using namespace NestedTags;
 
 Ref<NestedTag> NestedTag::get_closest_shared_ancestor(Ref<NestedTag> other) const {
     Ref<NestedTagsDefinition> definition = NestedTagsDefinition::try_get_singleton();
-    Ref<NestedTag> self = definition->get_tag(id);
-    Ref<NestedTag> ret_val = definition->get_closest_shared_ancestor(self, other);
+    id_t ancestor_id = definition->get_closest_shared_ancestor(id, other->id);
+    
+    Ref<NestedTag> ret_val = definition->get_tag(ancestor_id);
     return ret_val;
 }
 
@@ -44,10 +45,15 @@ Ref<NestedTag> NestedTags::NestedTag::get_parent() const {
     return parent;
 }
 
-void NestedTags::NestedTag::set_parent(Ref<NestedTag> p_parent) {
+bool NestedTags::NestedTag::try_reparent(Ref<NestedTag> p_parent) {
+    bool ret_val = false;
     Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
-    ERR_FAIL_COND_EDMSG(!singleton.is_valid(), "NestedTag::set_parent(): singleton is not valid");
-    singleton->reparent(this->id, p_parent->get_id());
+    if (!singleton.is_valid()) {
+        UtilityFunctions::push_error(FUNCTION_STR, ": singleton is not valid.");
+        return false;
+    }
+    ret_val = (singleton->try_reparent(this->id, p_parent->get_id()));
+    return ret_val;
 }
 
 StringName NestedTags::NestedTag::get_name() const {
@@ -72,7 +78,7 @@ void NestedTag::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_id"), &NestedTag::get_id);
     ClassDB::bind_method(D_METHOD("set_id", "p_id"), &NestedTag::set_id);
     ClassDB::bind_method(D_METHOD("get_parent"), &NestedTag::get_parent);
-    ClassDB::bind_method(D_METHOD("set_parent", "p_parent"), &NestedTag::set_parent);
+    ClassDB::bind_method(D_METHOD("try_reparent", "p_parent"), &NestedTag::try_reparent);
     ClassDB::bind_method(D_METHOD("get_name"), &NestedTag::get_name);
     ClassDB::bind_method(D_METHOD("set_name", "p_name"), &NestedTag::set_name);
     ClassDB::bind_method(D_METHOD("as_string", "p_definition"), &NestedTag::as_string);

@@ -16,8 +16,12 @@ struct TagData {
 	id_t parent_id;
 	StringName name;
 	Ref<NestedTag> tag;
-};	
-
+};
+	
+/** methods are supposed to work on ids, not tags. 
+ *  tag param methods are supposed to be convenience fuznctions that live in NestedTag.
+ *  whereas nested tags definition is supposed to be the raw, performance oriented layer below. 
+ */
 class NestedTagsDefinition : public Resource {
 	GDCLASS(NestedTagsDefinition, Resource)
 
@@ -38,7 +42,7 @@ public:
 	bool has_tag(id_t p_id) const;
 	Ref<NestedTag> get_tag(id_t p_id) const;
 
-	void reparent(id_t p_id, id_t p_parent_id);
+	bool try_reparent(id_t p_id, id_t p_parent_id);
 	void rename(id_t p_id, const StringName& p_name);
 
 	StringName get_name(id_t p_id) const;
@@ -53,7 +57,7 @@ public:
 	
 	int size() const;
 	
-	Ref<NestedTag> get_closest_shared_ancestor(Ref<NestedTag> tag_1, Ref<NestedTag> tag_2);
+	id_t get_closest_shared_ancestor(id_t p_id_1, id_t p_id_2) const;
 	
 protected:
 	static void _bind_methods();
@@ -62,7 +66,7 @@ protected:
 	bool _get(const StringName &p_name, Variant &r_ret) const;
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 	
-	Array get_lineage_ids(const Ref<NestedTag> &tag);
+	Array get_lineage_ids(id_t p_id) const ;
 	Array get_ids() const;
 	
 private:

@@ -36,7 +36,7 @@ public:
     void set_id(id_t p_id);
     
     Ref<NestedTag> get_parent() const;
-    void set_parent(Ref<NestedTag> p_parent);
+    bool try_reparent(Ref<NestedTag> p_parent);
 
     StringName get_name() const;
     void set_name(const StringName &p_name);
