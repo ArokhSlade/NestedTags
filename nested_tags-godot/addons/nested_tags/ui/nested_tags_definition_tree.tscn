@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://7ehek2fws6x" path="res://addons/nested_tags/ui/nested_tags.theme" id="1_nafhi"]
 [ext_resource type="Script" uid="uid://15q7yfb3gobl" path="res://addons/nested_tags/ui/nested_tags_definition_tree.gd" id="1_yyw0h"]
-[ext_resource type="PackedScene" uid="uid://cfjiybf32gcr4" path="res://addons/nested_tags/ui/manipulator.tscn" id="2_wsv23"]
+[ext_resource type="Script" uid="uid://c7dc3ar5121r3" path="res://addons/nested_tags/ui/tag_adder.gd" id="3_i2gns"]
 
 [node name="NestedTagsDefinitionTree" type="Tree" unique_id=203260917]
 propagate_maximum_size = true
@@ -18,25 +18,16 @@ theme_override_colors/scroll_hint_color = Color(0.93933225, 0.81543183, 0.487068
 scroll_hint_mode = 1
 script = ExtResource("1_yyw0h")
 
-[node name="Manipulator" parent="." unique_id=121123391 instance=ExtResource("2_wsv23")]
-unique_name_in_owner = true
+[node name="TagAdder" type="LineEdit" parent="." unique_id=368133474]
 visible = false
-visibility_layer = 524288
 layout_mode = 0
-offset_left = 115.0
-offset_top = 67.0
-offset_right = 215.0
-offset_bottom = 133.0
-
-[node name="PopupTimer" type="Timer" parent="." unique_id=1998705739]
-unique_name_in_owner = true
-wait_time = 0.4
-one_shot = true
-ignore_time_scale = true
+size_flags_horizontal = 0
+placeholder_text = "TagName"
+expand_to_text_length = true
+script = ExtResource("3_i2gns")
 
 [connection signal="button_clicked" from="." to="." method="_on_button_clicked"]
 [connection signal="item_edited" from="." to="." method="_on_item_edited"]
 [connection signal="item_selected" from="." to="." method="_on_item_selected"]
-[connection signal="add_button_pressed" from="Manipulator" to="." method="_on_manipulator_add_button_pressed"]
-[connection signal="text_changed" from="Manipulator" to="." method="_on_manipulator_text_changed"]
-[connection signal="timeout" from="PopupTimer" to="." method="_on_popup_timer_timeout"]
+[connection signal="text_canceled" from="TagAdder" to="." method="_on_tag_adder_text_canceled"]
+[connection signal="text_submitted" from="TagAdder" to="." method="_on_tag_adder_text_submitted"]

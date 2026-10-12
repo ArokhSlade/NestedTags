@@ -7,24 +7,11 @@ signal erase_tag_requested(tag_id)
 const Manipulator = preload("uid://crrr3lkwp4tpe")
 const TREE_ITEM_WIDGET = preload("uid://cf6gquhp4lyak")
 const BUTTON_ERASE = 1
-
-var states = {
-	DefaultState.id() : DefaultState.new(),
-	AddingTag.id() : AddingTag.new()
-}
-var state : State = states[DefaultState.id()]
+const BUTTON_ADD = 2
 
 var dict = {}
 
-var manipulated_item
-var manipulated_column
-
 var last_hovered_item
-
-func _init():
-	for _state in states:
-		states[_state].owner = self
-
 
 func compute_height():
 	var item = get_root().get_next_visible()
@@ -135,23 +122,9 @@ func clear_all():
 	dict.clear()
 
 
-func request_add_tag(name):
-	var item = manipulated_item
-	if null == item:
-		push_error("request_add_tag(%s): invalid item position?" % [name])
-		return
-	var parent_tag : NestedTag = dict[item]
-	add_tag_requested.emit(name, parent_tag.get_id())
-
-
 func _gui_input(event : InputEvent):
 	if event is InputEventMouse:
-		if event.global_position != %Manipulator.global_position:
-			if get_item_at_position(get_local_mouse_position()):
-				%Manipulator.hide()
-				%PopupTimer.start()
-				%Manipulator.global_position = event.global_position
-	move_buttons_to_current_item()
+		move_buttons_to_current_item()
 
 
 func _on_item_selected() -> void:
@@ -169,50 +142,36 @@ func _on_item_edited():
 
 
 func _on_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
-	if id == BUTTON_ERASE:
-		var tag = dict[item]
-		erase_tag_requested.emit(tag.get_id())
+	match id:
+		BUTTON_ERASE:
+			var tag = dict[item]
+			erase_tag_requested.emit(tag.get_id())
+		BUTTON_ADD:
+			$TagAdder.open()
 
 
-func _on_manipulator_add_button_pressed():
-	var new_state = state._on_add_button_pressed()
-	check_switch_state(state, new_state)
+func _on_tag_adder_text_submitted(new_text):
+	request_add_tag(last_hovered_item, new_text)
+	$TagAdder.close()
 
 
-func _on_manipulator_text_changed(new_text):
-	var new_state = state._on_name_submitted(new_text)
-	check_switch_state(state, new_state)
-
-
-func check_switch_state(old_state, new_state):
-	if new_state != old_state:
-		old_state._on_exit()
-		new_state._on_enter()
-		state = new_state
-		update_manipulator(new_state.id())
-
-
-func update_manipulator(new_state_id):
-	var new_manipulator_state = \
-			Manipulator.State.BUTTON if new_state_id == DefaultState.id() else\
-			Manipulator.State.TEXT if 	new_state_id == AddingTag.id() else\
-			Manipulator.State.NONE
-	%Manipulator.switch_state(new_manipulator_state)
-	
-	%Manipulator.global_position = get_global_mouse_position()
-
-
-func _on_popup_timer_timeout():
-	manipulated_item = get_item_at_position(get_local_mouse_position())
-	if manipulated_item:
-		manipulated_column = get_column_at_position(get_local_mouse_position())
-		%Manipulator.open()
+func request_add_tag(item, name):
+	if null == item:
+		push_error("request_add_tag(%s): invalid item position?" % [name])
+		return
+	var parent_tag : NestedTag = dict[item]
+	add_tag_requested.emit(name, parent_tag.get_id())
 
 
 func move_buttons_to_current_item():
+	var hovered_item = get_item_under_cursor()
+	if last_hovered_item == hovered_item:
+		return
+	
 	if last_hovered_item:
 		remove_buttons(last_hovered_item)
-	last_hovered_item = get_item_under_cursor()
+		
+	last_hovered_item = hovered_item
 	if last_hovered_item:
 		add_buttons(last_hovered_item)
 
@@ -230,7 +189,13 @@ func  add_buttons(item):
 	var theme = EditorInterface.get_editor_theme()
 	var icon = theme.get_icon("Eraser", "EditorIcons")
 	item.add_button(0, icon, BUTTON_ERASE, false, "Erase this tag.", "Erase this tag. Will not mess up other tags, but any variables with this value will cause errors.")
-	
+	icon = theme.get_icon("ToolAddNode", "EditorIcons")
+	item.add_button(0, icon, BUTTON_ADD, false, "Add a new tag.", "Add a new tag under this one.")
+
+
+func _on_tag_adder_text_canceled(text):
+	$TagAdder.close()
+
 
 func depth(root : TreeItem):
 	var depth = 0
@@ -239,51 +204,3 @@ func depth(root : TreeItem):
 		depth = maxi(depth, depth(child))
 	depth = depth + 1
 	return depth
-
-
-@abstract class State:
-	static func id():
-		return &""
-	
-	var owner
-	
-	func _init():
-		print(id())
-	
-	
-	@abstract func _on_add_button_pressed() -> State
-	@abstract func _on_name_submitted(text) -> State
-
-
-	func _on_enter():
-		pass
-	
-	
-	func _on_exit():
-		pass
-
-
-class DefaultState extends State:
-	static func id():
-		return &"Default"
-	
-	func _on_name_submitted(text):
-		return self
-	
-	
-	func _on_add_button_pressed():
-		return owner.states[AddingTag.id()]
-
-
-class AddingTag extends State:
-	static func id():
-		return &"AddingTag"
-	
-	
-	func _on_name_submitted(name):
-		owner.request_add_tag(name)
-		return owner.states[DefaultState.id()]
-
-
-	func _on_add_button_pressed():
-		return self

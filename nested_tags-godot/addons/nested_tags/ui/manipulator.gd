@@ -40,5 +40,11 @@ func _on_tag_edit_text_submitted(new_text):
 
 
 func open():
+	%TagEdit.text = ""
 	show()
 	%TagEdit.grab_focus()
+
+
+func reposition(global_position_):
+	global_position = global_position_
+	switch_state(State.BUTTON)
