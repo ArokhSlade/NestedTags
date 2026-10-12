@@ -39,7 +39,8 @@ func _enter_tree():
 
 
 func print_time():
-	print("script changed at %s" % [Time.get_time_string_from_system()])
+	#print("script changed at %s" % [Time.get_time_string_from_system()])
+	pass
 
 
 func _on_script_editor_editor_script_changed(script : Script):
