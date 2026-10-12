@@ -11,6 +11,9 @@ enum State {
 
 var state : State = State.BUTTON
 
+func _ready():
+	focus_mode = Control.FOCUS_ALL
+
 func switch_state(value):
 	match(state):
 		State.BUTTON:
@@ -33,3 +36,9 @@ func _on_add_button_pressed():
 
 func _on_tag_edit_text_submitted(new_text):
 	text_changed.emit(new_text)
+	%TagEdit.text = ""
+
+
+func open():
+	show()
+	%TagEdit.grab_focus()

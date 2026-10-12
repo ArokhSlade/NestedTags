@@ -206,7 +206,7 @@ func _on_popup_timer_timeout():
 	manipulated_item = get_item_at_position(get_local_mouse_position())
 	if manipulated_item:
 		manipulated_column = get_column_at_position(get_local_mouse_position())
-		%Manipulator.show()
+		%Manipulator.open()
 
 
 func move_buttons_to_current_item():
