@@ -11,26 +11,10 @@ const BUTTON_ERASE = 1
 const BUTTON_ADD = 2
 
 var dict = {}
-
 var last_hovered_item
 
-func compute_height():
-	var item = get_root().get_next_visible()
-	if not item:
-		return 0
-	var visible_count = 1
-	while item:
-		visible_count += 1
-		item = item.get_next_visible()
-	var row_height = get_theme_constant("v_separation")
-	row_height += get_theme_constant("inner_item_margin_top")
-	row_height += get_theme_constant("inner_item_margin_bottom")
-	row_height += get_theme_font("font").get_height(get_theme_font_size("font_size"))
-	var height = row_height * visible_count
-	return height
 
-
-## constructs tree from tags. caches those "pending" tags whose parents it hasn't seen yet
+## constructs tree from tags. temporarily caches those "pending" tags whose parents it hasn't seen yet
 func refresh(definition : NestedTagsDefinition):
 	print("nested_tags_definition_tree::refresh(): start!")
 	clear_all()
@@ -208,15 +192,24 @@ func _get_drag_data(at_position):
 	var target_item = get_item_at_position(at_position)
 	if not target_item:
 		return null
-	return dict[last_hovered_item]
+	return dict[target_item]
 
 
 func _can_drop_data(at_position, data):
+	if not data is NestedTag:
+		return false
+	
 	drop_mode_flags = DROP_MODE_ON_ITEM
 	var drop_section = get_drop_section_at_position(at_position)
 	const NO_DROP = 100
+	if NO_DROP == drop_section:
+		return false
+	
 	var target_item = get_item_at_position(at_position)
-	return drop_section != NO_DROP
+	var source_item = dict[data]
+	var target_is_descendent = get_closest_shared_ancestor(source_item, target_item) == source_item
+	
+	return not target_is_descendent
 
 
 func _drop_data(at_position, data):
@@ -226,6 +219,22 @@ func _drop_data(at_position, data):
 	reparent_tag_requested.emit(data.id, dict[target_item].id)
 
 
+func compute_height():
+	var item = get_root().get_next_visible()
+	if not item:
+		return 0
+	var visible_count = 1
+	while item:
+		visible_count += 1
+		item = item.get_next_visible()
+	var row_height = get_theme_constant("v_separation")
+	row_height += get_theme_constant("inner_item_margin_top")
+	row_height += get_theme_constant("inner_item_margin_bottom")
+	row_height += get_theme_font("font").get_height(get_theme_font_size("font_size"))
+	var height = row_height * visible_count
+	return height
+
+
 func depth(root : TreeItem):
 	var depth = 0
 	var cur = root
@@ -233,3 +242,30 @@ func depth(root : TreeItem):
 		depth = maxi(depth, depth(child))
 	depth = depth + 1
 	return depth
+
+
+func get_closest_shared_ancestor(item_1, item_2):
+	if null in [item_1, item_2]:
+		return null
+	
+	var ret_val = get_root()
+	var lineage_1 = get_lineage(item_1)
+	var lineage_2 = get_lineage(item_2)
+	
+	var max_count = mini(lineage_1.size(), lineage_2.size())
+	for i in range (max_count):
+		if lineage_1[i] == lineage_2[i]:
+			ret_val = lineage_1[i]
+	
+	return ret_val
+
+
+func get_lineage(item):
+	if null == item:
+		return []
+	var lineage = []
+	while null != item:
+		lineage.push_back(item)
+		item = item.get_parent()
+	lineage.reverse()
+	return lineage
