@@ -42,21 +42,6 @@ text = "Add Tag"
 layout_mode = 2
 text = "Refresh"
 
-[node name="Label" type="Label" parent="VBoxContainer" unique_id=1379981838]
-unique_name_in_owner = true
-layout_mode = 2
-text = "(0, 23)"
-
-[node name="Label2" type="Label" parent="VBoxContainer" unique_id=614900994]
-unique_name_in_owner = true
-layout_mode = 2
-text = "(280.0344, 295.8039)"
-
-[node name="Label3" type="Label" parent="VBoxContainer" unique_id=478078019]
-unique_name_in_owner = true
-layout_mode = 2
-text = "(0.0, 0.0)"
-
 [connection signal="add_tag_requested" from="VBoxContainer/NestedTagsDefinitionTree" to="." method="_on_nested_tags_definition_tree_add_tag_requested"]
 [connection signal="erase_tag_requested" from="VBoxContainer/NestedTagsDefinitionTree" to="." method="_on_nested_tags_definition_tree_erase_tag_requested"]
 [connection signal="rename_tag_requested" from="VBoxContainer/NestedTagsDefinitionTree" to="." method="_on_nested_tags_definition_tree_rename_tag_requested"]

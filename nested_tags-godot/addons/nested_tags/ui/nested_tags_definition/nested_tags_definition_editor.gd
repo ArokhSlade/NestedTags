@@ -61,13 +61,6 @@ func _on_nested_tags_definition_tree_reparent_tag_requested(tag_id, new_parent_i
 	reparent_tag(tag_id, new_parent_id)
 
 
-func _gui_input(event):
-	var mouse = {"global_position" : get_global_mouse_position()}
-	%Label.text = str(get_window().position)
-	%Label2.text = str(mouse.global_position)
-	%Label3.text = str(get_screen_position())
-
-
 static func is_point_inside_rect(point : Vector2, rect : Rect2):
 	if point.x <= rect.position.x:
 		return false

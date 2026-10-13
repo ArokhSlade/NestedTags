@@ -23,6 +23,7 @@ func _enter_tree():
 	add_inspector_plugin(nested_tags_definition_inspector)
 	
 	settings_tab = SETTINGS_TAB.instantiate()
+	settings_tab.name = "Nested Tag Settings"
 	add_control_to_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, settings_tab)
 	
 	settings = Settings.new()
@@ -55,8 +56,8 @@ func _on_script_editor_editor_script_changed(script : Script):
 
 func _exit_tree():
 	remove_autoload_singleton("NestedTagsRuntime")
-	
-	editor.text_changed.disconnect(print_time)
+	if editor:
+		editor.text_changed.disconnect(print_time)
 	script_editor.editor_script_changed.disconnect(_on_script_editor_editor_script_changed)
 	
 	remove_control_from_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, settings_tab)

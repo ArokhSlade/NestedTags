@@ -3,36 +3,43 @@
 [ext_resource type="Script" uid="uid://xqwew7j5j6rh" path="res://addons/nested_tags/ui/settings_tab.gd" id="1_osbfc"]
 [ext_resource type="PackedScene" uid="uid://cbo7wtesmkas7" path="res://addons/nested_tags/ui/nested_tags_definition/nested_tags_definition_editor.tscn" id="2_tr3b4"]
 
-[node name="NestedTagsPluginSettingsTab" type="PanelContainer" unique_id=1752325257]
+[node name="SettingsTab" type="Panel" unique_id=1146111280]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 script = ExtResource("1_osbfc")
 
-[node name="UIParent" type="VBoxContainer" parent="." unique_id=710440318]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1752325257]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="UIParent" type="VBoxContainer" parent="PanelContainer" unique_id=710440318]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UIParent" unique_id=374056947]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/UIParent" unique_id=374056947]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="UIParent/HBoxContainer" unique_id=1690681040]
+[node name="Button" type="Button" parent="PanelContainer/UIParent/HBoxContainer" unique_id=1690681040]
 layout_mode = 2
-text = "set Definition"
+text = "Pick Definition ..."
 
-[node name="NestedTagsDefinitionEditor" parent="UIParent" unique_id=73285138 instance=ExtResource("2_tr3b4")]
+[node name="NestedTagsDefinitionEditor" parent="PanelContainer/UIParent" unique_id=73285138 instance=ExtResource("2_tr3b4")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="EditorFileDialog" type="EditorFileDialog" parent="UIParent" unique_id=1618387443]
+[node name="EditorFileDialog" type="EditorFileDialog" parent="PanelContainer/UIParent" unique_id=1618387443]
 unique_name_in_owner = true
 title = "Open a File"
 file_mode = 0
 filters = PackedStringArray("*.tres", "*.res")
 
-[connection signal="pressed" from="UIParent/HBoxContainer/Button" to="." method="_on_button_pressed"]
-[connection signal="file_selected" from="UIParent/EditorFileDialog" to="." method="_on_editor_file_dialog_file_selected"]
+[connection signal="pressed" from="PanelContainer/UIParent/HBoxContainer/Button" to="PanelContainer" method="_on_button_pressed"]
+[connection signal="file_selected" from="PanelContainer/UIParent/EditorFileDialog" to="PanelContainer" method="_on_editor_file_dialog_file_selected"]
