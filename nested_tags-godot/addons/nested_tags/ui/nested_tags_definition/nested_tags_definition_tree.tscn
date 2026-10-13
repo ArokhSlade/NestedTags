@@ -21,7 +21,9 @@ script = ExtResource("1_yyw0h")
 [node name="TagAdder" type="LineEdit" parent="." unique_id=368133474]
 layout_mode = 0
 size_flags_horizontal = 0
+layout_direction = 3
 placeholder_text = "TagName"
+alignment = 2
 keep_editing_on_text_submit = true
 expand_to_text_length = true
 script = ExtResource("3_i2gns")

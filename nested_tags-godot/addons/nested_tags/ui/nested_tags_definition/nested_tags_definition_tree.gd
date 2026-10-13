@@ -142,6 +142,13 @@ func _on_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index
 			var tag = dict[item]
 			erase_tag_requested.emit(tag.get_id())
 		BUTTON_ADD:
+			var rect := get_item_area_rect(item)
+			var button_idx = item.get_button_by_id(0, BUTTON_ADD)
+			var button_rect := get_item_area_rect(item, 0, button_idx)
+			
+			var adder_pos = button_rect.position
+			adder_pos.x -= $TagAdder.size.x
+			$TagAdder.position = (adder_pos)
 			$TagAdder.open()
 
 
