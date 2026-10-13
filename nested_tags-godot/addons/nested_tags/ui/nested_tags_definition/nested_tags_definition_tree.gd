@@ -14,7 +14,6 @@ var last_hovered_item
 
 ## constructs tree from tags. temporarily caches those "pending" tags whose parents it hasn't seen yet
 func refresh(definition : NestedTagsDefinition):
-	
 	clear_all()
 	
 	select_mode = SelectMode.SELECT_MULTI
