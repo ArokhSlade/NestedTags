@@ -13,13 +13,15 @@ NestedTagsDefinition::NestedTagsDefinition()
 , last_tag_id{0}
 , data(HashMap<id_t, TagData>())
 {
-	names.push_back(StringName("<NULL>"));
+	names.push_back(StringName(null_tag_name));
 	parents.push_back(0);
 	Ref<NestedTag> tag = Ref<NestedTag>(memnew(NestedTag{0}));
-	data.insert(0, TagData{0, StringName{"<NULL>"}, tag});
+	data.insert(0, TagData{0, StringName(null_tag_name), tag});
 }
 
-Ref<NestedTagsDefinition> NestedTagsDefinition::singleton = Ref<NestedTagsDefinition>{};
+const char* NestedTagsDefinition::null_tag_name = "__NULL__TAG__";
+Ref<NestedTagsDefinition> NestedTagsDefinition::singleton = Ref<NestedTagsDefinition>{}; 
+
 
 // TODO: currently, this is not a try method. the result cannot be used in a boolean expression.
 Ref<NestedTagsDefinition> NestedTagsDefinition::try_get_singleton() {
@@ -41,11 +43,17 @@ bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
 	return 0 == get_parent_id(p_id);
 }
 
-void NestedTagsDefinition::add(const StringName &p_name, id_t p_parent_id) {
-	id_t new_id = ++last_tag_id;
-	Ref<NestedTag> tag = memnew(NestedTag{new_id});
-	tags.push_back(Ref<NestedTag>(tag));
-	data[new_id] = TagData{p_parent_id, p_name, tag};
+bool NestedTagsDefinition::try_add(const StringName& p_name, id_t p_parent_id) {
+	bool ret_val = true;
+	ret_val &= is_tag_name_valid(p_name);
+	// ret_val &= is_name_taken_among_siblings(p_name, p_parent_id);
+	if (ret_val) {
+		id_t new_id = ++last_tag_id;
+		Ref<NestedTag> tag = memnew(NestedTag{new_id});
+		tags.push_back(Ref<NestedTag>(tag));
+		data[new_id] = TagData{p_parent_id, p_name, tag};
+	}
+	return ret_val;
 }
 
 void NestedTagsDefinition::erase(id_t p_id) {
@@ -171,7 +179,7 @@ int NestedTagsDefinition::size() const {
 void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
 	ClassDB::bind_method(D_METHOD("is_root_tag", "p_id"), &NestedTagsDefinition::is_root_tag);
-	ClassDB::bind_method(D_METHOD("add", "p_name", "p_parent_id"), &NestedTagsDefinition::add, DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("try_add", "p_name", "p_parent_id"), &NestedTagsDefinition::try_add, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("erase", "p_id"), &NestedTagsDefinition::erase);
 	ClassDB::bind_method(D_METHOD("has_tag", "p_id"), &NestedTagsDefinition::has_tag);
 	ClassDB::bind_method(D_METHOD("get_tag", "p_id"), &NestedTagsDefinition::get_tag);
@@ -240,11 +248,25 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
     return true;
 }
 
+//  treat invalid input as error because explicit should only be called with valid data.
+//  this function is allowed to add the null tag because it is used for loading serialized data
 bool NestedTagsDefinition::try_add_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id) {
 	if (data.has(p_id)) {
 		UtilityFunctions::push_error(FUNCTION_STR, ": tried adding existing tag: ", p_id, " (name: ", p_name, " parent: ", p_parent_id, ")");
 		return false;
 	}
+	bool is_null_tag = p_name == StringName(null_tag_name);
+	is_null_tag &= 0 == p_id;
+	is_null_tag &= 0 == p_parent_id;
+	
+	if (!is_tag_name_valid(p_name)) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": invalid name: ", p_name);
+		return false;
+	}
+	// if (!is_name_taken_among_siblings(p_name, p_parent_id)) {
+	// 	UtilityFunctions::push_error(FUNCTION_STR, ": name ", p_name, " not unique among siblings.");
+	// 	return false;
+	// }
 	if (p_id > last_tag_id) {
 		last_tag_id = p_id;
 	}
@@ -327,4 +349,33 @@ Array NestedTagsDefinition::get_ids() const
 		
 	return ret_val;
 }
+
+bool NestedTagsDefinition::is_tag_name_valid(const String& p_name) {
+	bool ret_val = p_name.is_valid_identifier();
+	return ret_val;
 }
+
+bool NestedTagsDefinition::is_name_taken_among_siblings(const String& p_name, id_t p_parent_id) {
+	bool ret_val = false;
+
+	Vector<id_t> siblings = get_child_ids(p_parent_id);
+	for (id_t sibling : siblings) {
+		const String& sibling_name = get_name(sibling);
+		ret_val |= (sibling_name == p_name);
+	}
+	
+	return ret_val;
+}
+
+Vector<id_t> NestedTagsDefinition::get_child_ids(id_t p_parent_id)
+{
+	Vector<id_t> ret_val{};
+	for (auto& item : data) {
+		if (item.value.parent_id == p_parent_id) {
+			ret_val.push_back(item.key);
+		}
+	}
+	return ret_val;
+}
+}
+

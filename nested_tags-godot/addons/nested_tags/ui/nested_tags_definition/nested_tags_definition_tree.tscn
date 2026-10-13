@@ -19,7 +19,6 @@ scroll_hint_mode = 1
 script = ExtResource("1_yyw0h")
 
 [node name="TagAdder" type="LineEdit" parent="." unique_id=368133474]
-visible = false
 layout_mode = 0
 size_flags_horizontal = 0
 placeholder_text = "TagName"
@@ -33,4 +32,5 @@ script = ExtResource("3_i2gns")
 [connection signal="multi_selected" from="." to="." method="_on_multi_selected"]
 [connection signal="nothing_selected" from="." to="." method="_on_nothing_selected"]
 [connection signal="text_canceled" from="TagAdder" to="." method="_on_tag_adder_text_canceled"]
+[connection signal="text_changed" from="TagAdder" to="TagAdder" method="_on_text_changed"]
 [connection signal="text_submitted" from="TagAdder" to="." method="_on_tag_adder_text_submitted"]

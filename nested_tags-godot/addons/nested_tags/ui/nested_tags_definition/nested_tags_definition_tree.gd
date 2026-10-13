@@ -37,7 +37,7 @@ func refresh(definition : NestedTagsDefinition):
 	var root = create_item()
 	var null_tag = definition.get_tag(0)
 	
-	root.set_text(0, "<NULL>") # TODO: let definitions have names? show name as root item?
+	root.set_text(0, "__NULL__TAG__") # TODO: let definitions have names? show name as root item?
 	root.set_editable(0, false)
 	
 	dict[root] = null_tag
@@ -142,6 +142,10 @@ func _on_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index
 func _on_tag_adder_text_submitted(new_text):
 	request_add_tag(last_hovered_item, new_text)
 	$TagAdder.close()
+
+
+func signal_invalid_input():
+	$TagAdder.signal_invalid_input()
 
 
 func request_add_tag(item, name):

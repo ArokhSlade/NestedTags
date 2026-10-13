@@ -35,7 +35,7 @@ public:
 
 	bool is_root_tag(id_t p_id) const;
 
-	void add(const StringName &p_name, id_t p_parent_id = 0);
+	bool try_add(const StringName& p_name, id_t p_parent_id = 0);
 	void erase(id_t p_id);
 	void NestedTagsDefinition::_erase_recursively(id_t p_id);
 	
@@ -69,11 +69,16 @@ protected:
 	Array get_lineage_ids(id_t p_id) const ;
 	Array get_ids() const;
 	
+	bool is_tag_name_valid(const String& p_name);
+	bool is_name_taken_among_siblings(const String& p_name, id_t p_parent_id);
+	Vector<id_t> get_child_ids(id_t p_parent_id);
+	
 private:
 	void update_tags();
 	Array get_parent_ids() const;
 	Array get_names() const;
 	bool try_add_explicit(id_t p_id, const StringName &p_name, id_t p_parent_id);
+	static const char* null_tag_name;
 
 private:
 	Array names;	

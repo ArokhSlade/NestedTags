@@ -1,5 +1,5 @@
 [gd_resource type="NestedTagsDefinition" format=3 uid="uid://b1hw7fb24xu81"]
 
 [resource]
-names = [&"<NULL>", &"qwe", &"asd", &"ert"]
+names = [&"__NULL__TAG__", &"qwe", &"asd", &"ert"]
 parents = [0, 0, 0, 1]

@@ -14,12 +14,15 @@ func set_definition(p_definition):
 
 
 func _on_button_pressed():
-	add_tag(text_edit.text)
+	try_add_tag(text_edit.text)
 
 
-func add_tag(name, parent_id = 0):
-	definition.add(name, parent_id)
-	tree.refresh(definition)
+func try_add_tag(name, parent_id = 0):
+	if not definition.try_add(name, parent_id):
+		return false
+	else:
+		tree.refresh(definition)
+		return true
 
 
 func erase_tag(tag_id):
@@ -47,7 +50,8 @@ func _on_refresh_button_pressed():
 
 
 func _on_nested_tags_definition_tree_add_tag_requested(tag_name, parent_id):
-	add_tag(tag_name, parent_id)
+	if not try_add_tag(tag_name, parent_id):
+		%NestedTagsDefinitionTree.signal_invalid_input()
 
 
 func _on_nested_tags_definition_tree_erase_tag_requested(tag_id):

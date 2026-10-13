@@ -2,10 +2,10 @@
 
 [resource]
 names = [0, 0, 1, 2]
-parents = [&"<NULL>", &"rurur", &"qwe", &"uiiuo"]
+parents = [&"__NULL__TAG__", &"rurur", &"qwe", &"uiiuo"]
 data = {
 0: {
-"name": &"<NULL>",
+"name": &"__NULL__TAG__",
 "parent_id": 0
 },
 1: {
