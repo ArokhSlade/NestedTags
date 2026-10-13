@@ -46,7 +46,7 @@ bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
 bool NestedTagsDefinition::try_add(const StringName& p_name, id_t p_parent_id) {
 	bool ret_val = true;
 	ret_val &= is_tag_name_valid(p_name);
-	// ret_val &= is_name_taken_among_siblings(p_name, p_parent_id);
+	ret_val &= !is_name_taken_among_siblings(p_name, p_parent_id);
 	if (ret_val) {
 		id_t new_id = ++last_tag_id;
 		Ref<NestedTag> tag = memnew(NestedTag{new_id});
@@ -263,10 +263,10 @@ bool NestedTagsDefinition::try_add_explicit(id_t p_id, const StringName& p_name,
 		UtilityFunctions::push_error(FUNCTION_STR, ": invalid name: ", p_name);
 		return false;
 	}
-	// if (!is_name_taken_among_siblings(p_name, p_parent_id)) {
-	// 	UtilityFunctions::push_error(FUNCTION_STR, ": name ", p_name, " not unique among siblings.");
-	// 	return false;
-	// }
+	if (is_name_taken_among_siblings(p_name, p_parent_id)) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": name ", p_name, " not unique among siblings.");
+		return false;
+	}
 	if (p_id > last_tag_id) {
 		last_tag_id = p_id;
 	}
