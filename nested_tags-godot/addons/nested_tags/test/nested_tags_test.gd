@@ -1,11 +1,22 @@
 @tool
 extends Node2D
 
-
 @export_custom(PROPERTY_HINT_NONE, "nested_tag") var nested : int = 3 :
 	set(value):
 		nested = value
 @export_tool_button("print tag", "Anchor") var refresh_button = print_tag
+
+func get_definition(): 
+	var definition = NestedTagsDefinition.try_get_singleton()
+	return definition
+
+
+func get_tag():
+	var definition = get_definition()
+	if not definition:
+		return null
+	var tag = definition.get_tag(nested)
+	return tag
 
 
 func print_tag():
@@ -19,7 +30,8 @@ func print_tag():
 	
 
 func _ready():
-	test_match()
+	test_print_parse()
+
 
 func test_basics():
 	var def = NestedTagsDefinition.try_get_singleton()
@@ -54,5 +66,11 @@ func test_match():
 	var equals = tag_1.equals(tag_1)
 	var not_contains = tag_2.contains(tag_3)
 	var contains = tag_3.contains(tag_2)
-	pass
-	return
+
+
+func test_print_parse():
+	var tag = get_tag()
+	var definition = get_definition()
+	var string = tag.as_string(definition)
+	var tag_2 = NestedTag.from_string(string)
+	print("print and parse are consistent: ", tag == tag_2)

@@ -104,7 +104,7 @@ bool NestedTag::is_valid() const {
 }
 
 String NestedTag::as_string(const Ref<NestedTagsDefinition> &definition) const {
-    String result = String("(");
+    String result = String("");
     Vector<StringName> parent_names = get_lineage_names(definition);
     int parent_names_size = parent_names.size();
     for (int i = 0; i < parent_names_size-1  ; i++) {
@@ -114,7 +114,6 @@ String NestedTag::as_string(const Ref<NestedTagsDefinition> &definition) const {
     if (parent_names_size > 0) {
         result += parent_names[parent_names_size - 1];
     }
-    result += String(")");
     return result;
 }
 
