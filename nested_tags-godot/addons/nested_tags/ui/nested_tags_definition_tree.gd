@@ -5,7 +5,6 @@ signal rename_tag_requested(tag_id, new_name)
 signal erase_tag_requested(tag_id)
 signal reparent_tag_requested(tag_id, new_parent_id)
 
-const Manipulator = preload("uid://crrr3lkwp4tpe")
 const TREE_ITEM_WIDGET = preload("uid://cf6gquhp4lyak")
 const BUTTON_ERASE = 1
 const BUTTON_ADD = 2

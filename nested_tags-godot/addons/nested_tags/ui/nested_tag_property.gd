@@ -1,18 +1,18 @@
 extends EditorProperty
 
-const NESTED_TAG_CONTROL = preload("uid://fcoq4yaw7nl4")
+const NESTED_TAG_EDITOR = preload("uid://fcoq4yaw7nl4")
 
-var nested_tag_control
+var nested_tag_editor
 var current_tag_id : int # TODO: currently safer / more idiomatic to use the id of a tag. don't write code that calls ctor directly
 var current_tag : NestedTag = null # TODO: invoking the NestedTag ctor is currently semantically wrong and will lead to errors down the line because it will create another object with the same tag id
 var updating = false
 
 func _init():
-	nested_tag_control = NESTED_TAG_CONTROL.instantiate()
-	add_child(nested_tag_control)
-	add_focusable(nested_tag_control)
+	nested_tag_editor = NESTED_TAG_EDITOR.instantiate()
+	add_child(nested_tag_editor)
+	add_focusable(nested_tag_editor)
 	refresh_value_view()
-	nested_tag_control.tag_selected.connect(_on_nested_tag_editor_tag_selected)
+	nested_tag_editor.tag_selected.connect(_on_nested_tag_editor_tag_selected)
 	var color = Color(0.639, 0.635, 0.502, 1.0)
 
 
@@ -47,9 +47,9 @@ func _update_property():
 
 func refresh_value_view():
 	var definition = NestedTagsDefinition.try_get_singleton()
-	nested_tag_control.refresh_tree(definition)
+	nested_tag_editor.refresh_tree(definition)
 	if not definition.has_tag(current_tag_id):
 		push_error("nested_tag_property::refresh_value_view(): non-existent tag with id %s cannot be disiplayed." % [current_tag_id])
 		return
 	current_tag = definition.get_tag(current_tag_id)
-	nested_tag_control.set_tag(current_tag)
+	nested_tag_editor.set_tag(current_tag)

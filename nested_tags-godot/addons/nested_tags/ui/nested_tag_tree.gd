@@ -23,7 +23,7 @@ func set_tag(tag : NestedTag):
 		return
 	var item = items_and_tags.get(tag)
 	if not item:
-		push_error("NestedTagSelectorTree::set_tag(%s:%s): tag not found." % [tag.get_id(), str(tag)])
+		push_error("NestedTagTree::set_tag(%s:%s): tag not found." % [tag.get_id(), str(tag)])
 		return
 	update_checks(item)
 
@@ -121,7 +121,7 @@ func refresh(definition : NestedTagsDefinition):
 			i += 1
 		
 		if max == old_max:
-			push_error("NestedTagSelectorTree.refresh(): child tag without parent tag found")
+			push_error("NestedTagTree.refresh(): child tag without parent tag found")
 			return
 		old_max = max
 	var new_height = compute_height()
