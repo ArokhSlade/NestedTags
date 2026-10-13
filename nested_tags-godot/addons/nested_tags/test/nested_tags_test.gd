@@ -4,7 +4,6 @@ extends Node2D
 
 @export_custom(PROPERTY_HINT_NONE, "nested_tag") var nested : int = 3 :
 	set(value):
-		print("tag changed: %s" % [value])
 		nested = value
 @export_tool_button("print tag", "Anchor") var refresh_button = print_tag
 @onready var tag : NestedTag = NestedTagsDefinition.try_get_singleton().get_tag(0)

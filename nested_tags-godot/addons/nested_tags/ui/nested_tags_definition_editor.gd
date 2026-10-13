@@ -35,7 +35,7 @@ func rename_tag(tag_id, new_name):
 func reparent_tag(tag_id, new_parent_id):
 	var tag = definition.get_tag(tag_id)
 	var parent_tag = definition.get_tag(new_parent_id)
-	print("hello ", tag.get_closest_shared_ancestor(parent_tag).as_string(definition))
+	
 	if not definition.try_reparent(tag_id, new_parent_id):
 		push_warning("Cannot reparent tag to its own descendent.")
 		return

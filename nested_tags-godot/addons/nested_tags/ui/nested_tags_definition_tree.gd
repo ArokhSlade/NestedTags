@@ -15,7 +15,7 @@ var last_hovered_item
 
 ## constructs tree from tags. temporarily caches those "pending" tags whose parents it hasn't seen yet
 func refresh(definition : NestedTagsDefinition):
-	print("nested_tags_definition_tree::refresh(): start!")
+	
 	clear_all()
 	
 	select_mode = SelectMode.SELECT_MULTI
@@ -31,7 +31,7 @@ func refresh(definition : NestedTagsDefinition):
 	var pending_tags = []
 	
 	for tag : NestedTag in definition:
-		print("nested_tags_definition_tree::refresh(): tag: ", tag.as_string(definition))
+		
 		pending_tags.push_back(tag)
 	var old_max = pending_tags.size()
 	
@@ -88,7 +88,7 @@ func refresh(definition : NestedTagsDefinition):
 			return
 		old_max = max
 	var new_height = compute_height()
-	print(new_height)
+	
 	custom_minimum_size.y = new_height
 	#set_size(Vector2i(0, 599))
 
@@ -99,7 +99,7 @@ func draw_custom_tree_item(item : TreeItem, rect : Rect2i):
 	widget.size = rect.size
 	widget.position = rect.position
 	
-	print(item.get_text(0))
+	
 
 
 func clear_all():

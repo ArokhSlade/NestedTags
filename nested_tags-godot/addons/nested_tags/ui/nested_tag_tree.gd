@@ -185,10 +185,6 @@ func depth(root : TreeItem):
 	
 	var owner
 	
-	func _init():
-		print(id())
-	
-	
 	func _on_enter():
 		pass
 	
