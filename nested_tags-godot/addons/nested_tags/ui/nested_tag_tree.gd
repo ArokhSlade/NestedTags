@@ -4,18 +4,7 @@ signal tag_checked(tag)
 
 const COLUMN_CHECK = 0
 
-var states = {
-	DefaultState.id() : DefaultState.new(),
-}
-
-var state : State = states[DefaultState.id()]
-
 var items_and_tags = {}
-
-func _init():
-	for _state in states:
-		states[_state].owner = self
-
 
 func set_tag(tag : NestedTag):
 	if tag.get_id() == 0:
@@ -163,13 +152,6 @@ func check_tags_up_to_root(item):
 		item = item.get_parent()
 
 
-func check_switch_state(old_state, new_state):
-	if new_state != old_state:
-		old_state._on_exit()
-		new_state._on_enter()
-		state = new_state
-
-
 func depth(root : TreeItem):
 	var depth = 0
 	var cur = root
@@ -177,22 +159,3 @@ func depth(root : TreeItem):
 		depth = maxi(depth, depth(child))
 	depth = depth + 1
 	return depth
-
-
-@abstract class State:
-	static func id():
-		return &""
-	
-	var owner
-	
-	func _on_enter():
-		pass
-	
-	
-	func _on_exit():
-		pass
-
-
-class DefaultState extends State:
-	static func id():
-		return &"Default"
