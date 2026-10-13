@@ -4,3 +4,4 @@
 
 [node name="NestedTagsTest" type="Node2D" unique_id=619940026]
 script = ExtResource("1_a0f2y")
+nested = 5

@@ -11,7 +11,23 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_jfndg")
 
-[node name="NestedTagTree" parent="." unique_id=203260917 instance=ExtResource("2_p7qw5")]
+[node name="TreeView" type="VBoxContainer" parent="." unique_id=905170152]
 layout_mode = 2
 
-[connection signal="tag_checked" from="NestedTagTree" to="." method="_on_nested_tag__tree_tag_checked"]
+[node name="MinimizeButton" type="Button" parent="TreeView" unique_id=79704296]
+layout_mode = 2
+text = "Minimize"
+
+[node name="NestedTagTree" parent="TreeView" unique_id=203260917 instance=ExtResource("2_p7qw5")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ExpandButton" type="Button" parent="." unique_id=1684654916]
+visible = false
+layout_mode = 2
+text = "MyLabel"
+flat = true
+
+[connection signal="pressed" from="TreeView/MinimizeButton" to="." method="_on_minimize_button_pressed"]
+[connection signal="tag_checked" from="TreeView/NestedTagTree" to="." method="_on_nested_tag_tree_tag_checked"]
+[connection signal="pressed" from="ExpandButton" to="." method="_on_expand_button_pressed"]

@@ -6,10 +6,7 @@ const COLUMN_CHECK = 0
 
 var items_and_tags = {}
 
-func set_tag(tag : NestedTag):
-	if tag.get_id() == 0:
-		switch_to_null_view(tag)
-		return
+func set_checked(tag : NestedTag):
 	var item = items_and_tags.get(tag)
 	if not item:
 		push_error("NestedTagTree::set_tag(%s:%s): tag not found." % [tag.get_id(), str(tag)])
@@ -17,19 +14,21 @@ func set_tag(tag : NestedTag):
 	update_checks(item)
 
 
-func switch_to_null_view(tag):
-	clear_all()
-	create_item()
-	select_mode = SelectMode.SELECT_MULTI
-	hide_root = false
-	columns = 1
-	
-	get_root().set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-	get_root().set_checked(0, true)
-	get_root().set_editable(0, false)
-	get_root().set_text(0, tag.get_name())
-	
-	custom_minimum_size.y = compute_height()
+func get_checked():
+	var item = find_checked_recursive(get_root())
+	var tag = items_and_tags[item]
+	return tag
+
+
+func find_checked_recursive(item):
+	var checked = item
+	for child in item.get_children():
+		if child.is_checked(COLUMN_CHECK):
+			checked = find_checked_recursive(child)
+			if not checked:
+				checked = child
+			break
+	return checked
 
 
 func compute_height():
@@ -49,7 +48,7 @@ func compute_height():
 
 
 ## constructs tree from tags. caches those "pending" tags whose parents it hasn't seen yet
-func refresh(definition : NestedTagsDefinition):
+func refresh(definition : NestedTagsDefinition, checked_tag):
 	clear_all()
 	
 	select_mode = SelectMode.SELECT_MULTI
@@ -66,7 +65,12 @@ func refresh(definition : NestedTagsDefinition):
 	
 	var max_item_rect = Rect2i()
 	
-	create_item() # invisible root()
+	var root = create_item() # invisible root()
+	var null_tag = definition.get_tag(0)
+	root.set_text(0, "<NULL>") # TODO: let definitions have names? show name as root item?
+	root.set_editable(0, false)
+	items_and_tags[root] = null_tag
+	items_and_tags[null_tag] = root
 	
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
@@ -115,6 +119,11 @@ func refresh(definition : NestedTagsDefinition):
 		old_max = max
 	var new_height = compute_height()
 	custom_minimum_size.y = new_height
+	
+	if null == checked_tag:
+		checked_tag = items_and_tags[get_root()]
+	var checked_item = items_and_tags[checked_tag]
+	update_checks(checked_item)
 
 
 func clear_all():
