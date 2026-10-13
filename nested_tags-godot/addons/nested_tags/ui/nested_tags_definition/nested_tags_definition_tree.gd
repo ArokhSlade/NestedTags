@@ -37,7 +37,7 @@ func refresh(definition : NestedTagsDefinition):
 	var root = create_item()
 	var null_tag = definition.get_tag(0)
 	
-	root.set_text(0, "__NULL__TAG__") # TODO: let definitions have names? show name as root item?
+	root.set_text(0, null_tag.get_name()) # TODO: let definitions have names? show name as root item?
 	root.set_editable(0, false)
 	
 	dict[root] = null_tag
