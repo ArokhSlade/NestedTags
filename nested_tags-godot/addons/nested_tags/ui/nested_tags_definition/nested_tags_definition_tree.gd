@@ -18,8 +18,8 @@ func refresh(definition : NestedTagsDefinition):
 	clear_all()
 	
 	select_mode = SelectMode.SELECT_MULTI
-	hide_root = true
-	columns = 3
+	hide_root = false
+	columns = 1
 	enable_drag_unfolding = true
 	
 	if not definition:
@@ -30,26 +30,33 @@ func refresh(definition : NestedTagsDefinition):
 	var pending_tags = []
 	
 	for tag : NestedTag in definition:
-		
 		pending_tags.push_back(tag)
 	var old_max = pending_tags.size()
 	
 	var max_item_rect = Rect2i()
 	
-	create_item() # invisible root()
+	var root = create_item()
+	var null_tag = definition.get_tag(0)
+	
+	root.set_cell_mode(0, TreeItem.CELL_MODE_CUSTOM)
+	const ROOT_BUTTON_STYLE_DEFAULT = preload("uid://b7fhfe7dutcxr")
+	
+	root.set_custom_as_button(0, true)
+	root.set_custom_stylebox(0, ROOT_BUTTON_STYLE_DEFAULT)
+	root.set_text(0, "<NULL>") # TODO: let definitions have names? show name as root item?
+	root.set_editable(0, true)
+	
+	dict[root] = null_tag
+	dict[null_tag] = root
 	
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
 		
 		_item.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
-		_item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
-		_item.set_cell_mode(2, TreeItem.CELL_MODE_CUSTOM)
 		_item.set_text(0, definition.get_name(p_tag.get_id()))
 		_item.set_selectable(0, true)
 		
 		_item.set_editable(0, true)
-		_item.set_editable(1, true)
-		_item.set_editable(2, true)
 		dict[p_tag] = _item
 		dict[_item] = p_tag
 		
@@ -117,6 +124,8 @@ func _on_item_selected() -> void:
 
 func _on_item_edited():
 	var item = get_edited()
+	if item == get_root():
+		return
 	match get_edited_column():
 		0:
 			var new_name = item.get_text(get_edited_column())
@@ -171,10 +180,14 @@ func get_item_under_cursor():
 
 func  add_buttons(item):
 	var theme = EditorInterface.get_editor_theme()
-	var icon = theme.get_icon("Eraser", "EditorIcons")
-	item.add_button(0, icon, BUTTON_ERASE, false, "Erase this tag.", "Erase this tag. Will not mess up other tags, but any variables with this value will cause errors.")
-	icon = theme.get_icon("ToolAddNode", "EditorIcons")
+	var icon = theme.get_icon("ToolAddNode", "EditorIcons")
 	item.add_button(0, icon, BUTTON_ADD, false, "Add a new tag.", "Add a new tag under this one.")
+	
+	if get_root() == item:
+		return
+	
+	icon = theme.get_icon("Eraser", "EditorIcons")
+	item.add_button(0, icon, BUTTON_ERASE, false, "Erase this tag.", "Erase this tag. Will not mess up other tags, but any variables with this value will cause errors.")
 
 
 func _on_tag_adder_text_canceled(text):
@@ -208,6 +221,11 @@ func _can_drop_data(at_position, data):
 	var target_is_descendent = get_closest_shared_ancestor(source_item, target_item) == source_item
 	
 	return not target_is_descendent
+
+
+func _on_custom_item_clicked(mouse_button_index):
+	var item = get_edited()
+	item.set_text(0, item.get_text(0).reverse())
 
 
 func _drop_data(at_position, data):

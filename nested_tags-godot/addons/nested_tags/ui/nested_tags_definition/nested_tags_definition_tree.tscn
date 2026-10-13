@@ -27,6 +27,7 @@ expand_to_text_length = true
 script = ExtResource("3_i2gns")
 
 [connection signal="button_clicked" from="." to="." method="_on_button_clicked"]
+[connection signal="custom_item_clicked" from="." to="." method="_on_custom_item_clicked"]
 [connection signal="item_edited" from="." to="." method="_on_item_edited"]
 [connection signal="item_selected" from="." to="." method="_on_item_selected"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
