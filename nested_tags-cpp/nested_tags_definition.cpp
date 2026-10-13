@@ -34,7 +34,6 @@ void NestedTagsDefinition::initialize_singleton(Ref<NestedTagsDefinition> p_sing
 	if (singleton.is_valid()) {
 		WARN_PRINT_ED("NestedTagsDefinition::initialize_singleton(): singleton is already initialized");
 	}
-	UtilityFunctions::print(FUNCTION_STR, " hello");
 	singleton = p_singleton;
 }
 
@@ -76,7 +75,6 @@ void NestedTagsDefinition::_erase_recursively(id_t p_id) {
 
 bool NestedTagsDefinition::has_tag(id_t p_id) const {
 	bool ret_val = data.has(p_id);
-	UtilityFunctions::print(FUNCTION_STR, ": ", p_id, " : ", ret_val);
 	return ret_val;
 }
 
@@ -129,7 +127,6 @@ void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
 
 StringName NestedTagsDefinition::get_name(id_t p_id) const {
 	if (!has_tag(p_id)) {
-		UtilityFunctions::printerr(FUNCTION_STR, ": invalid id");
 		return names[0]; // Return a default name for invalid IDs
 	}
 	return data[p_id].name;
@@ -137,17 +134,15 @@ StringName NestedTagsDefinition::get_name(id_t p_id) const {
 
 id_t NestedTagsDefinition::get_parent_id(id_t p_id) const {
 	if (!has_tag(p_id)) {
-		UtilityFunctions::printerr(FUNCTION_STR, ": invalid id");
+		UtilityFunctions::push_error(FUNCTION_STR, ": invalid id");
 		return data[0].parent_id; // Return a default parent ID for invalid IDs
 	}
-	UtilityFunctions::print("get_parent_id(", p_id, ") -> ", data[p_id].parent_id);
 	return data[p_id].parent_id;
 }
 
 Variant NestedTagsDefinition::_iter_init(Array p_iter) const {
 	if (data.size() <= 1)
 	{
-		UtilityFunctions::print(FUNCTION_STR, ": No valid tags to iterate over.");
 		return false;
 	}
 	p_iter[0] = get_ids();
@@ -250,12 +245,6 @@ bool NestedTagsDefinition::try_add_explicit(id_t p_id, const StringName& p_name,
 		UtilityFunctions::push_error(FUNCTION_STR, ": tried adding existing tag: ", p_id, " (name: ", p_name, " parent: ", p_parent_id, ")");
 		return false;
 	}
-	// debugging 
-		UtilityFunctions::print("NestedTagsDefinition::try_add_explicit(", p_id, ", ", p_name, ", ", p_parent_id, ")");
-	for (auto& item : data) {
-		UtilityFunctions::print(",", item.key);
-	}
-	
 	if (p_id > last_tag_id) {
 		last_tag_id = p_id;
 	}
