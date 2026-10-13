@@ -104,8 +104,6 @@ func draw_custom_tree_item(item : TreeItem, rect : Rect2i):
 	
 	widget.size = rect.size
 	widget.position = rect.position
-	
-	
 
 
 func clear_all():
@@ -118,8 +116,12 @@ func _gui_input(event : InputEvent):
 		move_buttons_to_current_item()
 
 
-func _on_item_selected() -> void:
-	pass
+func _on_nothing_selected():
+	$TagAdder.close()
+
+
+func _on_multi_selected(item, column, selected):
+	$TagAdder.close()
 
 
 func _on_item_edited():
@@ -223,16 +225,16 @@ func _can_drop_data(at_position, data):
 	return not target_is_descendent
 
 
-func _on_custom_item_clicked(mouse_button_index):
-	var item = get_edited()
-	item.set_text(0, item.get_text(0).reverse())
-
-
 func _drop_data(at_position, data):
 	if not data is NestedTag:
 		return
 	var target_item = get_item_at_position(at_position)
 	reparent_tag_requested.emit(data.id, dict[target_item].id)
+
+
+func _on_custom_item_clicked(mouse_button_index):
+	var item = get_edited()
+	item.set_text(0, item.get_text(0).reverse())
 
 
 func compute_height():
