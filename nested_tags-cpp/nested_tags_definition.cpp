@@ -122,15 +122,20 @@ bool NestedTagsDefinition::try_reparent(id_t p_id, id_t p_parent_id) {
 	return ret_val;
 }
 
-// TODO: name checking, no duplicate siblings. strip outside spaces. only alpha-numerics.
-void NestedTagsDefinition::rename(id_t p_id, const StringName &p_name) {
+bool NestedTagsDefinition::try_rename(id_t p_id, const StringName& p_name) {
 	if (!has_tag(p_id) || 0 == p_id) {
 		UtilityFunctions::push_error(FUNCTION_STR, ": invalid id: ", p_id);
-	} else if (p_name.is_empty()) {
-		UtilityFunctions::push_error(FUNCTION_STR, ": invalid name (empty)");
+		return false;
+	} else if (!is_tag_name_valid(p_name)) {
+		return false;
 	} else {
-		data[p_id].name = p_name;
+		id_t parent = data[p_id].parent_id;
+		if (is_name_taken_among_siblings(p_name, parent)) {
+			return false;
+		}
 	}
+	data[p_id].name = p_name;
+	return true;
 }
 
 StringName NestedTagsDefinition::get_name(id_t p_id) const {
@@ -190,7 +195,7 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_iter_next", "p_iter"), &NestedTagsDefinition::_iter_next);
 	ClassDB::bind_method(D_METHOD("_iter_get", "p_iter"), &NestedTagsDefinition::_iter_get);
 	ClassDB::bind_method(D_METHOD("try_reparent", "p_id", "p_parent_id"), &NestedTagsDefinition::try_reparent);
-	ClassDB::bind_method(D_METHOD("rename", "p_id", "p_name"), &NestedTagsDefinition::rename);
+	ClassDB::bind_method(D_METHOD("try_rename", "p_id", "p_name"), &NestedTagsDefinition::try_rename);
 
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("try_get_singleton"), &NestedTagsDefinition::try_get_singleton);
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("initialize_singleton", "p_singleton"), &NestedTagsDefinition::initialize_singleton);

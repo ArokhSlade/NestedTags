@@ -64,7 +64,7 @@ StringName NestedTags::NestedTag::get_name() const {
 void NestedTags::NestedTag::set_name(const StringName &p_name) {
     Ref<NestedTagsDefinition> singleton = NestedTagsDefinition::try_get_singleton();
     ERR_FAIL_COND_EDMSG(!singleton.is_valid(), "NestedTag::set_name(): singleton is not valid");
-    singleton->rename(this->id, p_name);
+    singleton->try_rename(this->id, p_name);
 }
 
 bool NestedTags::NestedTag::is_root() const
