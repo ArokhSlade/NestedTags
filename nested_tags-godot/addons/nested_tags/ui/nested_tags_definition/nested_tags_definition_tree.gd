@@ -38,13 +38,8 @@ func refresh(definition : NestedTagsDefinition):
 	var root = create_item()
 	var null_tag = definition.get_tag(0)
 	
-	root.set_cell_mode(0, TreeItem.CELL_MODE_CUSTOM)
-	const ROOT_BUTTON_STYLE_DEFAULT = preload("uid://b7fhfe7dutcxr")
-	
-	root.set_custom_as_button(0, true)
-	root.set_custom_stylebox(0, ROOT_BUTTON_STYLE_DEFAULT)
 	root.set_text(0, "<NULL>") # TODO: let definitions have names? show name as root item?
-	root.set_editable(0, true)
+	root.set_editable(0, false)
 	
 	dict[root] = null_tag
 	dict[null_tag] = root
@@ -230,11 +225,6 @@ func _drop_data(at_position, data):
 		return
 	var target_item = get_item_at_position(at_position)
 	reparent_tag_requested.emit(data.id, dict[target_item].id)
-
-
-func _on_custom_item_clicked(mouse_button_index):
-	var item = get_edited()
-	item.set_text(0, item.get_text(0).reverse())
 
 
 func compute_height():
