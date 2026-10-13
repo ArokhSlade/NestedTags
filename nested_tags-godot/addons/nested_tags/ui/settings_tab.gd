@@ -23,3 +23,4 @@ func refresh():
 
 func _on_editor_file_dialog_file_selected(path):
 	_settings.update_definition(path)
+	refresh()
