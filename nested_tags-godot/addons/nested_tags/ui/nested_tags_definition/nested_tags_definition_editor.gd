@@ -32,6 +32,8 @@ func erase_tag(tag_id):
 
 func try_rename_tag(tag_id, new_name):
 	if not definition.try_rename(tag_id, new_name):
+		var tag = definition.get_tag(tag_id)
+		%NestedTagsDefinitionTree.deny_rename(tag)
 		return false
 	else:
 		tree.refresh(definition)

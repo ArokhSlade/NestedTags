@@ -130,6 +130,12 @@ func _on_item_edited():
 				rename_tag_requested.emit(tag.get_id(), new_name) 
 
 
+func deny_rename(tag):
+	if not dict.has(tag):
+		push_error("NestedTagsDefintionTree::deny_rename(): unknown tag")
+	dict[tag].set_text(0, tag.get_name())
+
+
 func _on_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
 	match id:
 		BUTTON_ERASE:
