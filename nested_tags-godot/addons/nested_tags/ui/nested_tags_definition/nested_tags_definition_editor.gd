@@ -52,6 +52,8 @@ func _on_refresh_button_pressed():
 func _on_nested_tags_definition_tree_add_tag_requested(tag_name, parent_id):
 	if not try_add_tag(tag_name, parent_id):
 		%NestedTagsDefinitionTree.signal_invalid_input()
+	else:
+		$%NestedTagsDefinitionTree.confirm_tag_added()
 
 
 func _on_nested_tags_definition_tree_erase_tag_requested(tag_id):

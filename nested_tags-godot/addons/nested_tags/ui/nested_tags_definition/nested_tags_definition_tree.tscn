@@ -22,6 +22,7 @@ script = ExtResource("1_yyw0h")
 layout_mode = 0
 size_flags_horizontal = 0
 placeholder_text = "TagName"
+keep_editing_on_text_submit = true
 expand_to_text_length = true
 script = ExtResource("3_i2gns")
 

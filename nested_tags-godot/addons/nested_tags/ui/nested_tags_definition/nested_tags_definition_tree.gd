@@ -141,7 +141,6 @@ func _on_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index
 
 func _on_tag_adder_text_submitted(new_text):
 	request_add_tag(last_hovered_item, new_text)
-	$TagAdder.close()
 
 
 func signal_invalid_input():
@@ -154,6 +153,10 @@ func request_add_tag(item, name):
 		return
 	var parent_tag : NestedTag = dict[item]
 	add_tag_requested.emit(name, parent_tag.get_id())
+
+
+func confirm_tag_added():
+	$TagAdder.close()
 
 
 func move_buttons_to_current_item():

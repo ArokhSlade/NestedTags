@@ -5,7 +5,6 @@ signal text_canceled(text)
 
 func _ready():
 	focus_mode = Control.FOCUS_ALL
-	keep_editing_on_text_submit = true
 
 
 func open():
