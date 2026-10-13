@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dddfu3ykf234s"]
 
 [ext_resource type="Theme" uid="uid://7ehek2fws6x" path="res://addons/nested_tags/ui/nested_tags.theme" id="1_tpf40"]
-[ext_resource type="Script" uid="uid://byokjsfaecetc" path="res://addons/nested_tags/ui/nested_tag_tree.gd" id="2_tpf40"]
+[ext_resource type="Script" uid="uid://byokjsfaecetc" path="res://addons/nested_tags/ui/nested_tag/nested_tag_tree.gd" id="2_tpf40"]
 
 [node name="NestedTagsTree" type="Tree" unique_id=203260917]
 propagate_maximum_size = true

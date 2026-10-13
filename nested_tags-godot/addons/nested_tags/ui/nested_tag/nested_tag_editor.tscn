@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://fcoq4yaw7nl4"]
 
-[ext_resource type="Script" uid="uid://dbakyt24mldy4" path="res://addons/nested_tags/ui/nested_tag_editor.gd" id="1_jfndg"]
-[ext_resource type="PackedScene" uid="uid://dddfu3ykf234s" path="res://addons/nested_tags/ui/nested_tag_tree.tscn" id="2_p7qw5"]
+[ext_resource type="Script" uid="uid://dbakyt24mldy4" path="res://addons/nested_tags/ui/nested_tag/nested_tag_editor.gd" id="1_jfndg"]
+[ext_resource type="PackedScene" uid="uid://dddfu3ykf234s" path="res://addons/nested_tags/ui/nested_tag/nested_tag_tree.tscn" id="2_p7qw5"]
 
 [node name="NestedTagEditor" type="PanelContainer" unique_id=477439940]
 anchors_preset = 15

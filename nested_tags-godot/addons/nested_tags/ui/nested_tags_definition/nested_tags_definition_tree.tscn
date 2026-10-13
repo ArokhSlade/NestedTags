@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://ctyn5t3nmbts5"]
 
 [ext_resource type="Theme" uid="uid://7ehek2fws6x" path="res://addons/nested_tags/ui/nested_tags.theme" id="1_nafhi"]
-[ext_resource type="Script" uid="uid://15q7yfb3gobl" path="res://addons/nested_tags/ui/nested_tags_definition_tree.gd" id="1_yyw0h"]
-[ext_resource type="Script" uid="uid://c7dc3ar5121r3" path="res://addons/nested_tags/ui/tag_adder.gd" id="3_i2gns"]
+[ext_resource type="Script" uid="uid://15q7yfb3gobl" path="res://addons/nested_tags/ui/nested_tags_definition/nested_tags_definition_tree.gd" id="1_yyw0h"]
+[ext_resource type="Script" uid="uid://c7dc3ar5121r3" path="res://addons/nested_tags/ui/nested_tags_definition/tag_adder.gd" id="3_i2gns"]
 
 [node name="NestedTagsDefinitionTree" type="Tree" unique_id=203260917]
 propagate_maximum_size = true
