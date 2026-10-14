@@ -37,7 +37,7 @@ func erase_tag(tag_id):
 	undoer.add_do_method(definition, "erase", tag_id)
 	undoer.add_do_method(tree, "refresh", definition)
 	
-	undoer.add_undo_method(definition, "try_add", tag_name, parent_id)
+	undoer.add_undo_method(definition, "_try_add_explicit", tag_id, tag_name, parent_id)
 	undoer.add_undo_method(tree, "refresh", definition)
 	
 	undoer.commit_action()
