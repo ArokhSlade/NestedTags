@@ -77,7 +77,7 @@ private:
 	void update_tags();
 	Array get_parent_ids() const;
 	Array get_names() const;
-	bool try_add_explicit(id_t p_id, const StringName &p_name, id_t p_parent_id);
+	bool _try_add_explicit(id_t p_id, const StringName &p_name, id_t p_parent_id);
 	static const char* null_tag_name;
 
 private:

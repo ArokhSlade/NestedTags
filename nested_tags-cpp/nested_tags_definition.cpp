@@ -196,6 +196,7 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_iter_get", "p_iter"), &NestedTagsDefinition::_iter_get);
 	ClassDB::bind_method(D_METHOD("try_reparent", "p_id", "p_parent_id"), &NestedTagsDefinition::try_reparent);
 	ClassDB::bind_method(D_METHOD("try_rename", "p_id", "p_name"), &NestedTagsDefinition::try_rename);
+	ClassDB::bind_method(D_METHOD("_try_add_explicit", "p_id", "p_name", "p_parent_id"), &NestedTagsDefinition::_try_add_explicit);
 
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("try_get_singleton"), &NestedTagsDefinition::try_get_singleton);
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("initialize_singleton", "p_singleton"), &NestedTagsDefinition::initialize_singleton);
@@ -217,7 +218,7 @@ bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value
 			Dictionary data_dict = _data[id];
 			id_t parent_id = data_dict["parent_id"];
 			StringName name = data_dict["name"];
-			try_add_explicit(id, name, parent_id);
+			_try_add_explicit(id, name, parent_id);
 		}
 		return true;
 	}
@@ -255,7 +256,7 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
 
 //  treat invalid input as error because explicit should only be called with valid data.
 //  this function is allowed to add the null tag because it is used for loading serialized data
-bool NestedTagsDefinition::try_add_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id) {
+bool NestedTagsDefinition::_try_add_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id) {
 	if (data.has(p_id)) {
 		UtilityFunctions::push_error(FUNCTION_STR, ": tried adding existing tag: ", p_id, " (name: ", p_name, " parent: ", p_parent_id, ")");
 		return false;
