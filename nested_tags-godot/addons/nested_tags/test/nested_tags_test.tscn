@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://cpqc3q5pgnhgc" path="res://addons/nested_tags/test/nested_tags_test.gd" id="1_a0f2y"]
 
+[sub_resource type="NestedTagsDefinition" id="NestedTagsDefinition_a0f2y"]
+
 [node name="NestedTagsTest" type="Node2D" unique_id=619940026]
 script = ExtResource("1_a0f2y")
-nested = 5
+definition = SubResource("NestedTagsDefinition_a0f2y")

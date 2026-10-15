@@ -1,82 +1,21 @@
 @tool
 extends Node2D
 
-@export_custom(PROPERTY_HINT_NONE, "nested_tag") var nested : int = 3 :
-	set(value):
-		nested = value
+@export var definition : NestedTagsDefinition = preload("uid://p5hnqnysccvd")
+
+#@export_custom(PROPERTY_HINT_NONE, "nested_tag") 
+var tag : int = 3
 @export_tool_button("print tag", "Anchor") var refresh_button = print_tag
 
-
-func get_definition(): 
-	var definition = NestedTagsDefinition.try_get_singleton()
-	return definition
-
-
-func get_tag():
-	var definition = get_definition()
-	if not definition:
-		return null
-	var tag = definition.get_tag(nested)
-	
-	var ship
-	
-	return tag
+func _ready():
+	print_tag()
 
 
 func print_tag():
-	var definition = NestedTagsDefinition.try_get_singleton()
 	if not definition:
 		return
-	var tag = definition.get_tag(nested)
-	if not tag:
-		return
-	print("tag: %s" % [tag.as_string(definition)])
 	
-
-func _ready():
-	test_basics()
-	test_match()
-	test_print_parse()
-
-
-func test_basics():
-	var def = NestedTagsDefinition.try_get_singleton()
-	if null == def:
-		return
+	var tag_name = definition.get_full_name(tag)
 	
-	print("nested tags test::_ready(): ", str(def))
-	def.try_add("hello", 0)
-	def.try_add("world", 1) 
+	print("tag: %s" % [tag_name])
 	
-	var tag = def.get_tag(1)
-	print(tag)
-	print("hello: ", tag.is_valid())
-	var tag_2 = def.get_tag(2)
-	print(tag_2)
-	print(tag_2.equals(tag))
-	tag_2.set_id(tag.get_id())
-	print(tag_2.equals(tag))
-	print("tag is valid? ", tag_2.is_valid())
-	tag_2.set_id(0)
-	print("tag is valid? ", tag_2.is_valid())
-	nested = tag.get_id()
-
-
-func test_match():
-	var tag_1 = NestedTag.from_string("creature.animal.badger")
-	print(tag_1.get_name())
-	var tag_2 = NestedTag.from_string("creature.animal.bird")
-	var tag_3 = NestedTag.from_string("creature.animal")
-	var common_ancestor = tag_1.get_closest_shared_ancestor(tag_2)
-	var equals_not = tag_1.equals(tag_2)
-	var equals = tag_1.equals(tag_1)
-	var not_contains = tag_2.contains(tag_3)
-	var contains = tag_3.contains(tag_2)
-
-
-func test_print_parse():
-	var tag = get_tag()
-	var definition = get_definition()
-	var string = tag.as_string(definition)
-	var tag_2 = NestedTag.from_string(string)
-	print("print and parse are consistent: ", tag == tag_2)

@@ -130,6 +130,32 @@ id_t NestedTagsDefinition::try_get_child_by_name(const StringName& p_name, id_t 
 	return 0;
 }
 
+StringName NestedTagsDefinition::get_full_name(id_t p_id) const {
+	String result = StringName("");
+	Vector<StringName> lineage_names = get_lineage_names(p_id);
+	int parent_names_size = lineage_names.size();
+	for (int i = 0; i < parent_names_size - 1 ; i++) {
+		result += lineage_names[i];
+		result += String(".");
+	}
+	// no trailing point for last one
+	if (parent_names_size > 0) {
+		result += lineage_names[parent_names_size - 1];
+	}
+	return StringName(result);
+}
+
+Vector<StringName> NestedTagsDefinition::get_lineage_names(id_t p_id) const {
+	Vector<StringName> parent_names;
+	id_t current_id = p_id;
+	while (current_id != 0) {
+		parent_names.push_back(get_name(current_id));
+		current_id = get_parent_id(current_id);
+	}
+	parent_names.reverse(); // Reverse the order to have the root parent first
+	return parent_names;
+}
+
 bool NestedTagsDefinition::try_reparent(id_t p_id, id_t p_parent_id) {
 	bool ret_val = false;
 	if (!has_tag(p_id) || 0 == p_id) {
@@ -221,6 +247,8 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("try_reparent", "p_id", "p_parent_id"), &NestedTagsDefinition::try_reparent);
 	ClassDB::bind_method(D_METHOD("try_rename", "p_id", "p_name"), &NestedTagsDefinition::try_rename);
 	ClassDB::bind_method(D_METHOD("_try_add_explicit", "p_id", "p_name", "p_parent_id"), &NestedTagsDefinition::_try_add_explicit);
+	ClassDB::bind_method(D_METHOD("get_full_name", "p_id"), &NestedTagsDefinition::get_full_name);
+	
 
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("try_get_singleton"), &NestedTagsDefinition::try_get_singleton);
 	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("initialize_singleton", "p_singleton"), &NestedTagsDefinition::initialize_singleton);
