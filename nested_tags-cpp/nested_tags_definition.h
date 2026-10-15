@@ -24,14 +24,16 @@ public:
 	~NestedTagsDefinition() override = default;
 
 	bool try_add(const StringName& p_name, id_t p_parent_id = 0);
-	void erase(id_t p_id);
-	void NestedTagsDefinition::_erase_recursively(id_t p_id);
+	bool _try_add_explicit(id_t p_id, const StringName &p_name, id_t p_parent_id);
 	
-	bool has_tag(id_t p_id) const;
-	id_t try_get_id(const StringName&) const;
-
+	void erase(id_t p_id);
 	bool try_reparent(id_t p_id, id_t p_parent_id);
 	bool try_rename(id_t p_id, const StringName& p_name);
+	
+	bool has_tag(id_t p_id) const;
+	
+	id_t get_tag(const StringName&) const;
+	id_t get_child_tag(const StringName& p_name, id_t p_parent_id) const; 
 
 	StringName get_name(id_t p_id) const;
 	StringName get_full_name(id_t p_tag_id) const;
@@ -42,12 +44,11 @@ public:
     Variant _iter_init(Array p__iter) const;
     Variant _iter_next(Array p__iter) const;
     Variant _iter_get(const Variant &p_iter) const;
-    
-    id_t try_get_child_by_name(const StringName& p_name, id_t p_parent_id) const; 
 	
 	int size() const;
 	
-	id_t get_closest_shared_ancestor(id_t p_id_1, id_t p_id_2) const;
+	id_t match(id_t p_id_1, id_t p_id_2) const;
+	bool contains(id_t p_id_1, id_t p_id_2) const;
 	
 protected:
 	static void _bind_methods();
@@ -64,19 +65,12 @@ protected:
 	Vector<id_t> get_child_ids(id_t p_parent_id);
 	
 private:
-	void update_tags();
-	Array get_parent_ids() const;
-	Array get_names() const;
-	bool _try_add_explicit(id_t p_id, const StringName &p_name, id_t p_parent_id);
+	void NestedTagsDefinition::_erase_recursively(id_t p_id);
 	static const char* null_tag_name;
+	static const char* missing_tag_name;
 
 private:
-	Array names;	
-	Array parents;
-	Array tags;
 	id_t last_tag_id;
-	static Ref<NestedTagsDefinition> singleton;
-	
 	HashMap<id_t, TagData> data;
 };
 }
