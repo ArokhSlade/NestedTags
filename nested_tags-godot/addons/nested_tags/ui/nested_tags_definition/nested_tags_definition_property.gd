@@ -17,7 +17,6 @@ func _update_property():
 		return
 	
 	updating = true
-	NestedTagsDefinition.initialize_singleton(definition)
 	
 	nested_tags_definition_editor.set_definition(definition)
 	updating = false

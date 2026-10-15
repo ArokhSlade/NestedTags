@@ -1,19 +1,22 @@
 @tool extends Tree
 
 signal add_tag_requested(name, parent_id)
-signal rename_tag_requested(tag_id, new_name)
-signal erase_tag_requested(tag_id)
-signal reparent_tag_requested(tag_id, new_parent_id)
+signal rename_tag_requested(tag, new_name)
+signal erase_tag_requested(tag)
+signal reparent_tag_requested(tag, new_parent_id)
 
 const BUTTON_ERASE = 1
 const BUTTON_ADD = 2
 
+var definition
 var dict = {}
 var last_hovered_item
 
 
 ## constructs tree from tags. temporarily caches those "pending" tags whose parents it hasn't seen yet
 func refresh(definition : NestedTagsDefinition):
+	self.definition = definition
+	
 	clear_all()
 	
 	select_mode = SelectMode.SELECT_MULTI
@@ -28,26 +31,25 @@ func refresh(definition : NestedTagsDefinition):
 	var item
 	var pending_tags = []
 	
-	for tag : NestedTag in definition:
+	for tag in definition:
 		pending_tags.push_back(tag)
 	var old_max = pending_tags.size()
 	
 	var max_item_rect = Rect2i()
 	
 	var root = create_item()
-	var null_tag = definition.get_tag(0)
 	
-	root.set_text(0, null_tag.get_name()) # TODO: let definitions have names? show name as root item?
+	root.set_text(0, definition.get_name(0)) # TODO: let definitions have names? show name as root item?
 	root.set_editable(0, false)
 	
-	dict[root] = null_tag
-	dict[null_tag] = root
+	dict[root] = 0
+	dict[0] = root
 	
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
 		
 		_item.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
-		_item.set_text(0, definition.get_name(p_tag.get_id()))
+		_item.set_text(0, definition.get_name(p_tag))
 		_item.set_selectable(0, true)
 		
 		_item.set_editable(0, true)
@@ -64,17 +66,15 @@ func refresh(definition : NestedTagsDefinition):
 		while i < max:
 			var tag = pending_tags[i]
 			
-			var tag_id = tag.get_id()
-			var parent_id = definition.get_parent_id(tag_id)
-			var parent_tag = definition.get_tag(parent_id)
+			var parent = definition.get_parent_id(tag)
 			
-			if definition.is_root_tag(tag_id):
+			if definition.is_root_tag(tag):
 				parent_item = null
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, get_root())
-			elif dict.has(parent_tag):
-				parent_item = dict[parent_tag]
+			elif dict.has(parent):
+				parent_item = dict[parent]
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, parent_item)
@@ -125,9 +125,9 @@ func _on_item_edited():
 	match get_edited_column():
 		0:
 			var new_name = item.get_text(get_edited_column())
-			var tag : NestedTag = dict[item]
-			if tag.get_name() != new_name:
-				rename_tag_requested.emit(tag.get_id(), new_name) 
+			var tag : int = dict[item]
+			if definition.get_name(tag) != new_name:
+				rename_tag_requested.emit(tag, new_name) 
 
 
 func deny_rename(tag):
@@ -164,8 +164,8 @@ func request_add_tag(item, name):
 	if null == item:
 		push_error("request_add_tag(%s): invalid item position?" % [name])
 		return
-	var parent_tag : NestedTag = dict[item]
-	add_tag_requested.emit(name, parent_tag.get_id())
+	var parent_tag : int = dict[item]
+	add_tag_requested.emit(name, parent_tag)
 
 
 func confirm_tag_added():
@@ -223,7 +223,8 @@ func _get_drag_data(at_position):
 
 
 func _can_drop_data(at_position, data):
-	if not data is NestedTag:
+	# TODO: filter for a more specific tupe to avoid errors
+	if not data is int:
 		return false
 	
 	drop_mode_flags = DROP_MODE_ON_ITEM
@@ -240,10 +241,10 @@ func _can_drop_data(at_position, data):
 
 
 func _drop_data(at_position, data):
-	if not data is NestedTag:
+	if not data is int:
 		return
 	var target_item = get_item_at_position(at_position)
-	reparent_tag_requested.emit(data.id, dict[target_item].id)
+	reparent_tag_requested.emit(data, dict[target_item])
 
 
 func compute_height():

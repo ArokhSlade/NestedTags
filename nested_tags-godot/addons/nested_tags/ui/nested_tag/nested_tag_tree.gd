@@ -6,10 +6,10 @@ const COLUMN_CHECK = 0
 
 var items_and_tags = {}
 
-func set_checked(tag : NestedTag):
+func set_checked(tag : int):
 	var item = items_and_tags.get(tag)
 	if not item:
-		push_error("NestedTagTree::set_tag(%s:%s): tag not found." % [tag.get_id(), str(tag)])
+		push_error("NestedTagTree::set_tag(%s): tag not found." % [tag])
 		return
 	update_checks(item)
 
@@ -48,7 +48,7 @@ func compute_height():
 
 
 ## constructs tree from tags. caches those "pending" tags whose parents it hasn't seen yet
-func refresh(definition : NestedTagsDefinition, checked_tag):
+func refresh(definition : NestedTagsDefinition, checked_tag : int):
 	clear_all()
 	
 	select_mode = SelectMode.SELECT_MULTI
@@ -59,15 +59,15 @@ func refresh(definition : NestedTagsDefinition, checked_tag):
 	var item
 	var pending_tags = []
 	
-	for tag : NestedTag in definition:
+	for tag : int in definition:
 		pending_tags.push_back(tag)
 	var old_max = pending_tags.size()
 	
 	var max_item_rect = Rect2i()
 	
 	var root = create_item() # invisible root()
-	var null_tag = definition.get_tag(0)
-	root.set_text(0, null_tag.get_name()) # TODO: let definitions have names? show name as root item?
+	var null_tag : int = (0)
+	root.set_text(0, definition.get_name(null_tag)) # TODO: let definitions have names? show name as root item?
 	root.set_editable(0, false)
 	items_and_tags[root] = null_tag
 	items_and_tags[null_tag] = root
@@ -75,9 +75,8 @@ func refresh(definition : NestedTagsDefinition, checked_tag):
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
 		
-		# TODO: extract separate pass or strategy pattern
-		_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-		_item.set_text(0, definition.get_name(p_tag.get_id()))
+		_item.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+		_item.set_text(0, definition.get_name(p_tag))
 		_item.set_selectable(0, true)
 		
 		_item.set_editable(0, true)
@@ -121,6 +120,7 @@ func refresh(definition : NestedTagsDefinition, checked_tag):
 	custom_minimum_size.y = new_height
 	
 	if null == checked_tag:
+		push_error("nested_tag_tree::refresh(): checked tag was null")
 		checked_tag = items_and_tags[get_root()]
 	var checked_item = items_and_tags[checked_tag]
 	update_checks(checked_item)
