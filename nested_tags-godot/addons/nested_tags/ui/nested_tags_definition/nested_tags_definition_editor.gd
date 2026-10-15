@@ -23,7 +23,7 @@ func undoable_try_add_tag(name, parent_id = 0):
 	
 	undoer.create_action("erase_tag")
 	
-	undoer.add_do_method(definition, "try_add", name, parent_id)
+	undoer.add_do_method(definition, "add_tag", name, parent_id)
 	undoer.add_do_method(tree, "refresh")
 	
 	undoer.add_undo_method(tree, "refresh")
@@ -41,14 +41,13 @@ func find_tag_by_name_parent(definition, name, parent_id):
 
 
 func try_add_tag(name, parent_id = 0):
-	if not definition.try_add(name, parent_id):
+	if not definition.add_tag(name, parent_id):
 		return false
 	else:
 		tree.refresh(definition)
 		return true
 
 
-# TODO: undo restores the id. expose try_add_explicit or have undoable_ variants in cpp layer or should they always be undoable? 
 func erase_tag(tag_id):
 	var undoer = EditorInterface.get_editor_undo_redo()
 	
@@ -60,7 +59,7 @@ func erase_tag(tag_id):
 	undoer.add_do_method(definition, "erase", tag_id)
 	undoer.add_do_method(tree, "refresh", definition)
 	
-	undoer.add_undo_method(definition, "_try_add_explicit", tag_id, tag_name, parent_id)
+	undoer.add_undo_method(definition, "_add_tag_explicit", tag_id, tag_name, parent_id)
 	undoer.add_undo_method(tree, "refresh", definition)
 	
 	undoer.commit_action()
