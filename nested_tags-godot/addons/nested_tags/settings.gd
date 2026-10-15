@@ -42,8 +42,6 @@ func load_definition_from_path(path):
 	if null == _definition:
 		_definition = old_definition
 	else:
-		NestedTagsDefinition.initialize_singleton(_definition)
-		
 		save_definition_to_project_settings(path)
 
 

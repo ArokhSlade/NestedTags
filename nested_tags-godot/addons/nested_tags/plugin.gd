@@ -35,9 +35,6 @@ func _enter_tree():
 	
 	script_editor = EditorInterface.get_script_editor()
 	script_editor.editor_script_changed.connect(_on_script_editor_editor_script_changed)
-	
-	add_autoload_singleton("NestedTagsRuntime", "res://addons/nested_tags/nested_tags_runtime.gd")
-
 
 func print_time():
 	#print("script changed at %s" % [Time.get_time_string_from_system()])
@@ -55,7 +52,6 @@ func _on_script_editor_editor_script_changed(script : Script):
 
 
 func _exit_tree():
-	remove_autoload_singleton("NestedTagsRuntime")
 	if editor:
 		editor.text_changed.disconnect(print_time)
 	script_editor.editor_script_changed.disconnect(_on_script_editor_editor_script_changed)
