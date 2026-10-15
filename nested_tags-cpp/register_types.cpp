@@ -1,6 +1,5 @@
 #include "register_types.h"
 #include "nested_tags_definition.h"
-#include "nested_tag.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>

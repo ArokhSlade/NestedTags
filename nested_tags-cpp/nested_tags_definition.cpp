@@ -2,42 +2,19 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/variant/array.hpp>
-#include "nested_tag.h"
 
 namespace NestedTags
 {
 NestedTagsDefinition::NestedTagsDefinition()
-	: names{}
-, parents{}
-, tags{Ref<NestedTag>(memnew(NestedTag{0}))} // Initialize with a default "null" tag
-, last_tag_id{0}
-, data(HashMap<id_t, TagData>())
-{
-	names.push_back(StringName(null_tag_name));
-	parents.push_back(0);
-	Ref<NestedTag> tag = Ref<NestedTag>(memnew(NestedTag{0}));
-	data.insert(0, TagData{0, StringName(null_tag_name), tag});
-}
+	: last_tag_id{0}
+	, data(HashMap<id_t, TagData>())
+	{
+		names.push_back(StringName(null_tag_name));
+		parents.push_back(0);
+		data.insert(0, TagData{0, StringName(null_tag_name)});
+	}
 
 const char* NestedTagsDefinition::null_tag_name = "__NULL__TAG__";
-Ref<NestedTagsDefinition> NestedTagsDefinition::singleton = Ref<NestedTagsDefinition>{}; 
-
-
-// TODO: currently, this is not a try method. the result cannot be used in a boolean expression.
-Ref<NestedTagsDefinition> NestedTagsDefinition::try_get_singleton() {
-	if (!singleton.is_valid()) {
-		UtilityFunctions::push_error("NestedTagsDefinition::try_get_singleton(): singleton is invalid.");
-	}
-	return singleton;
-}
-
-void NestedTagsDefinition::initialize_singleton(Ref<NestedTagsDefinition> p_singleton) {	
-	//ERR_FAIL_COND_EDMSG(singleton.is_valid(), "NestedTagsDefinition::initialize_singleton(): singleton is already initialized.");
-	if (singleton.is_valid()) {
-		WARN_PRINT_ED("NestedTagsDefinition::initialize_singleton(): singleton is already initialized");
-	}
-	singleton = p_singleton;
-}
 
 bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
 	return 0 == get_parent_id(p_id);
@@ -49,11 +26,36 @@ bool NestedTagsDefinition::try_add(const StringName& p_name, id_t p_parent_id) {
 	ret_val &= !is_name_taken_among_siblings(p_name, p_parent_id);
 	if (ret_val) {
 		id_t new_id = ++last_tag_id;
-		Ref<NestedTag> tag = memnew(NestedTag{new_id});
-		tags.push_back(Ref<NestedTag>(tag));
-		data[new_id] = TagData{p_parent_id, p_name, tag};
+		data[new_id] = TagData{p_parent_id, p_name};
 	}
 	return ret_val;
+}
+
+	//  treat invalid input as error because explicit should only be called with valid data.
+	//  this function is allowed to add the null tag because it is used for loading serialized data
+	bool NestedTagsDefinition::_try_add_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id) {
+	if (data.has(p_id)) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": tried adding existing tag: ", p_id, " (name: ", p_name, " parent: ", p_parent_id, ")");
+		return false;
+	}
+	bool is_null_tag = p_name == StringName(null_tag_name);
+	is_null_tag &= 0 == p_id;
+	is_null_tag &= 0 == p_parent_id;
+	
+	if (!is_tag_name_valid(p_name)) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": invalid name: ", p_name);
+		return false;
+	}
+	if (is_name_taken_among_siblings(p_name, p_parent_id)) {
+		UtilityFunctions::push_error(FUNCTION_STR, ": name ", p_name, " not unique among siblings.");
+		return false;
+	}
+	if (p_id > last_tag_id) {
+		last_tag_id = p_id;
+	}
+	data[p_id] = TagData{p_parent_id, p_name};
+
+	return true;
 }
 
 void NestedTagsDefinition::erase(id_t p_id) {
@@ -100,25 +102,6 @@ id_t NestedTagsDefinition::try_get_id(const StringName& p_tag_string) const {
 	ret_val = last_tag_id;
 	return ret_val;
 }
-
-Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
-	if (!data.has(p_id)) { 
-		UtilityFunctions::push_error("NestedTagsDefinition::get_tag(): id ", p_id, " out of range");
-		return tags[0]; // Return a default "null" tag for IDs 
-	}
-	TagData tag_data = data[p_id];
-	return tag_data.tag;
-}
-
-Ref<NestedTag> NestedTagsDefinition::get_child_tag_by_name(String& p_name, id_t p_parent_id) const {
-	for (auto& id_and_data : data) {
-		TagData tag_data = id_and_data.value;
-		if (tag_data.name == p_name && tag_data.parent_id == p_parent_id) {
-			return tag_data.tag;	
-		}		
-	}
-	return tags[0];
-}  
 
 id_t NestedTagsDefinition::try_get_child_by_name(const StringName& p_name, id_t p_parent_id) const {
 	for (auto& id_and_data : data) {
@@ -223,8 +206,7 @@ Variant NestedTagsDefinition::_iter_next(Array p_iter) const {
 Variant NestedTagsDefinition::_iter_get(const Variant& p_iter) const{
 	Array ids = p_iter;
 	id_t id = id_t(ids[0]);
-	Ref<NestedTag> tag = get_tag(int64_t(id));
-	return tag;
+	return id;
 }
 
 int NestedTagsDefinition::size() const {
@@ -237,7 +219,6 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("try_add", "p_name", "p_parent_id"), &NestedTagsDefinition::try_add, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("erase", "p_id"), &NestedTagsDefinition::erase);
 	ClassDB::bind_method(D_METHOD("has_tag", "p_id"), &NestedTagsDefinition::has_tag);
-	ClassDB::bind_method(D_METHOD("get_tag", "p_id"), &NestedTagsDefinition::get_tag);
 	ClassDB::bind_method(D_METHOD("get_name", "p_id"), &NestedTagsDefinition::get_name);
 	ClassDB::bind_method(D_METHOD("get_parent_id", "p_id"), &NestedTagsDefinition::get_parent_id);
 	ClassDB::bind_method(D_METHOD("size"), &NestedTagsDefinition::size);
@@ -248,10 +229,6 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("try_rename", "p_id", "p_name"), &NestedTagsDefinition::try_rename);
 	ClassDB::bind_method(D_METHOD("_try_add_explicit", "p_id", "p_name", "p_parent_id"), &NestedTagsDefinition::_try_add_explicit);
 	ClassDB::bind_method(D_METHOD("get_full_name", "p_id"), &NestedTagsDefinition::get_full_name);
-	
-
-	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("try_get_singleton"), &NestedTagsDefinition::try_get_singleton);
-	ClassDB::bind_static_method("NestedTagsDefinition", D_METHOD("initialize_singleton", "p_singleton"), &NestedTagsDefinition::initialize_singleton);
 }
 
 String NestedTagsDefinition::_to_string() const {
@@ -304,35 +281,6 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
 		return false;
 	}
     return true;
-}
-
-//  treat invalid input as error because explicit should only be called with valid data.
-//  this function is allowed to add the null tag because it is used for loading serialized data
-bool NestedTagsDefinition::_try_add_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id) {
-	if (data.has(p_id)) {
-		UtilityFunctions::push_error(FUNCTION_STR, ": tried adding existing tag: ", p_id, " (name: ", p_name, " parent: ", p_parent_id, ")");
-		return false;
-	}
-	bool is_null_tag = p_name == StringName(null_tag_name);
-	is_null_tag &= 0 == p_id;
-	is_null_tag &= 0 == p_parent_id;
-	
-	if (!is_tag_name_valid(p_name)) {
-		UtilityFunctions::push_error(FUNCTION_STR, ": invalid name: ", p_name);
-		return false;
-	}
-	if (is_name_taken_among_siblings(p_name, p_parent_id)) {
-		UtilityFunctions::push_error(FUNCTION_STR, ": name ", p_name, " not unique among siblings.");
-		return false;
-	}
-	if (p_id > last_tag_id) {
-		last_tag_id = p_id;
-	}
-	Ref<NestedTag> tag = Ref<NestedTag>(memnew(NestedTag{p_id}));
-	tags.push_back(tag);
-	data[p_id] = TagData{p_parent_id, p_name, tag};
-
-	return true;
 }
 	
 Array NestedTagsDefinition::get_names() const {
