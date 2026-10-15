@@ -75,7 +75,7 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
 		
-		_item.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+		_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		_item.set_text(0, definition.get_name(p_tag))
 		_item.set_selectable(0, true)
 		
@@ -93,17 +93,15 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 		while i < max:
 			var tag = pending_tags[i]
 			
-			var tag_id = tag.get_id()
-			var parent_id = definition.get_parent_id(tag_id)
-			var parent_tag = definition.get_tag(parent_id)
+			var parent = definition.get_parent_id(tag)
 			
-			if definition.is_root_tag(tag_id):
+			if definition.is_root_tag(tag):
 				parent_item = null
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, get_root())
-			elif items_and_tags.has(parent_tag):
-				parent_item = items_and_tags[parent_tag]
+			elif items_and_tags.has(parent):
+				parent_item = items_and_tags[parent]
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, parent_item)

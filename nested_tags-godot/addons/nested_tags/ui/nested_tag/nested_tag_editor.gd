@@ -8,8 +8,9 @@ func refresh(definition, tag):
 	refresh_button(definition, tag)
 
 
-func refresh_button(definition, tag):
-	$ExpandButton.text = tag.as_string(definition)
+func refresh_button(definition : NestedTagsDefinition, tag):
+	var full_name = definition.get_full_name(tag)
+	$ExpandButton.text = full_name
 
 
 func _on_nested_tag_tree_tag_checked(tag):

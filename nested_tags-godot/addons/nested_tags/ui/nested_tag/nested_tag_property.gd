@@ -28,13 +28,9 @@ func _on_nested_tag_editor_tag_selected(tag):
 
 
 func _update_property():
-	var tag_id = get_edited_object()[get_edited_property()]
+	var new_tag = get_edited_object()[get_edited_property()]
 	
 	if null == definition:
-		return
-	
-	var new_tag = definition.get_tag(tag_id)
-	if (new_tag == current_tag):
 		return
 
 	current_tag = new_tag
