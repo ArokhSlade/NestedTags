@@ -41,6 +41,7 @@ public:
 	
 	bool has_tag(id_t p_id) const;
 	Ref<NestedTag> get_tag(id_t p_id) const;
+	id_t try_get_id(const StringName&) const;
 
 	bool try_reparent(id_t p_id, id_t p_parent_id);
 	bool try_rename(id_t p_id, const StringName& p_name);
@@ -53,7 +54,8 @@ public:
     Variant _iter_next(Array p__iter) const;
     Variant _iter_get(const Variant &p_iter) const;
     
-    Ref<NestedTag> get_child_tag_by_name(String& p_name, id_t p_parent_id) const;  
+    Ref<NestedTag> get_child_tag_by_name(String& p_name, id_t p_parent_id) const; 
+    id_t try_get_child_by_name(const StringName& p_name, id_t p_parent_id) const; 
 	
 	int size() const;
 	

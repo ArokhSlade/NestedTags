@@ -13,7 +13,6 @@ void initialize_nested_tags_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 	GDREGISTER_CLASS(NestedTags::NestedTagsDefinition);
-	GDREGISTER_CLASS(NestedTags::NestedTag);
 }
 
 void uninitialize_nested_tags_module(ModuleInitializationLevel p_level) {

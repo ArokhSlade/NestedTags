@@ -6,6 +6,7 @@ extends Node2D
 		nested = value
 @export_tool_button("print tag", "Anchor") var refresh_button = print_tag
 
+
 func get_definition(): 
 	var definition = NestedTagsDefinition.try_get_singleton()
 	return definition
@@ -16,6 +17,9 @@ func get_tag():
 	if not definition:
 		return null
 	var tag = definition.get_tag(nested)
+	
+	var ship
+	
 	return tag
 
 
@@ -30,6 +34,8 @@ func print_tag():
 	
 
 func _ready():
+	test_basics()
+	test_match()
 	test_print_parse()
 
 
@@ -39,8 +45,8 @@ func test_basics():
 		return
 	
 	print("nested tags test::_ready(): ", str(def))
-	def.add("hello", 0)
-	def.add("world", 1) 
+	def.try_add("hello", 0)
+	def.try_add("world", 1) 
 	
 	var tag = def.get_tag(1)
 	print(tag)

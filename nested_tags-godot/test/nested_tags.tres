@@ -1,23 +1,35 @@
 [gd_resource type="NestedTagsDefinition" format=3 uid="uid://dddtpig1uh6c1"]
 
 [resource]
-names = [0, 0, 1, 2]
-parents = [&"__NULL__TAG__", &"rurur", &"qwe", &"uiiuo"]
+names = [0, 0, 1, 2, 2, 1, 17]
+parents = [&"__NULL__TAG__", &"Spaceship", &"Class", &"Frigate", &"Cruiser", &"Module", &"Drive"]
 data = {
 0: {
 "name": &"__NULL__TAG__",
 "parent_id": 0
 },
 1: {
-"name": &"rurur",
+"name": &"Spaceship",
 "parent_id": 0
 },
 2: {
-"name": &"qwe",
+"name": &"Class",
 "parent_id": 1
 },
 14: {
-"name": &"uiiuo",
+"name": &"Frigate",
 "parent_id": 2
+},
+16: {
+"name": &"Cruiser",
+"parent_id": 2
+},
+17: {
+"name": &"Module",
+"parent_id": 1
+},
+18: {
+"name": &"Drive",
+"parent_id": 17
 }
 }

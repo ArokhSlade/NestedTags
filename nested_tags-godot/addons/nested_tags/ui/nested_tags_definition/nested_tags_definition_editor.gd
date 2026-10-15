@@ -6,15 +6,38 @@
 @onready var tree = %NestedTagsDefinitionTree
 @onready var text_edit = %TextEdit
 
+
 func set_definition(p_definition):
 	definition = p_definition
 	if not is_node_ready():
 		await ready
 	tree.refresh(definition)
-
+	
 
 func _on_button_pressed():
 	try_add_tag(text_edit.text)
+
+
+func undoable_try_add_tag(name, parent_id = 0):
+	var undoer = EditorInterface.get_editor_undo_redo()
+	
+	undoer.create_action("erase_tag")
+	
+	undoer.add_do_method(definition, "try_add", name, parent_id)
+	undoer.add_do_method(tree, "refresh")
+	
+	undoer.add_undo_method(tree, "refresh")
+	
+	undoer.commit_action()
+
+
+func find_tag_by_name_parent(definition, name, parent_id):
+	for tag in definition:
+		var tag_name = definition.get_name(tag.id)
+		var tag_parent = definition.get_parent_id(tag.id)
+		if tag_name == name and tag_parent == parent_id:
+			return tag.id
+	return -1
 
 
 func try_add_tag(name, parent_id = 0):

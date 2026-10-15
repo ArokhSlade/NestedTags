@@ -86,6 +86,21 @@ bool NestedTagsDefinition::has_tag(id_t p_id) const {
 	return ret_val;
 }
 
+id_t NestedTagsDefinition::try_get_id(const StringName& p_tag_string) const {
+	id_t ret_val = 0;
+	PackedStringArray strings = p_tag_string.split(String("."));
+	id_t last_tag_id = 0;
+	
+	for (String& string : strings) {
+		last_tag_id = try_get_child_by_name(string, last_tag_id);
+		if (0 == last_tag_id) {
+			return 0;
+		}
+	}
+	ret_val = last_tag_id;
+	return ret_val;
+}
+
 Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 	if (!data.has(p_id)) { 
 		UtilityFunctions::push_error("NestedTagsDefinition::get_tag(): id ", p_id, " out of range");
@@ -94,7 +109,6 @@ Ref<NestedTag> NestedTagsDefinition::get_tag(id_t p_id) const {
 	TagData tag_data = data[p_id];
 	return tag_data.tag;
 }
-
 
 Ref<NestedTag> NestedTagsDefinition::get_child_tag_by_name(String& p_name, id_t p_parent_id) const {
 	for (auto& id_and_data : data) {
@@ -105,6 +119,16 @@ Ref<NestedTag> NestedTagsDefinition::get_child_tag_by_name(String& p_name, id_t 
 	}
 	return tags[0];
 }  
+
+id_t NestedTagsDefinition::try_get_child_by_name(const StringName& p_name, id_t p_parent_id) const {
+	for (auto& id_and_data : data) {
+		TagData tag_data = id_and_data.value;
+		if (tag_data.name == p_name && tag_data.parent_id == p_parent_id) {
+			return id_and_data.key;	
+		}		
+	}
+	return 0;
+}
 
 bool NestedTagsDefinition::try_reparent(id_t p_id, id_t p_parent_id) {
 	bool ret_val = false;

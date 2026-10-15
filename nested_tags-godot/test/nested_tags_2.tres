@@ -1,8 +1,8 @@
 [gd_resource type="NestedTagsDefinition" format=3 uid="uid://p5hnqnysccvd"]
 
 [resource]
-names = [0, 0, 1, 1, 1, 4, 0, 6, 7]
-parents = [&"__NULL__TAG__", &"tom", &"lizzy", &"tommy", &"sasha", &"teimu", &"shady", &"christian", &"robert"]
+names = [0, 0, 4, 1, 1, 2, 0, 6]
+parents = [&"__NULL__TAG__", &"tom", &"lizzy", &"tommy", &"sasha", &"teimu", &"shady", &"christian"]
 data = {
 0: {
 "name": &"__NULL__TAG__",
@@ -14,7 +14,7 @@ data = {
 },
 2: {
 "name": &"lizzy",
-"parent_id": 1
+"parent_id": 4
 },
 3: {
 "name": &"tommy",
@@ -26,7 +26,7 @@ data = {
 },
 5: {
 "name": &"teimu",
-"parent_id": 4
+"parent_id": 2
 },
 6: {
 "name": &"shady",
@@ -35,9 +35,5 @@ data = {
 7: {
 "name": &"christian",
 "parent_id": 6
-},
-8: {
-"name": &"robert",
-"parent_id": 7
 }
 }
