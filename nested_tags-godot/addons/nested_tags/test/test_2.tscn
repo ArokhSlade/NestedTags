@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bp1j2fmhby8w5"]
+
+[ext_resource type="Script" uid="uid://ddjvs34rgywni" path="res://addons/nested_tags/test/test_2.gd" id="1_m55jy"]
+[ext_resource type="NestedTagsDefinition" uid="uid://p5hnqnysccvd" path="res://test/nested_tags_2.tres" id="2_3eex6"]
+
+[node name="Test2" type="Node2D" unique_id=1447510347]
+script = ExtResource("1_m55jy")
+definition = ExtResource("2_3eex6")

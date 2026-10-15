@@ -4,7 +4,12 @@ extends Node2D
 @export_custom(PROPERTY_HINT_NONE, "nested_tag") var tag : int = 3
 @export_tool_button("print tag", "Anchor") var refresh_button = print_tag
 
-var definition = load(ProjectSettings.get_setting("nested_tags/nested_tags_definition"))
+@export var definition = load(ProjectSettings.get_setting("nested_tags/nested_tags_definition"))
+var stylebox = load("res://addons/nested_tags/ui/nested_tags_definition/root_button_style_default.tres")
+
+
+@export var curve : Curve = Curve.new()
+
 
 class Spaceship:
 	pass
@@ -37,7 +42,7 @@ func test_features():
 	var is_match = match_building == building
 	var is_building = definition.contains(building, tower)
 	var full_name_tower = definition.get_full_name(tower)
-	print(full_name_tower)	
+	print(full_name_tower)
 	var full_name_ok = &"building.tower" == full_name_tower
 	var tower_by_name = definition.get_tag(full_name_tower)
 	var by_name_ok = tower == tower_by_name
@@ -46,6 +51,9 @@ func test_features():
 	print(is_building)
 	print(full_name_ok)
 	print(by_name_ok)
+	
+	var data = definition.get("data")
+	print(data)
 
 
 func _ready():

@@ -1,6 +1,14 @@
 [gd_scene format=3 uid="uid://csofjo6a7lek3"]
 
 [ext_resource type="Script" uid="uid://cpqc3q5pgnhgc" path="res://addons/nested_tags/test/nested_tags_test.gd" id="1_a0f2y"]
+[ext_resource type="NestedTagsDefinition" uid="uid://p5hnqnysccvd" path="res://test/nested_tags_2.tres" id="2_6c7yi"]
+
+[sub_resource type="Curve" id="Curve_a0f2y"]
+_data = [Vector2(0.13539653, 0.75561166), 0.0, 0.0, 0, 0, Vector2(0.28239846, 0.2340067), 0.0, 0.0, 0, 0, Vector2(0.48742747, 0.41638607), 0.0, 0.0, 0, 0, Vector2(0.6750484, 0.7118406), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
 
 [node name="NestedTagsTest" type="Node2D" unique_id=619940026]
 script = ExtResource("1_a0f2y")
+tag = 6
+definition = ExtResource("2_6c7yi")
+curve = SubResource("Curve_a0f2y")

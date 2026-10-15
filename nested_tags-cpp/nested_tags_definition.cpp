@@ -227,6 +227,7 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_child_tag", "p_child_name", "p_parent_id"), &NestedTagsDefinition::get_child_tag);
 	ClassDB::bind_method(D_METHOD("match", "p_id_1", "p_id_2"), &NestedTagsDefinition::match);
 	ClassDB::bind_method(D_METHOD("contains", "p_id_1", "p_id_2"), &NestedTagsDefinition::contains);
+	
 }
 
 String NestedTagsDefinition::_to_string() const {
@@ -252,8 +253,7 @@ bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value
 }
 
 bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const {
-	if (p_name == StringName("data"))
-	{
+	if (p_name == StringName("data")) {
 		Dictionary _data = Dictionary{};
 		for (auto& kv : data)
 		{
@@ -264,18 +264,14 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
 			_data[id] = data_dict;
 		}
 		r_ret = _data;
-	} else
-	{
+	} else {
 		return false;
 	}
     return true;
 }
 	
 void NestedTagsDefinition::_get_property_list(List<PropertyInfo> *p_list) const {
-	p_list->push_back(PropertyInfo(Variant::ARRAY, "names", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
-	p_list->push_back(PropertyInfo(Variant::ARRAY, "parents", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
-	p_list->push_back(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE));
-	p_list->push_back(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+	p_list->push_back(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 }
  
 id_t NestedTagsDefinition::match(id_t p_id_1, id_t p_id_2) const {
