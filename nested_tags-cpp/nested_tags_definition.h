@@ -23,8 +23,6 @@ public:
 	NestedTagsDefinition();
 	~NestedTagsDefinition() override = default;
 
-	bool is_root_tag(id_t p_id) const;
-
 	bool try_add(const StringName& p_name, id_t p_parent_id = 0);
 	void erase(id_t p_id);
 	void NestedTagsDefinition::_erase_recursively(id_t p_id);

@@ -16,10 +16,6 @@ NestedTagsDefinition::NestedTagsDefinition()
 
 const char* NestedTagsDefinition::null_tag_name = "__NULL__TAG__";
 
-bool NestedTagsDefinition::is_root_tag(id_t p_id) const {
-	return 0 == get_parent_id(p_id);
-}
-
 bool NestedTagsDefinition::try_add(const StringName& p_name, id_t p_parent_id) {
 	bool ret_val = true;
 	ret_val &= is_tag_name_valid(p_name);
@@ -215,7 +211,6 @@ int NestedTagsDefinition::size() const {
 
 void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
-	ClassDB::bind_method(D_METHOD("is_root_tag", "p_id"), &NestedTagsDefinition::is_root_tag);
 	ClassDB::bind_method(D_METHOD("try_add", "p_name", "p_parent_id"), &NestedTagsDefinition::try_add, DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("erase", "p_id"), &NestedTagsDefinition::erase);
 	ClassDB::bind_method(D_METHOD("has_tag", "p_id"), &NestedTagsDefinition::has_tag);

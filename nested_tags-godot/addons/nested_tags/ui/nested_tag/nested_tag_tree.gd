@@ -4,10 +4,11 @@ signal tag_checked(tag)
 
 const COLUMN_CHECK = 0
 
-var items_and_tags = {}
+var items_to_tags = {}
+var tags_to_items = {}
 
 func set_checked(tag : int):
-	var item = items_and_tags.get(tag)
+	var item = tags_to_items.get(tag)
 	if not item:
 		push_error("NestedTagTree::set_tag(%s): tag not found." % [tag])
 		return
@@ -16,7 +17,7 @@ func set_checked(tag : int):
 
 func get_checked():
 	var item = find_checked_recursive(get_root())
-	var tag = items_and_tags[item]
+	var tag = items_to_tags[item]
 	return tag
 
 
@@ -55,13 +56,12 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 	hide_root = true
 	columns = 1
 	
-	var parent_item = null
+	
 	var item
 	var pending_tags = []
 	
 	for tag : int in definition:
 		pending_tags.push_back(tag)
-	var old_max = pending_tags.size()
 	
 	var max_item_rect = Rect2i()
 	
@@ -69,8 +69,8 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 	var null_tag : int = (0)
 	root.set_text(0, definition.get_name(null_tag)) # TODO: let definitions have names? show name as root item?
 	root.set_editable(0, false)
-	items_and_tags[root] = null_tag
-	items_and_tags[null_tag] = root
+	items_to_tags[root] = null_tag
+	tags_to_items[null_tag] = root
 	
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
@@ -80,12 +80,13 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 		_item.set_selectable(0, true)
 		
 		_item.set_editable(0, true)
-		items_and_tags[p_tag] = _item
-		items_and_tags[_item] = p_tag
+		items_to_tags[_item] = p_tag
+		tags_to_items[p_tag] = _item
 		
 		max_item_rect.position = max_item_rect.position.min(get_item_area_rect(_item).position)
 		max_item_rect.size = max_item_rect.size.min(get_item_area_rect(_item).size)
 	
+	var old_max = pending_tags.size()
 	while old_max > 0:
 		var i = 0
 		var max = old_max
@@ -95,18 +96,12 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 			
 			var parent = definition.get_parent_id(tag)
 			
-			if definition.is_root_tag(tag):
-				parent_item = null
-				max = max - 1
-				pending_tags[i] = pending_tags[max]
-				add_tag.call(tag, get_root())
-			elif items_and_tags.has(parent):
-				parent_item = items_and_tags[parent]
+			var parent_item = null
+			if tags_to_items.has(parent):
+				parent_item = tags_to_items[parent]
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, parent_item)
-			else:
-				pass # continue with pending_tags
 			
 			i += 1
 		
@@ -119,14 +114,15 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 	
 	if null == checked_tag:
 		push_error("nested_tag_tree::refresh(): checked tag was null")
-		checked_tag = items_and_tags[get_root()]
-	var checked_item = items_and_tags[checked_tag]
+		checked_tag = items_to_tags[get_root()]
+	var checked_item = tags_to_items[checked_tag]
 	update_checks(checked_item)
 
 
 func clear_all():
 	clear()
-	items_and_tags.clear()
+	items_to_tags.clear()
+	tags_to_items.clear()
 
 
 func _on_item_selected() -> void:
@@ -145,7 +141,7 @@ func _on_item_edited():
 func update_checks(item):
 	clear_checks()
 	check_tags_up_to_root(item)
-	tag_checked.emit(items_and_tags[item])
+	tag_checked.emit(items_to_tags[item])
 
 
 func clear_checks():

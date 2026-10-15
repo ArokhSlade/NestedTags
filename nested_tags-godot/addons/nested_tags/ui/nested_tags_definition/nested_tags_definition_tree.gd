@@ -68,7 +68,7 @@ func refresh(definition : NestedTagsDefinition):
 			
 			var parent = definition.get_parent_id(tag)
 			
-			if definition.is_root_tag(tag):
+			if 0 == parent:
 				parent_item = null
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
