@@ -23,8 +23,8 @@ public:
 	NestedTagsDefinition();
 	~NestedTagsDefinition() override = default;
 
-	bool try_add(const StringName& p_name, id_t p_parent_id = 0);
-	bool _try_add_explicit(id_t p_id, const StringName &p_name, id_t p_parent_id);
+	id_t add_tag(const StringName& p_name, id_t p_parent_id = 0);
+	id_t _add_tag_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id);
 	
 	void erase(id_t p_id);
 	bool try_reparent(id_t p_id, id_t p_parent_id);

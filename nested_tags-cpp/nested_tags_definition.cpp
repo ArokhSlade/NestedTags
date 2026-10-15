@@ -15,23 +15,24 @@ NestedTagsDefinition::NestedTagsDefinition()
 const char* NestedTagsDefinition::null_tag_name = "__NULL__TAG__";
 const char* NestedTagsDefinition::missing_tag_name = "__MISSING__TAG__";
 
-bool NestedTagsDefinition::try_add(const StringName& p_name, id_t p_parent_id) {
-	bool ret_val = true;
-	ret_val &= is_tag_name_valid(p_name);
-	ret_val &= !is_name_taken_among_siblings(p_name, p_parent_id);
-	if (ret_val) {
-		id_t new_id = ++last_tag_id;
-		data[new_id] = TagData{p_parent_id, p_name};
+id_t NestedTagsDefinition::add_tag(const StringName& p_name, id_t p_parent_id) {
+	if (!is_tag_name_valid(p_name)) {
+		return 0;
 	}
-	return ret_val;
+	if (is_name_taken_among_siblings(p_name, p_parent_id)) {
+		return 0;
+	}
+	id_t new_id = ++last_tag_id;
+	data[new_id] = TagData{p_parent_id, p_name};
+	return new_id;
 }
 
 	//  treat invalid input as error because explicit should only be called with valid data.
 	//  this function is allowed to add the null tag because it is used for loading serialized data
-	bool NestedTagsDefinition::_try_add_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id) {
+	id_t NestedTagsDefinition::_add_tag_explicit(id_t p_id, const StringName& p_name, id_t p_parent_id) {
 	if (data.has(p_id)) {
 		UtilityFunctions::push_error(FUNCTION_STR, ": tried adding existing tag: ", p_id, " (name: ", p_name, " parent: ", p_parent_id, ")");
-		return false;
+		return 0;
 	}
 	bool is_null_tag = p_name == StringName(null_tag_name);
 	is_null_tag &= 0 == p_id;
@@ -39,18 +40,18 @@ bool NestedTagsDefinition::try_add(const StringName& p_name, id_t p_parent_id) {
 	
 	if (!is_tag_name_valid(p_name)) {
 		UtilityFunctions::push_error(FUNCTION_STR, ": invalid name: ", p_name);
-		return false;
+		return 0;
 	}
 	if (is_name_taken_among_siblings(p_name, p_parent_id)) {
 		UtilityFunctions::push_error(FUNCTION_STR, ": name ", p_name, " not unique among siblings.");
-		return false;
+		return 0;
 	}
 	if (p_id > last_tag_id) {
 		last_tag_id = p_id;
 	}
 	data[p_id] = TagData{p_parent_id, p_name};
 
-	return true;
+	return last_tag_id;
 }
 
 void NestedTagsDefinition::erase(id_t p_id) {
@@ -209,8 +210,8 @@ int NestedTagsDefinition::size() const {
 
 void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
-	ClassDB::bind_method(D_METHOD("try_add", "p_name", "p_parent_id"), &NestedTagsDefinition::try_add, DEFVAL(0));
-	ClassDB::bind_method(D_METHOD("_try_add_explicit", "p_id", "p_name", "p_parent_id"), &NestedTagsDefinition::_try_add_explicit);
+	ClassDB::bind_method(D_METHOD("add_tag", "p_name", "p_parent_id"), &NestedTagsDefinition::add_tag, DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("_add_tag_explicit", "p_id", "p_name", "p_parent_id"), &NestedTagsDefinition::_add_tag_explicit);
 	ClassDB::bind_method(D_METHOD("erase", "p_id"), &NestedTagsDefinition::erase);
 	ClassDB::bind_method(D_METHOD("try_reparent", "p_id", "p_parent_id"), &NestedTagsDefinition::try_reparent);
 	ClassDB::bind_method(D_METHOD("try_rename", "p_id", "p_name"), &NestedTagsDefinition::try_rename);
@@ -243,7 +244,7 @@ bool NestedTagsDefinition::_set(const StringName &p_name, const Variant &p_value
 			Dictionary data_dict = _data[id];
 			id_t parent_id = data_dict["parent_id"];
 			StringName name = data_dict["name"];
-			_try_add_explicit(id, name, parent_id);
+			_add_tag_explicit(id, name, parent_id);
 		}
 		return true;
 	}
