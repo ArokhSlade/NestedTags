@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bur4tcxtlcncr"]
+
+[ext_resource type="Theme" uid="uid://7ehek2fws6x" path="res://addons/nested_tags/ui/nested_tags.theme" id="1_6vbf8"]
+[ext_resource type="Script" uid="uid://baqrjgvs18nm4" path="res://addons/nested_tags/ui/nested_tags_definition/nested_tags_definition_data_tree.gd" id="2_6vbf8"]
+[ext_resource type="Script" uid="uid://c7dc3ar5121r3" path="res://addons/nested_tags/ui/nested_tags_definition/tag_adder.gd" id="3_jthbt"]
+
+[node name="NestedTagsDefinitionDataTree" type="Tree" unique_id=203260917]
+propagate_maximum_size = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_6vbf8")
+theme_override_colors/scroll_hint_color = Color(0.93933225, 0.81543183, 0.487068, 1)
+scroll_hint_mode = 1
+script = ExtResource("2_6vbf8")
+
+[node name="TagAdder" type="LineEdit" parent="." unique_id=368133474]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 0
+layout_direction = 3
+placeholder_text = "TagName"
+alignment = 2
+keep_editing_on_text_submit = true
+expand_to_text_length = true
+script = ExtResource("3_jthbt")
+
+[connection signal="button_clicked" from="." to="." method="_on_button_clicked"]
+[connection signal="custom_item_clicked" from="." to="." method="_on_custom_item_clicked"]
+[connection signal="item_edited" from="." to="." method="_on_item_edited"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="multi_selected" from="." to="." method="_on_multi_selected"]
+[connection signal="nothing_selected" from="." to="." method="_on_nothing_selected"]
+[connection signal="text_canceled" from="TagAdder" to="." method="_on_tag_adder_text_canceled"]
+[connection signal="text_changed" from="TagAdder" to="TagAdder" method="_on_text_changed"]
+[connection signal="text_submitted" from="TagAdder" to="." method="_on_tag_adder_text_submitted"]

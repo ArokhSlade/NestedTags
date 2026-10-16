@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://b02htid877ise"]
+
+[ext_resource type="Theme" uid="uid://7ehek2fws6x" path="res://addons/nested_tags/ui/nested_tags.theme" id="1_d8f7e"]
+[ext_resource type="Script" uid="uid://dmaddbvoir8rf" path="res://addons/nested_tags/ui/nested_tags_definition/nested_tags_definition_data_editor.gd" id="2_d8f7e"]
+[ext_resource type="PackedScene" uid="uid://bur4tcxtlcncr" path="res://addons/nested_tags/ui/nested_tags_definition/nested_tags_definition_data_tree.tscn" id="3_35v6s"]
+
+[node name="NestedTagsDefinitionDataEditor" type="PanelContainer" unique_id=316779993]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_d8f7e")
+script = ExtResource("2_d8f7e")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=363969645]
+layout_mode = 2
+
+[node name="NestedTagsDefinitionDataTree" parent="VBoxContainer" unique_id=203260917 instance=ExtResource("3_35v6s")]
+unique_name_in_owner = true
+layout_mode = 2

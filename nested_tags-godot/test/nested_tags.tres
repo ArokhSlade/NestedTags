@@ -1,8 +1,6 @@
 [gd_resource type="NestedTagsDefinition" format=3 uid="uid://dddtpig1uh6c1"]
 
 [resource]
-names = [0, 0, 1, 2, 2, 1, 17]
-parents = [&"__NULL__TAG__", &"Spaceship", &"Class", &"Frigate", &"Cruiser", &"Module", &"Drive"]
 data = {
 0: {
 "name": &"__NULL__TAG__",

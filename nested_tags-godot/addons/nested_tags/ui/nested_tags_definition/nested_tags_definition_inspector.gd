@@ -4,6 +4,9 @@ const NestedTagsDefinitionProperty = preload("uid://bcsm62pnnier")
 const NESTED_TAGS_DEFINITION_EDITOR = preload("uid://cbo7wtesmkas7")
 const NestedTagsDefinitionEditor = preload("uid://bcuoicet56hlj")
 
+const NestedTagsDefinitionDataProperty = preload("uid://d30qox8i2ce4f")
+
+
 var definition_editor : NestedTagsDefinitionEditor
 var definition_editor_1 : NestedTagsDefinitionEditor
 
@@ -15,7 +18,6 @@ func _can_handle(object):
 
 func _parse_begin(object):
 	if object is NestedTagsDefinition:
-		print("hello")
 		definition_editor = NESTED_TAGS_DEFINITION_EDITOR.instantiate()
 		add_custom_control(definition_editor)
 		definition_editor.set_definition(object)
@@ -33,6 +35,10 @@ func _parse_property(object: Object, type: Variant.Type, name: String, hint_type
 		#definition_editor_1 = NESTED_TAGS_DEFINITION_EDITOR.instantiate()
 		#add_custom_control(definition_editor_1)
 		#definition_editor_1.set_definition(prop)
-		return false
+	elif object is NestedTagsDefinition:
+		if &"data" == name:
+			if TYPE_DICTIONARY == type:
+				print("data dictionary")
+				add_property_editor(name, NestedTagsDefinitionDataProperty.new())
 	
 	return false
