@@ -31,19 +31,20 @@ func refresh(data : Dictionary):
 	var item
 	var pending_tags = []
 	
-	for tag in data:
-		pending_tags.push_back(tag)
-	var old_max = pending_tags.size()
+	
 	
 	var max_item_rect = Rect2i()
 	
 	var root = create_item()
-	
 	root.set_text(0, data.get(0).name)
 	root.set_editable(0, false)
-	
 	dict[root] = 0
 	dict[0] = root
+	
+	for tag in data:
+		if 0 == tag:
+			continue
+		pending_tags.push_back(tag)
 	
 	var add_tag = func(p_tag, p_parent_item):
 		var _item : TreeItem = create_item(p_parent_item)
@@ -59,36 +60,26 @@ func refresh(data : Dictionary):
 		max_item_rect.position = max_item_rect.position.min(get_item_area_rect(_item).position)
 		max_item_rect.size = max_item_rect.size.min(get_item_area_rect(_item).size)
 	
+	var old_max = pending_tags.size()
 	while old_max > 0:
 		var i = 0
 		var max = old_max
-		
 		while i < max:
 			var tag = pending_tags[i]
-			
 			var parent = data.get(tag).parent_id
-			
-			if 0 == parent:
-				parent_item = null
-				max = max - 1
-				pending_tags[i] = pending_tags[max]
-				add_tag.call(tag, get_root())
-			elif dict.has(parent):
+			parent_item = null
+			if dict.has(parent):
 				parent_item = dict[parent]
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
 				add_tag.call(tag, parent_item)
-			else:
-				pass # continue with pending_tags
-			
 			i += 1
-		
 		if max == old_max:
 			push_error("NestedTagsDefinitionTree.refresh(): child tag without parent tag found")
 			return
 		old_max = max
-	var new_height = compute_height()
 	
+	var new_height = compute_height()
 	custom_minimum_size.y = new_height
 	#set_size(Vector2i(0, 599))
 
@@ -249,6 +240,8 @@ func _drop_data(at_position, data):
 
 func compute_height():
 	var item = get_root().get_next_visible()
+	if hide_root:
+		item = item.get_next_visible()
 	if not item:
 		return 0
 	var visible_count = 1
@@ -259,7 +252,7 @@ func compute_height():
 	row_height += get_theme_constant("inner_item_margin_top")
 	row_height += get_theme_constant("inner_item_margin_bottom")
 	row_height += get_theme_font("font").get_height(get_theme_font_size("font_size"))
-	var height = row_height * visible_count
+	var height = row_height * (visible_count + 1)
 	return height
 
 

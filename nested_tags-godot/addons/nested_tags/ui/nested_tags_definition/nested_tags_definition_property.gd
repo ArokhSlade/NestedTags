@@ -6,6 +6,8 @@ var nested_tags_definition_editor
 var updating = false
 
 func _init():
+	name_split_ratio = 0.3
+	draw_label = true
 	nested_tags_definition_editor = NESTED_TAGS_DEFINITION_EDITOR.instantiate()
 	add_child(nested_tags_definition_editor)
 	add_focusable(nested_tags_definition_editor)

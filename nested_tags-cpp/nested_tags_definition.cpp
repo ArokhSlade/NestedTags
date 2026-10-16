@@ -271,7 +271,7 @@ bool NestedTagsDefinition::_get(const StringName &p_name, Variant &r_ret) const 
 }
 	
 void NestedTagsDefinition::_get_property_list(List<PropertyInfo> *p_list) const {
-	p_list->push_back(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
+	p_list->push_back(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "nested_tags_definition_data", PROPERTY_USAGE_DEFAULT));
 }
  
 id_t NestedTagsDefinition::match(id_t p_id_1, id_t p_id_2) const {

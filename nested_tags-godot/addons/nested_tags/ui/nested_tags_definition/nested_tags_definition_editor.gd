@@ -6,7 +6,6 @@
 @onready var tree = %NestedTagsDefinitionTree
 @onready var text_edit = %TextEdit
 
-
 func set_definition(p_definition):
 	definition = p_definition
 	if not is_node_ready():
@@ -27,7 +26,6 @@ func undoable_try_add_tag(name, parent_id = 0):
 	undoer.add_do_method(tree, "refresh")
 	
 	undoer.add_undo_method(tree, "refresh")
-	
 	undoer.commit_action()
 
 

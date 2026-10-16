@@ -56,7 +56,6 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 	hide_root = true
 	columns = 1
 	
-	
 	var item
 	var pending_tags = []
 	
