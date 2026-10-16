@@ -35,8 +35,8 @@ func _parse_property(object: Object, type: Variant.Type, name: String, hint_type
 		#definition_editor_1 = NESTED_TAGS_DEFINITION_EDITOR.instantiate()
 		#add_custom_control(definition_editor_1)
 		#definition_editor_1.set_definition(prop)
-	elif object is NestedTagsDefinition:
-		if &"data" == name:
+	#elif object is NestedTagsDefinition:
+	elif &"data" == name:
 			if TYPE_DICTIONARY == type:
 				print("data dictionary")
 				add_property_editor(name, NestedTagsDefinitionDataProperty.new())
