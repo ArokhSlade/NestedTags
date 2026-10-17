@@ -69,3 +69,13 @@ static func names(tag):
 	if tag is String or tag is StringName:
 		tag = definition.get_tag(tag)
 	return definition.get_names(tag)
+
+
+static func get_child_tags(parent_tag):
+	if not definition:
+		_static_init()
+	var tags = []
+	for tag in definition:
+		if definition.get_parent_id(tag) == parent_tag:
+			tags.push_back(tag)
+	return tags

@@ -62,8 +62,13 @@ func _on_editor_code_completion_requested():
 	var sections = text.split(char(0xFFFF))
 	var left = sections[0]
 	var right = sections[1]
-	if left.ends_with("HiTags.get(\""):
-		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, "mytag.yourtag.hello.world", "mytag.yourtag.hello.world")
+	
+	var parent_tag = 0
+	if left.ends_with("Tags.tag(\""):
+		var tags = Tags.get_child_tags(parent_tag)
+		for tag in tags:
+			var tag_text = Tags.name(tag)
+			editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, tag_text)
 		editor.update_code_completion_options(true)
 
 

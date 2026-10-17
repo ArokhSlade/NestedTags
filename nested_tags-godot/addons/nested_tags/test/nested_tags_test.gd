@@ -88,10 +88,10 @@ func test_syntax():
 	
 	Tags.definition = old_definition
 
+
 func test_singleton():
 	var _tag = Tags.tag("sasha")
 	print(_tag)
-	
 
 
 func _ready():

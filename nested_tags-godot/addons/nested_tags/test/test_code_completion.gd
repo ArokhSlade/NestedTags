@@ -39,3 +39,4 @@ func test():
 	dict2.hello._
 	dict2.hello.world
 	dict2.hello.enum
+	Tags.tag("")
