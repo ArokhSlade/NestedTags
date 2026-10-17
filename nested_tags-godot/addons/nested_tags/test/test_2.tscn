@@ -6,3 +6,11 @@
 [node name="Test2" type="Node2D" unique_id=1447510347]
 script = ExtResource("1_m55jy")
 definition = ExtResource("2_3eex6")
+
+[node name="Label" type="Label" parent="." unique_id=1333646559]
+offset_left = 153.0
+offset_top = 155.0
+offset_right = 1047.5
+offset_bottom = 455.0625
+theme_override_font_sizes/font_size = 100
+text = "AFK SHORT BREAK"

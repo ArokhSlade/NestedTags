@@ -56,6 +56,22 @@ func test_features():
 	print(data)
 
 
+func test_syntax():
+	var Tags = definition
+	var my_tag = Tags.get("hello")
+	var your_tag = Tags.get("world")
+	print(Tags.both(my_tag, your_tag))
+	print(Tags.owns(my_tag, your_tag))
+	Tags.reparent(my_tag, your_tag)
+	Tags.rename(my_tag, "byebye")
+	var our_tag = Tags.add("Yay", my_tag)
+	Tags.remove(our_tag)
+	print(Tags.owns("hello.world", "world"))
+	print(Tags.both("hello.world", "world"))
+	print(Tags.names("hello.world"))
+	print(Tags.name("hello.world"))
+	print(Tags.full_name("hello.world"))
+
 func _ready():
 	print_tag()
 	test_features()
