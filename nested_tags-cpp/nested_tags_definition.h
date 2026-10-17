@@ -37,7 +37,7 @@ public:
 
 	StringName get_name(id_t p_id) const;
 	StringName get_full_name(id_t p_tag_id) const;
-	Vector<StringName> get_lineage_names(id_t p_tag_id) const;
+	PackedStringArray get_names(id_t p_tag_id) const;
 
 	id_t get_parent_id(id_t p_id) const;
 

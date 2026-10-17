@@ -57,24 +57,48 @@ func test_features():
 
 
 func test_syntax():
-	var Tags = definition
-	var my_tag = Tags.get("hello")
-	var your_tag = Tags.get("world")
-	print(Tags.both(my_tag, your_tag))
-	print(Tags.owns(my_tag, your_tag))
-	Tags.reparent(my_tag, your_tag)
-	Tags.rename(my_tag, "byebye")
-	var our_tag = Tags.add("Yay", my_tag)
-	Tags.remove(our_tag)
-	print(Tags.owns("hello.world", "world"))
-	print(Tags.both("hello.world", "world"))
-	print(Tags.names("hello.world"))
-	print(Tags.name("hello.world"))
-	print(Tags.full_name("hello.world"))
+	var old_definition = Tags.definition
+	Tags.definition = NestedTagsDefinition.new()
+	Tags.definition.add_tag("hello", 0)
+	Tags.definition.add_tag("world", 1)
+	
+	var hello = Tags.tag("hello")
+	var world = Tags.tag("hello.world")
+	print(Tags.both(hello, world) == Tags.tag("hello"))
+	print(Tags.owns(hello, world) == true)
+	Tags.reparent_tag(world, 0)
+	Tags.reparent_tag(hello, world)
+	print(Tags.names(hello) == PackedStringArray(["world","hello"]))
+	
+	Tags.rename(hello, "byebye")
+	print(Tags.name(hello) == "byebye")
+	var byebye = hello
+	var whaddup = Tags.add("whaddup", hello)
+	print(Tags.names(whaddup) == PackedStringArray(["world", "byebye", "whaddup"]))
+	Tags.remove(whaddup)
+	var removed = true
+	for tag in Tags.definition:
+		removed = removed and tag != whaddup
+	print(removed)
+	print(Tags.owns("world.byebye", "world") == false)
+	print(Tags.both("world.byebye", "world") == Tags.tag("world"))
+	print(Tags.names("world.byebye") == PackedStringArray(["world", "byebye"]))
+	print(Tags.name(byebye) == "byebye")
+	print(Tags.full_name(byebye) == "world.byebye")
+	
+	Tags.definition = old_definition
+
+func test_singleton():
+	var _tag = Tags.tag("sasha")
+	print(_tag)
+	
+
 
 func _ready():
 	print_tag()
 	test_features()
+	test_singleton()
+	test_syntax()
 
 
 func print_tag():

@@ -1,6 +1,8 @@
 @tool
 extends Node
 
+signal singleton_changed(new_singleton)
+
 var _definition : NestedTagsDefinition
 var _settings_tab
 
@@ -23,7 +25,7 @@ func _init():
 	# leave it in for now to avoid having to re-set the setting manually frequently
 
 
-func initialize(settings_tab):
+func initialize():
 	load_definition_from_project_settings()
 
 
@@ -48,7 +50,6 @@ func load_definition_from_path(path):
 func save_definition_to_project_settings(path):
 	ProjectSettings.set_setting("nested_tags/nested_tags_definition", path)
 	ProjectSettings.save()
-	
 
 
 func load_definition_from_project_settings():

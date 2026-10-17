@@ -1,14 +1,14 @@
 @tool
 extends EditorPlugin
 
-
 const NestedTagInspector = preload("uid://45fgmuqhruwy")
 const SETTINGS_TAB = preload("uid://bou2s5kt4dbb")
+const SettingsTab = preload("uid://xqwew7j5j6rh")
 const NestedTagsDefinitionInspector = preload("uid://ds5nxhwe3g0a8")
 const Settings = preload("uid://cccga8o21pfq5")
 
 var nested_tag_inspector
-var settings_tab
+var settings_tab : SettingsTab
 var nested_tags_definition_inspector
 var settings
 
@@ -27,11 +27,13 @@ func _enter_tree():
 	add_control_to_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, settings_tab)
 	
 	settings = Settings.new()
-	settings.initialize(settings_tab)
+	settings.initialize()
 	add_child(settings)
 	
 	settings_tab.initialize(settings)
 	settings_tab.refresh()
+	
+	#add_autoload_singleton(singleton_name, )
 	
 	script_editor = EditorInterface.get_script_editor()
 	script_editor.editor_script_changed.connect(_on_script_editor_editor_script_changed)
@@ -58,12 +60,9 @@ func _on_editor_code_completion_requested():
 	print("_on_editor_code_completion_requested")
 	var text := editor.get_text_for_code_completion()
 	var sections = text.split(char(0xFFFF))
-	
-	var regex = RegEx.create_from_string(r"NestedTag\(")
-	var rex_match := regex.search(sections[0])
-	if not rex_match:
-		print(regex, " not found in ", sections[0])
-	else:
+	var left = sections[0]
+	var right = sections[1]
+	if left.ends_with("HiTags.get(\""):
 		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, "mytag.yourtag.hello.world", "mytag.yourtag.hello.world")
 		editor.update_code_completion_options(true)
 
