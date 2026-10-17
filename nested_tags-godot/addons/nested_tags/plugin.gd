@@ -36,6 +36,7 @@ func _enter_tree():
 	script_editor = EditorInterface.get_script_editor()
 	script_editor.editor_script_changed.connect(_on_script_editor_editor_script_changed)
 
+
 func print_time():
 	#print("script changed at %s" % [Time.get_time_string_from_system()])
 	pass
@@ -44,16 +45,34 @@ func print_time():
 func _on_script_editor_editor_script_changed(script : Script):
 	if editor:
 		editor.text_changed.disconnect(print_time)
+		editor.code_completion_requested.disconnect(_on_editor_code_completion_requested)
 	
 	script_editor = EditorInterface.get_script_editor()
 	if script_editor and script_editor.get_current_editor():
 		editor = script_editor.get_current_editor().get_base_editor()
-	editor.text_changed.connect(print_time)
+		editor.text_changed.connect(print_time)
+		editor.code_completion_requested.connect(_on_editor_code_completion_requested)
+
+
+func _on_editor_code_completion_requested():
+	print("_on_editor_code_completion_requested")
+	var text := editor.get_text_for_code_completion()
+	var sections = text.split(char(0xFFFF))
+	editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, "mytag.yourtag.hello.world", "mytag.yourtag.hello.world")
+	editor.update_code_completion_options(true)
+	return
+	var regex = RegEx.create_from_string(r"NestedTag\(")
+	var rex_match := regex.search(sections[1])
+	if rex_match.strings.size() > 0:
+		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, "mytag.yourtag.hello.world", "mytag.yourtag.hello.world")
+		editor.update_code_completion_options(true)
 
 
 func _exit_tree():
 	if editor:
 		editor.text_changed.disconnect(print_time)
+		editor.code_completion_requested.disconnect(_on_editor_code_completion_requested)
+	
 	script_editor.editor_script_changed.disconnect(_on_script_editor_editor_script_changed)
 	
 	remove_control_from_container(EditorPlugin.CONTAINER_PROJECT_SETTING_TAB_RIGHT, settings_tab)
