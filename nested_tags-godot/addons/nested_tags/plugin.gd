@@ -58,12 +58,12 @@ func _on_editor_code_completion_requested():
 	print("_on_editor_code_completion_requested")
 	var text := editor.get_text_for_code_completion()
 	var sections = text.split(char(0xFFFF))
-	editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, "mytag.yourtag.hello.world", "mytag.yourtag.hello.world")
-	editor.update_code_completion_options(true)
-	return
+	
 	var regex = RegEx.create_from_string(r"NestedTag\(")
-	var rex_match := regex.search(sections[1])
-	if rex_match.strings.size() > 0:
+	var rex_match := regex.search(sections[0])
+	if not rex_match:
+		print(regex, " not found in ", sections[0])
+	else:
 		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, "mytag.yourtag.hello.world", "mytag.yourtag.hello.world")
 		editor.update_code_completion_options(true)
 

@@ -12,4 +12,4 @@ func _process(delta):
 
 
 func test():
-	var loaded = load("mytag.yourtag.hello.world")
+	var loaded = NestedTag()
