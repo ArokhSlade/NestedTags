@@ -20,6 +20,12 @@ class NestedTagsDefinition : public Resource {
 	GDCLASS(NestedTagsDefinition, Resource)
 
 public:
+	static StringName get_null_tag_name();
+
+protected:
+	static void _bind_methods();
+
+public:
 	NestedTagsDefinition();
 	~NestedTagsDefinition() override = default;
 
@@ -50,8 +56,7 @@ public:
 	id_t match(id_t p_id_1, id_t p_id_2) const;
 	bool contains(id_t p_id_1, id_t p_id_2) const;
 	
-protected:
-	static void _bind_methods();
+protected:	
 	String _to_string() const;
 	bool _set(const StringName &p_name, const Variant &p_value);
 	bool _get(const StringName &p_name, Variant &r_ret) const;

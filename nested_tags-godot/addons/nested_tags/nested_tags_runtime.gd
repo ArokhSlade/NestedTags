@@ -79,15 +79,37 @@ static func names(tag):
 
 
 static func get_child_tags(parent_tag):
+	ensure_definition()
 	if parent_tag is String or parent_tag is StringName:
 		parent_tag = definition.get_tag(parent_tag)
-	if not definition:
-		_static_init()
 	var tags = []
 	for tag in definition:
 		if definition.get_parent_id(tag) == parent_tag:
 			tags.push_back(tag)
 	return tags
+
+
+static func has_tag(tag):
+	ensure_definition()
+	if tag is String or tag is StringName:
+		if tag.is_empty():
+			return false
+		# TODO: this is a workaround for logical inconsistency:
+		#		has_tag(get_tag("nonsense")) will return true.
+		#		because get_tag("nonsense") == 0 currently
+		elif tag == NestedTagsDefinition.get_null_tag_name():
+			tag = 0
+		else:
+			tag = definition.get_tag(tag)
+			if tag == 0: 
+				return false
+	var ret_val = definition.has_tag(tag)
+	return ret_val
+
+
+static func ensure_definition():
+	if not definition:
+		_static_init()
 
 
 func get_method_list() -> Array[Dictionary]:

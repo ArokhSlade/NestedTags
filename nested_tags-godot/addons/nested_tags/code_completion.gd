@@ -7,6 +7,7 @@ var s_quote = r"\""
 var s_open_parent = r"("
 var s_identifier = r"(?:[A-Za-z_][A-Za-z0-1_]*)"
 var s_optional_alphanum_string = r"(?:[A-Za-z0-1_]*)"
+var s_tag_compound_name_prefix = r"(?:{identifier}\.)+".format({"identifier":s_identifier})
 
 var arg_idx = -1
 var method_name = ""
@@ -67,10 +68,6 @@ func get_identifier_suffix(string : String):
 	var rex_match = regex.search(string)
 	var ret_val = "" if not rex_match else rex_match.get_string()
 	return ret_val
-
-
-func get_last_complete_compound(tag_name_stub):
-	pass
 
 
 func process(string):
@@ -167,11 +164,15 @@ class State6 extends State:
 		host.tag_names_full = host.tag_names_left + host.tag_names_right
 		if host.tag_names_full:
 			return State7.new(host, host.tag_names_full) # TODO: figure out how to manage string variable ownership
-		else:
-			return FailState.new(host, string)
+			
+		return FailState.new(host, "state6")
 
 
 class State7 extends State:
 	func process(tag_full_name_stub):
-		#Tags.get_child_tags()
+		var regex = RegEx.create_from_string(host.s_tag_compound_name_prefix)
+		var rex_match = regex.search(tag_full_name_stub)
+		var compound_tag_name_prefix = "" if not rex_match else rex_match.get_string()
+		if not Tags.has_tag(compound_tag_name_prefix):
+			return FailState.new(host, "state7")
 		pass

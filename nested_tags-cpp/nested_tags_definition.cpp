@@ -208,6 +208,10 @@ int NestedTagsDefinition::size() const {
 	return data.size(); 
 }
 
+StringName NestedTagsDefinition::get_null_tag_name() {
+	return null_tag_name;
+}
+
 void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_to_string"), &NestedTagsDefinition::_to_string);
 	ClassDB::bind_method(D_METHOD("add_tag", "p_name", "p_parent_id"), &NestedTagsDefinition::add_tag, DEFVAL(0));
@@ -228,6 +232,8 @@ void NestedTagsDefinition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_child_tag", "p_child_name", "p_parent_id"), &NestedTagsDefinition::get_child_tag);
 	ClassDB::bind_method(D_METHOD("match", "p_id_1", "p_id_2"), &NestedTagsDefinition::match);
 	ClassDB::bind_method(D_METHOD("contains", "p_id_1", "p_id_2"), &NestedTagsDefinition::contains);
+	
+	ClassDB::bind_static_method(StringName("NestedTagsDefinition"), D_METHOD("get_null_tag_name"), &NestedTagsDefinition::get_null_tag_name);
 	
 }
 
