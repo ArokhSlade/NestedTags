@@ -5,7 +5,7 @@ extends Node
 
 
 func _ready():
-	test_class_db()
+	test_trim()
 
 
 func test_class_db():
@@ -13,4 +13,13 @@ func test_class_db():
 	var methods = tags.get_method_list()
 	print(methods)
 	pass
-	
+
+
+func test_trim():
+	var string = "123abc"
+	var trimmed = string.trim_suffix("c")
+	print(trimmed)
+	string = "123abc\""
+	print(string)
+	trimmed = string.trim_suffix("\"")
+	print(trimmed)

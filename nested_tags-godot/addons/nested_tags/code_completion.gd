@@ -91,7 +91,7 @@ func process(string):
 	while processing:
 		var state_name = TypeUtils.get_type_string(state)
 		print(state_name)
-		state = state.process(string)
+		state = state.process()
 		if state is EndState:
 			processing = false
 	if state is FailState:
@@ -105,7 +105,12 @@ func process(string):
 		return false
 
 
-class State:
+func print_excerpt(string):
+	var excerpt = string.substr(string.length() - 32)
+	print(excerpt)
+
+
+@abstract class State:
 	var host
 	var string
 	
@@ -113,11 +118,10 @@ class State:
 		host = host_
 		string = string_
 
-	func process(string : String):
-		return -1
+	@abstract func process() -> State
 
 class EndState extends State:
-	func process(string):
+	func process():
 		return self
 
 class FailState extends EndState:
@@ -127,7 +131,7 @@ class FailState extends EndState:
 		super(host_, string_)
 		error_message = string_
 	
-	func process(string):
+	func process():
 		print(error_message)
 		return self
 
@@ -135,18 +139,23 @@ class SuccessState extends EndState:
 	pass
 
 class State1 extends State:
-	func process(string):
+	func process():
 		if string.ends_with(host.s_quote):
+			host.print_excerpt(string)
 			string = string.trim_suffix(host.s_quote)
+			host.print_excerpt(string)
 			host.tag_names_left = ""
 			return State2.new(host, string)
 		else:
 			return FailState.new(host, str("no match: ", host.s_quote))
 
 class State2 extends State:
-	func process(string):
+	func process():
+		host.print_excerpt(string)
 		if string.ends_with(host.s_open_paren):
+			host.print_excerpt(string)
 			string = string.trim_suffix(host.s_open_paren)
+			host.print_excerpt(string)
 			return State3.new(host, string)
 		else:
 			var excerpt = string.substr(string.length() - 32)
@@ -154,7 +163,7 @@ class State2 extends State:
 			return FailState.new(host, string)
 
 class State3 extends State:
-	func process(string : String):
+	func process():
 		var identifier_suffix = host.get_identifier_suffix(string)
 		if identifier_suffix:
 			host.method_name = identifier_suffix
@@ -164,7 +173,7 @@ class State3 extends State:
 			return FailState.new(host, string)
 
 class State4 extends State:
-	func process(string):
+	func process():
 		if string.ends_with(host.s_dot):
 			string = string.trim_suffix(host.s_dot)
 			return State5.new(host, string)
@@ -172,7 +181,7 @@ class State4 extends State:
 			return FailState.new(host, string)
 
 class State5 extends State:
-	func process(string):
+	func process():
 		if string.ends_with(host.s_singleton_name):
 			var methods = Tags.get_singleton().get_method_list()
 			for method in methods:
@@ -186,7 +195,7 @@ class State5 extends State:
 		return FailState.new(host, string)
 
 class State6 extends State:
-	func process(string):
+	func process():
 		host.tag_names_right = ""
 		var regex
 		if host.tag_names_left:
@@ -205,7 +214,8 @@ class State6 extends State:
 
 class State7 extends State:
 	# NOTE: if we got here, it means the string is not empty 
-	func process(tag_full_name_stub):
+	func process():
+		var tag_full_name_stub = string
 		var regex = RegEx.create_from_string(host.s_tag_compound_name_prefix)
 		var rex_match = regex.search(tag_full_name_stub)
 		var compound_name_prefix = "" if not rex_match else rex_match.get_string()
@@ -223,7 +233,8 @@ class State7 extends State:
 
 class State8 extends State:
 	# NOTE: the parent tag is determined, now check if the last name stub has any matching tags
-	func process(last_name_stub):
+	func process():
+		var last_name_stub = string
 		var candidates = Tags.get_child_tags(host.parent_tag)
 		var matches = {}
 		for tag in candidates:
