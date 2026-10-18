@@ -11,12 +11,9 @@ var s_identifier = r"(?:[A-Za-z_][A-Za-z0-1_]*)"
 var s_optional_alphanum_string = r"(?:[A-Za-z0-1_]*)"
 var s_tag_compound_name_prefix = r"(?:{identifier}\.)+".format({"identifier":s_identifier})
 
-var arg_idx = -1
-var method_name = ""
- 
 var state : State
-
-#var code_left : String
+var arg_idx = -1
+var method_name = "" 
 var code_right : String
 var tag_names_left := ""
 var tag_names_right := ""
@@ -38,6 +35,36 @@ func get_completion_options(editor, left, right):
 	code_right = right
 	var suggestions_available = process(left)
 	update_completion_options(editor)
+
+
+func process(string):
+	reset(string)
+	while not state is EndState:
+		var state_name = TypeUtils.get_type_string(state)
+		print(state_name)
+		state = state.process()
+	if state is FailState:
+		print("processsing failed: ", state.error_message)
+		return false
+	elif state is SuccessState:
+		print("processing succeeded")
+		return true
+	else:
+		push_error("unknown end state")
+		return false
+
+
+func reset(string):
+	state = State1.new(self, string)
+	arg_idx = -1
+	method_name = "" 
+	code_right = "" 
+	tag_names_left = "" 
+	tag_names_right = "" 
+	tag_names_full = "" 
+	parent_tag = 0
+	last_name_stub = ""
+	matches = {}
 
 
 func update_completion_options(editor):
@@ -84,26 +111,6 @@ func get_identifier_suffix(string : String):
 	var rex_match = regex.search(string)
 	var ret_val = "" if not rex_match else rex_match.get_string()
 	return ret_val
-
-
-func process(string):
-	state = State1.new(self, string)
-	var processing = true
-	while processing:
-		var state_name = TypeUtils.get_type_string(state)
-		print(state_name)
-		state = state.process()
-		if state is EndState:
-			processing = false
-	if state is FailState:
-		print("processsing failed: ", state.error_message)
-		return false
-	elif state is SuccessState:
-		print("processing succeeded")
-		return true
-	else:
-		push_error("unknown end state")
-		return false
 
 
 func print_excerpt(string):
