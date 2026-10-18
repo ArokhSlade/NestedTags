@@ -85,6 +85,7 @@ func process(string):
 	state = State1.new(self, string)
 	var processing = true
 	while processing:
+		
 		state = state.process(string)
 		if state is EndState:
 			processing = false
