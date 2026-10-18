@@ -17,6 +17,7 @@ static func get_singleton():
 
 
 static func tag(tag_full_name):
+	ensure_definition()
 	return definition.get_tag(tag_full_name)
 
  

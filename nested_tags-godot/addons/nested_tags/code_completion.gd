@@ -14,14 +14,16 @@ var method_name = ""
  
 var state : State
 
-
-var code_left : String
+#var code_left : String
 var code_right : String
 var tag_names_left := ""
 var tag_names_right := ""
 var tag_names_full := ""
+var parent_tag = 0
+var last_name_stub := ""
+var matches = {}
 
-func get_completion_options(editor, left, right):
+func get_completion_options_old(editor, left, right):
 	var parent_tag = 0
 	var tags = Tags.get_child_tags(parent_tag)
 	for tag in tags:
@@ -29,8 +31,20 @@ func get_completion_options(editor, left, right):
 		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, tag_text)
 	editor.update_code_completion_options(true)
 
-func get_completion_options_2(left, right):
-	var relevant_completable_string = extract_relevant_completable_string(left, right)
+
+func get_completion_options(editor, left, right):
+	code_right = right
+	var suggestions_available = process(left)
+	update_completion_options(editor)
+
+
+func update_completion_options(editor):
+	for tag_match in matches:
+		var tag_text = tag_match
+		# TODO: need to mark the end of the name stub to properly replace it / move the cursor rather than insert too many characters at the cursor position
+		var insertion_text = tag_match.trim_prefix(last_name_stub)
+		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, insertion_text)
+	editor.update_code_completion_options(true)
 
 
 func suffix_search_result_index(success, string, suffix):
@@ -53,9 +67,6 @@ func parse_suffix(string, suffix):
 	ret_val = suffix_search_result_index(ret_val, string, suffix)
 	return ret_val
 
-func extract_relevant_completable_string(left, right):
-	var ret_val = ""
-	return ret_val
 
 func string_ends_with_identifier(string):
 	var identifier_suffix = get_identifier_suffix(string)
@@ -71,11 +82,21 @@ func get_identifier_suffix(string : String):
 
 
 func process(string):
+	state = State1.new(self, string)
 	var processing = true
 	while processing:
 		state = state.process(string)
 		if state is EndState:
 			processing = false
+	if state is FailState:
+		print("processsing failed")
+		return false
+	elif state is SuccessState:
+		print("processing succeeded")
+		return true
+	else:
+		push_error("unknown end state")
+		return false
 
 
 class State:
@@ -164,15 +185,38 @@ class State6 extends State:
 		host.tag_names_full = host.tag_names_left + host.tag_names_right
 		if host.tag_names_full:
 			return State7.new(host, host.tag_names_full) # TODO: figure out how to manage string variable ownership
-			
+		
 		return FailState.new(host, "state6")
 
 
 class State7 extends State:
+	# NOTE: if we got here, it means the string is not empty 
 	func process(tag_full_name_stub):
 		var regex = RegEx.create_from_string(host.s_tag_compound_name_prefix)
 		var rex_match = regex.search(tag_full_name_stub)
-		var compound_tag_name_prefix = "" if not rex_match else rex_match.get_string()
-		if not Tags.has_tag(compound_tag_name_prefix):
-			return FailState.new(host, "state7")
-		pass
+		var compound_name_prefix = "" if not rex_match else rex_match.get_string()
+		var names : Array = tag_full_name_stub.split(".")
+		var last_name_stub = names.back()
+		if not compound_name_prefix:
+			host.parent_tag = 0
+		elif not Tags.has_tag(compound_name_prefix):
+			return FailState.new(host, "state7: cannot give suggestions for a tag name chain that does not exist")
+		else:
+			host.parent_tag = Tags.tag(compound_name_prefix)
+		host.last_name_stub = last_name_stub # TODO: again, duplication of data in host state. perhaps pass a dictionary around? every state would know what data to expect in it? or seperate State.Data classes for more type safety?
+		return State8.new(host, last_name_stub)
+
+
+class State8 extends State:
+	# NOTE: the parent tag is determined, now check if the last name stub has any matching tags
+	func process(last_name_stub):
+		var candidates = Tags.get_child_tags(host.parent_tag)
+		var matches = {}
+		for tag in candidates:
+			var tag_name = Tags.name(tag)
+			if tag_name.begins_with(last_name_stub):
+				matches[tag_name] = tag
+		if matches:
+			host.suggestions = matches
+			return SuccessState.new(host, last_name_stub)
+		return FailState.new(host, last_name_stub)
