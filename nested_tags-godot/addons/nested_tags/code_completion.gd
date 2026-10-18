@@ -141,9 +141,7 @@ class SuccessState extends EndState:
 class State1 extends State:
 	func process():
 		if string.ends_with(host.s_quote):
-			host.print_excerpt(string)
 			string = string.trim_suffix(host.s_quote)
-			host.print_excerpt(string)
 			host.tag_names_left = ""
 			return State2.new(host, string)
 		else:
@@ -151,11 +149,8 @@ class State1 extends State:
 
 class State2 extends State:
 	func process():
-		host.print_excerpt(string)
 		if string.ends_with(host.s_open_paren):
-			host.print_excerpt(string)
 			string = string.trim_suffix(host.s_open_paren)
-			host.print_excerpt(string)
 			return State3.new(host, string)
 		else:
 			var excerpt = string.substr(string.length() - 32)
@@ -168,7 +163,7 @@ class State3 extends State:
 		if identifier_suffix:
 			host.method_name = identifier_suffix
 			string = string.trim_suffix(identifier_suffix)
-			return State4.new(host, identifier_suffix)
+			return State4.new(host, string)
 		else:
 			return FailState.new(host, string)
 
