@@ -143,6 +143,7 @@ class State1 extends State:
 		if string.ends_with(host.s_quote):
 			string = string.trim_suffix(host.s_quote)
 			host.tag_names_left = ""
+			host.arg_idx = 0
 			return State2.new(host, string)
 		else:
 			return FailState.new(host, str("no match: ", host.s_quote))
