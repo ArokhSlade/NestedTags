@@ -231,12 +231,10 @@ class State8 extends State:
 	func process():
 		var last_name_stub = string
 		var candidates = Tags.get_child_tags(host.parent_tag)
-		var matches = {}
+		host.matches = {}
 		for tag in candidates:
 			var tag_name = Tags.name(tag)
 			if tag_name.begins_with(last_name_stub):
-				matches[tag_name] = tag
-		if matches:
-			host.suggestions = matches
+				host.matches[tag_name] = tag
 			return SuccessState.new(host, last_name_stub)
 		return FailState.new(host, last_name_stub)
