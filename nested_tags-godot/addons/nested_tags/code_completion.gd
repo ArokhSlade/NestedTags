@@ -140,10 +140,10 @@ class State1 extends State:
 class State2 extends State:
 	func process(string):
 		if string.ends_with(host.s_open_paren):
-			string = string.trim_suffix(host.s_open_parent)
+			string = string.trim_suffix(host.s_open_paren)
 			return State3.new(host, string)
 		else:
-			return FailState.new(host, string)
+			return FailState.new(host, str("no match: ", host.s_open_paren))
 
 class State3 extends State:
 	func process(string : String):
