@@ -6,11 +6,19 @@ var s_dot = r"."
 var s_quote = r"\""
 var s_open_parent = r"("
 var s_identifier = r"(?:[A-Za-z_][A-Za-z0-1_]*)"
+var s_optional_alphanum_string = r"(?:[A-Za-z0-1_]*)"
 
 var arg_idx = -1
 var method_name = ""
  
 var state : State
+
+
+var code_left : String
+var code_right : String
+var tag_names_left := ""
+var tag_names_right := ""
+var tag_names_full := ""
 
 func get_completion_options(editor, left, right):
 	var parent_tag = 0
@@ -20,7 +28,7 @@ func get_completion_options(editor, left, right):
 		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, tag_text)
 	editor.update_code_completion_options(true)
 
-func autocomplete(left, right):
+func get_completion_options_2(left, right):
 	var relevant_completable_string = extract_relevant_completable_string(left, right)
 
 
@@ -61,6 +69,10 @@ func get_identifier_suffix(string : String):
 	return ret_val
 
 
+func get_last_complete_compound(tag_name_stub):
+	pass
+
+
 func process(string):
 	var processing = true
 	while processing:
@@ -96,6 +108,7 @@ class State1 extends State:
 	func process(string):
 		if string.ends_with(host.s_quote):
 			string = string.trim_suffix(host.s_quote)
+			host.tag_names_left = ""
 			return State2.new(host, string)
 		else:
 			return FailState.new(host, string)
@@ -129,14 +142,36 @@ class State4 extends State:
 class State5 extends State:
 	func process(string):
 		if string.ends_with(host.s_singleton_name):
-			var methods = Tags.get_method_list()
+			var methods = Tags.get_singleton().get_method_list()
 			for method in methods:
-				if method.name == method_name:
+				if method.name == host.method_name:
 					string = string.trim_suffix(host.s_singleton_name)
-					return State6.new(host, string)
+					assert(host.arg_idx >= 0)
+					if method.args.size() > host.arg_idx:
+						var arg = method.args[host.arg_idx]
+						if arg.hint_string == "nested_tag":
+							return State6.new(host, string)
 		return FailState.new(host, string)
 
 class State6 extends State:
 	func process(string):
-		var 
-		
+		host.tag_names_right = ""
+		var regex
+		if host.tag_names_left:
+			regex = RegEx.create_from_string(host.s_optional_alphanum_string)
+		else:
+			regex = RegEx.create_from_string(host.s_identifier)
+		var rex_match = regex.search(host.code_right)
+		if rex_match:
+			host.tag_names_right = rex_match.get_string()
+		host.tag_names_full = host.tag_names_left + host.tag_names_right
+		if host.tag_names_full:
+			return State7.new(host, host.tag_names_full) # TODO: figure out how to manage string variable ownership
+		else:
+			return FailState.new(host, string)
+
+
+class State7 extends State:
+	func process(tag_full_name_stub):
+		#Tags.get_child_tags()
+		pass

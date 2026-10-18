@@ -3,9 +3,17 @@ class_name Tags
 
 static var definition : NestedTagsDefinition
 
+static var _singleton
+
 static func _static_init():
 	var definition_path = ProjectSettings.get_setting("nested_tags/nested_tags_definition")
 	definition = load(definition_path)
+
+
+static func get_singleton():
+	if not _singleton:
+		_singleton = Tags.new()
+	return _singleton
 
 
 static func tag(tag_full_name):
@@ -71,6 +79,8 @@ static func names(tag):
 
 
 static func get_child_tags(parent_tag):
+	if parent_tag is String or parent_tag is StringName:
+		parent_tag = definition.get_tag(parent_tag)
 	if not definition:
 		_static_init()
 	var tags = []
@@ -79,6 +89,12 @@ static func get_child_tags(parent_tag):
 			tags.push_back(tag)
 	return tags
 
+
 func get_method_list() -> Array[Dictionary]:
 	var ret_val = super()
+	var tag_param_names = ["tag", "other_tag", "parent_tag"]
+	for method in ret_val:
+		for arg in ret_val.args:
+			if arg.name in tag_param_names:
+				arg.hint_string = "nested_tag"
 	return ret_val
