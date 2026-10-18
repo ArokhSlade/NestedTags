@@ -5,7 +5,7 @@ const TypeUtils = preload("uid://bxx6f7forwdg1")
 
 var s_singleton_name = r"Tags"
 var s_dot = r"."
-var s_quote = r"\""
+var s_quote = "\""
 var s_open_parent = r"("
 var s_identifier = r"(?:[A-Za-z_][A-Za-z0-1_]*)"
 var s_optional_alphanum_string = r"(?:[A-Za-z0-1_]*)"
@@ -122,7 +122,7 @@ class EndState extends State:
 
 class FailState extends EndState:
 	func process(string):
-		print("fail!")
+		print("fail: ", string)
 		return self
 
 class SuccessState extends EndState:
@@ -135,7 +135,7 @@ class State1 extends State:
 			host.tag_names_left = ""
 			return State2.new(host, string)
 		else:
-			return FailState.new(host, string)
+			return FailState.new(host, str("no match: ", host.s_quote))
 
 class State2 extends State:
 	func process(string):
