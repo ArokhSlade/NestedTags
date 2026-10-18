@@ -117,7 +117,7 @@ func get_method_list() -> Array[Dictionary]:
 	var ret_val = super()
 	var tag_param_names = ["tag", "other_tag", "parent_tag"]
 	for method in ret_val:
-		for arg in ret_val.args:
+		for arg in method.args:
 			if arg.name in tag_param_names:
 				arg.hint_string = "nested_tag"
 	return ret_val
