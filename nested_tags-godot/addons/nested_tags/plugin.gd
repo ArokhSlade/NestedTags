@@ -14,6 +14,8 @@ var settings
 
 var script_editor : ScriptEditor
 var editor : CodeEdit
+const CodeCompletion = preload("uid://d32sfbfiaed1l")
+var code_completion : CodeCompletion
 
 func _enter_tree():
 	nested_tag_inspector = NestedTagInspector.new()
@@ -33,10 +35,9 @@ func _enter_tree():
 	settings_tab.initialize(settings)
 	settings_tab.refresh()
 	
-	#add_autoload_singleton(singleton_name, )
-	
 	script_editor = EditorInterface.get_script_editor()
 	script_editor.editor_script_changed.connect(_on_script_editor_editor_script_changed)
+	code_completion = CodeCompletion.new()
 
 
 func print_time():
@@ -63,13 +64,7 @@ func _on_editor_code_completion_requested():
 	var left = sections[0]
 	var right = sections[1]
 	
-	var parent_tag = 0
-	if left.ends_with("Tags.tag(\""):
-		var tags = Tags.get_child_tags(parent_tag)
-		for tag in tags:
-			var tag_text = Tags.name(tag)
-			editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, tag_text)
-		editor.update_code_completion_options(true)
+	code_completion.get_completion_options(editor, left, right)
 
 
 func _exit_tree():

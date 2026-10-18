@@ -1,4 +1,3 @@
-@abstract
 extends Node
 class_name Tags
 
@@ -79,3 +78,7 @@ static func get_child_tags(parent_tag):
 		if definition.get_parent_id(tag) == parent_tag:
 			tags.push_back(tag)
 	return tags
+
+func get_method_list() -> Array[Dictionary]:
+	var ret_val = super()
+	return ret_val
