@@ -115,7 +115,7 @@ static func ensure_definition():
 
 func get_method_list() -> Array[Dictionary]:
 	var ret_val = super()
-	var tag_param_names = ["tag", "other_tag", "parent_tag"]
+	var tag_param_names = ["tag", "other_tag", "parent_tag", "tag_full_name"]
 	for method in ret_val:
 		for arg in method.args:
 			if arg.name in tag_param_names:
