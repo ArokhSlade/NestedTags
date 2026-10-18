@@ -129,7 +129,7 @@ class FailState extends EndState:
 	
 	func _init(host_, string_):
 		super(host_, string_)
-		error_message = string_
+		error_message = string.substr(string.length() - 32)
 	
 	func process():
 		print(error_message)
