@@ -95,7 +95,7 @@ func process(string):
 		if state is EndState:
 			processing = false
 	if state is FailState:
-		print("processsing failed")
+		print("processsing failed: ", state.error_message)
 		return false
 	elif state is SuccessState:
 		print("processing succeeded")
@@ -121,8 +121,14 @@ class EndState extends State:
 		return self
 
 class FailState extends EndState:
+	var error_message = ""
+	
+	func _init(host_, string_):
+		super(host_, string_)
+		error_message = string_
+	
 	func process(string):
-		print("fail: ", string)
+		print(error_message)
 		return self
 
 class SuccessState extends EndState:
@@ -143,7 +149,9 @@ class State2 extends State:
 			string = string.trim_suffix(host.s_open_paren)
 			return State3.new(host, string)
 		else:
-			return FailState.new(host, str("no match: ", host.s_open_paren))
+			var excerpt = string.substr(string.length() - 32)
+			string = str("no match: ", host.s_open_paren, " at the end of:\n", excerpt)
+			return FailState.new(host, string)
 
 class State3 extends State:
 	func process(string : String):
