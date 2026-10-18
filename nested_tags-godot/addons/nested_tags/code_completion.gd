@@ -1,6 +1,8 @@
 @tool
 extends Node
 
+const TypeUtils = preload("uid://bxx6f7forwdg1")
+
 var s_singleton_name = r"Tags"
 var s_dot = r"."
 var s_quote = r"\""
@@ -39,6 +41,8 @@ func get_completion_options(editor, left, right):
 
 
 func update_completion_options(editor):
+	if not matches:
+		return
 	for tag_match in matches:
 		var tag_text = tag_match
 		# TODO: need to mark the end of the name stub to properly replace it / move the cursor rather than insert too many characters at the cursor position
@@ -85,7 +89,8 @@ func process(string):
 	state = State1.new(self, string)
 	var processing = true
 	while processing:
-		
+		var state_name = TypeUtils.get_type_string(state)
+		print(state_name)
 		state = state.process(string)
 		if state is EndState:
 			processing = false
