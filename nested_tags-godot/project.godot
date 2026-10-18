@@ -23,6 +23,10 @@ Test2="*uid://bp1j2fmhby8w5"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[editor]
+
+run/main_run_args="--editor"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/nested_tags/plugin.cfg")

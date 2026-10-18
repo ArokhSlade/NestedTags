@@ -41,6 +41,7 @@ func get_completion_options(editor, left, right):
 
 
 func update_completion_options(editor):
+	print(matches)
 	if not matches:
 		return
 	for tag_match in matches:
@@ -236,5 +237,6 @@ class State8 extends State:
 			var tag_name = Tags.name(tag)
 			if tag_name.begins_with(last_name_stub):
 				host.matches[tag_name] = tag
+		if host.matches.size() > 0:
 			return SuccessState.new(host, last_name_stub)
 		return FailState.new(host, last_name_stub)
