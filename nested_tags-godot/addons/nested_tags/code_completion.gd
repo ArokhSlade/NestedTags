@@ -202,14 +202,13 @@ class State6 extends State:
 		if rex_match:
 			host.tag_names_right = rex_match.get_string()
 		host.tag_names_full = host.tag_names_left + host.tag_names_right
-		if host.tag_names_full:
-			return State7.new(host, host.tag_names_full) # TODO: figure out how to manage string variable ownership
-		
-		return FailState.new(host, "state6")
+		return State7.new(host, host.tag_names_full) # TODO: figure out how to manage string variable ownership
 
 
 class State7 extends State:
-	# NOTE: if we got here, it means the string is not empty 
+	# NOTE: the string might be empty. if we got here, it means that there is the beginning of a 
+	# 		valid tags method call expression and we are somewhere in the middle of the string that
+	# 		represents the possibly empty, possibly full prefix (stub) of a tag name
 	func process():
 		var tag_full_name_stub = string
 		var regex = RegEx.create_from_string(host.s_tag_compound_name_prefix)
