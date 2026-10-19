@@ -39,5 +39,5 @@ func test():
 	dict2.hello._
 	dict2.hello.world
 	dict2.hello.enum
-	Tags.tag("sash") # TODO: this causes wrong behavior
-	Tags.tag("")
+	Tags.tag("sas") # TODO: this causes wrong behavior
+	Tags.tag("tom.")

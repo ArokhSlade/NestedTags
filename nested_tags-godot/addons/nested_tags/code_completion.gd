@@ -138,7 +138,7 @@ class FailState extends EndState:
 	
 	func _init(host_, string_):
 		super(host_, string_)
-		error_message = StringUtils.end_of_string(string, 32)
+		error_message = string
 	
 	func process():
 		print(error_message)
@@ -164,6 +164,7 @@ class State0_1 extends State:
 			host.tag_names_left = host.s_dot + host.tag_names_left
 			string = string.trim_suffix(host.s_dot)
 			return State0_2.new(host, string)
+		# TODO: check edge case "1abc - 1 is not a dot, so is ignored... 
 		return State1.new(host, string) # no more parent names, proceed to parse "
 
 class State0_2 extends State:
@@ -257,12 +258,14 @@ class State7 extends State:
 		var regex = RegEx.create_from_string(host.s_tag_compound_name_prefix)
 		var rex_match = regex.search(tag_full_name_stub)
 		var compound_name_prefix = "" if not rex_match else rex_match.get_string()
+		if compound_name_prefix: # trailing dot will confuse Tags name matcher
+			compound_name_prefix = compound_name_prefix.trim_suffix(host.s_dot)
 		var names : Array = tag_full_name_stub.split(".")
 		var last_name_stub = names.back()
 		if not compound_name_prefix:
 			host.parent_tag = 0
 		elif not Tags.has_tag(compound_name_prefix):
-			return FailState.new(host, "state7: cannot give suggestions for a tag name chain that does not exist")
+			return FailState.new(host, str("no suggestions for ", tag_full_name_stub))
 		else:
 			host.parent_tag = Tags.tag(compound_name_prefix)
 		host.last_name_stub = last_name_stub # TODO: again, duplication of data in host state. perhaps pass a dictionary around? every state would know what data to expect in it? or seperate State.Data classes for more type safety?

@@ -101,6 +101,7 @@ static func has_tag(tag):
 		elif tag == NestedTagsDefinition.get_null_tag_name():
 			tag = 0
 		else:
+			print("hello: ", tag)
 			tag = definition.get_tag(tag)
 			if tag == 0: 
 				return false
