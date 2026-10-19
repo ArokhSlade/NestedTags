@@ -66,7 +66,7 @@ func reset(string):
 	last_name_stub = ""
 	matches = {}
 
-
+var loop = true
 func update_completion_options(editor):
 	print(matches)
 	if not matches:
@@ -75,8 +75,15 @@ func update_completion_options(editor):
 		var tag_text = tag_match
 		# TODO: need to mark the end of the name stub to properly replace it / move the cursor rather than insert too many characters at the cursor position
 		var insertion_text = tag_match#.trim_prefix(last_name_stub)
+		print("adding ", tag_text)
 		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, insertion_text)
 	editor.update_code_completion_options(true)
+	if loop:
+		loop = not loop
+		editor.request_code_completion(true)
+		print(editor.get_code_completion_options())
+	else:
+		loop = not loop
 
 
 func suffix_search_result_index(success, string, suffix):

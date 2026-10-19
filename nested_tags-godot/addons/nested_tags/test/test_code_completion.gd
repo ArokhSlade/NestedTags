@@ -40,4 +40,4 @@ func test():
 	dict2.hello.world
 	dict2.hello.enum
 	Tags.tag("sas") # TODO: this causes wrong behavior
-	Tags.tag("tom.")
+	Tags.tag("sasha.")
