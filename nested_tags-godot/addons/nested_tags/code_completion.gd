@@ -10,7 +10,6 @@ var s_open_paren = r"("
 var s_identifier = r"(?:[A-Za-z_][A-Za-z0-1_]*)"
 var s_optional_alphanum_string = r"(?:[A-Za-z0-1_]*)"
 var s_tag_compound_name_prefix = r"(?:{identifier}\.)+".format({"identifier":s_identifier})
-var s_alphanum = r"(?:[A-Za-z0-1_])"
 
 var state : State
 var arg_idx = -1
@@ -75,7 +74,7 @@ func update_completion_options(editor):
 	for tag_match in matches:
 		var tag_text = tag_match
 		# TODO: need to mark the end of the name stub to properly replace it / move the cursor rather than insert too many characters at the cursor position
-		var insertion_text = tag_match.trim_prefix(last_name_stub)
+		var insertion_text = tag_match#.trim_prefix(last_name_stub)
 		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, insertion_text)
 	editor.update_code_completion_options(true)
 
@@ -152,14 +151,12 @@ class State0 extends State:
 	func process():
 		host.tag_names_left = ""
 		host.arg_idx = 0
-		if string.ends_with(host.s_alphanum): # TODO: can we skip this test?
-			var regex = RegEx.create_from_string(host.s_identifier + "$")
-			var rex_match = regex.search(string)
-			if rex_match:
-				host.tag_names_left = rex_match.get_string()
-				string = string.trim_suffix(host.tag_names_left)
-				return State0_1.new(host, string)
-		return State1.new(host, string) # not inside a tag name, check if right of "
+		var regex = RegEx.create_from_string(host.s_identifier + "$")
+		var rex_match = regex.search(string)
+		if rex_match:
+			host.tag_names_left = rex_match.get_string()
+			string = string.trim_suffix(host.tag_names_left)
+		return State0_1.new(host, string) # whether or not we found a name (fragment), proceed to parse dot
 
 class State0_1 extends State:
 	func process():
@@ -167,20 +164,18 @@ class State0_1 extends State:
 			host.tag_names_left = host.s_dot + host.tag_names_left
 			string = string.trim_suffix(host.s_dot)
 			return State0_2.new(host, string)
-		return State1.new(host, string) # no compound name, proceed to parse "
+		return State1.new(host, string) # no more parent names, proceed to parse "
 
 class State0_2 extends State:
 	func process():
-		if string.ends_with(host.s_alphanum):
-			var regex = RegEx.create_from_string(host.s_identifier + "$")
-			var rex_match = regex.search(string)
-			if not rex_match: # NOTE: could be we found a name ending on an alphanumeric character that is not a valid identifier, such as "1"
-				return FailState.new(host, str("expected identifier before ", host.tag_names_left, " but found ...", StringUtils.end_of_string(string, 32)))
-			var parent_tag_name = rex_match.get_string()
-			host.tag_names_left = parent_tag_name + host.tag_names_left
-			string = string.trim_suffix(parent_tag_name)
-			return State0_1.new(host, string) # loop back to parse more parents
-		return FailState.new(host, str("expected identifier before ", host.tag_names_left, " but found ...", StringUtils.end_of_string(string, 32)))
+		var regex = RegEx.create_from_string(host.s_identifier + "$")
+		var rex_match = regex.search(string)
+		if not rex_match:
+			return FailState.new(host, str("expected identifier before ", host.tag_names_left, " but found ...", StringUtils.end_of_string(string, 32)))
+		var parent_tag_name = rex_match.get_string()
+		host.tag_names_left = parent_tag_name + host.tag_names_left
+		string = string.trim_suffix(parent_tag_name)
+		return State0_1.new(host, string) # loop back to parse more parents
 
 # <tag name compound opt>| (empty) tag names (left) confirmed. parse "
 class State1 extends State:
@@ -188,9 +183,7 @@ class State1 extends State:
 		if string.ends_with(host.s_quote):
 			string = string.trim_suffix(host.s_quote)
 			return State2.new(host, string)
-			
-		else:
-			return FailState.new(host, str("no match: ", host.s_quote))
+		return FailState.new(host, str("no match: ", host.s_quote))
 
 # "| confirmed. now parse (
 class State2 extends State:
