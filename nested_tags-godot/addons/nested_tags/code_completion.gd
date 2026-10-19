@@ -66,7 +66,7 @@ func update_completion_options(editor):
 	if not matches:
 		return
 	for tag_match in matches:
-		var tag_text = compound_name_prefix + "." + tag_match
+		var tag_text = compound_name_prefix + tag_match
 		# TODO: need to mark the end of the name stub to properly replace it / move the cursor rather than insert too many characters at the cursor position
 		var insertion_text = tag_text
 		print("adding ", tag_text)
@@ -259,16 +259,15 @@ class State7 extends State:
 		var regex = RegEx.create_from_string(host.s_tag_compound_name_prefix)
 		var rex_match = regex.search(tag_full_name_stub)
 		host.compound_name_prefix = "" if not rex_match else rex_match.get_string()
-		if host.compound_name_prefix: # trailing dot will confuse Tags name matcher
-			host.compound_name_prefix = host.compound_name_prefix.trim_suffix(host.s_dot)
 		var names : Array = tag_full_name_stub.split(".")
 		var last_name_stub = names.back()
-		if not host.compound_name_prefix:
+		var trimmed_prefix = host.compound_name_prefix.trim_suffix(host.s_dot) # trailing dot will confuse Tags name matcher
+		if not trimmed_prefix:
 			host.parent_tag = 0
-		elif not Tags.has_tag(host.compound_name_prefix):
+		elif not Tags.has_tag(trimmed_prefix):
 			return FailState.new(host, str("no suggestions for ", tag_full_name_stub))
 		else:
-			host.parent_tag = Tags.tag(host.compound_name_prefix)
+			host.parent_tag = Tags.tag(trimmed_prefix)
 		host.last_name_stub = last_name_stub # TODO: again, duplication of data in host state. perhaps pass a dictionary around? every state would know what data to expect in it? or seperate State.Data classes for more type safety?
 		return State8.new(host, last_name_stub)
 
