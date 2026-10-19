@@ -19,16 +19,9 @@ var tag_names_left := ""
 var tag_names_right := ""
 var tag_names_full := ""
 var parent_tag = 0
+var compound_name_prefix := ""
 var last_name_stub := ""
 var matches = {}
-
-func get_completion_options_old(editor, left, right):
-	var parent_tag = 0
-	var tags = Tags.get_child_tags(parent_tag)
-	for tag in tags:
-		var tag_text = Tags.name(tag)
-		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, tag_text)
-	editor.update_code_completion_options(true)
 
 
 func get_completion_options(editor, left, right):
@@ -63,6 +56,7 @@ func reset(string):
 	tag_names_right = "" 
 	tag_names_full = "" 
 	parent_tag = 0
+	compound_name_prefix = ""
 	last_name_stub = ""
 	matches = {}
 
@@ -72,9 +66,9 @@ func update_completion_options(editor):
 	if not matches:
 		return
 	for tag_match in matches:
-		var tag_text = tag_match
+		var tag_text = compound_name_prefix + "." + tag_match
 		# TODO: need to mark the end of the name stub to properly replace it / move the cursor rather than insert too many characters at the cursor position
-		var insertion_text = tag_match#.trim_prefix(last_name_stub)
+		var insertion_text = tag_text
 		print("adding ", tag_text)
 		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, insertion_text)
 	editor.update_code_completion_options(true)
@@ -264,17 +258,17 @@ class State7 extends State:
 		var tag_full_name_stub = string
 		var regex = RegEx.create_from_string(host.s_tag_compound_name_prefix)
 		var rex_match = regex.search(tag_full_name_stub)
-		var compound_name_prefix = "" if not rex_match else rex_match.get_string()
-		if compound_name_prefix: # trailing dot will confuse Tags name matcher
-			compound_name_prefix = compound_name_prefix.trim_suffix(host.s_dot)
+		host.compound_name_prefix = "" if not rex_match else rex_match.get_string()
+		if host.compound_name_prefix: # trailing dot will confuse Tags name matcher
+			host.compound_name_prefix = host.compound_name_prefix.trim_suffix(host.s_dot)
 		var names : Array = tag_full_name_stub.split(".")
 		var last_name_stub = names.back()
-		if not compound_name_prefix:
+		if not host.compound_name_prefix:
 			host.parent_tag = 0
-		elif not Tags.has_tag(compound_name_prefix):
+		elif not Tags.has_tag(host.compound_name_prefix):
 			return FailState.new(host, str("no suggestions for ", tag_full_name_stub))
 		else:
-			host.parent_tag = Tags.tag(compound_name_prefix)
+			host.parent_tag = Tags.tag(host.compound_name_prefix)
 		host.last_name_stub = last_name_stub # TODO: again, duplication of data in host state. perhaps pass a dictionary around? every state would know what data to expect in it? or seperate State.Data classes for more type safety?
 		return State8.new(host, last_name_stub)
 
