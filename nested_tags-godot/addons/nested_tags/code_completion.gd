@@ -60,24 +60,17 @@ func reset(string):
 	last_name_stub = ""
 	matches = {}
 
-var loop = true
+ 
 func update_completion_options(editor):
 	print(matches)
 	if not matches:
 		return
 	for tag_match in matches:
-		var tag_text = compound_name_prefix + tag_match
-		# TODO: need to mark the end of the name stub to properly replace it / move the cursor rather than insert too many characters at the cursor position
+		var tag_text = tag_match
 		var insertion_text = tag_text
 		print("adding ", tag_text)
 		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, insertion_text)
 	editor.update_code_completion_options(true)
-	if loop:
-		loop = not loop
-		editor.request_code_completion(true)
-		print(editor.get_code_completion_options())
-	else:
-		loop = not loop
 
 
 func suffix_search_result_index(success, string, suffix):
@@ -112,11 +105,6 @@ func get_identifier_suffix(string : String):
 	var rex_match = regex.search(string)
 	var ret_val = "" if not rex_match else rex_match.get_string()
 	return ret_val
-
-
-func print_excerpt(string):
-	var excerpt = string.substr(string.length() - 32)
-	print(excerpt)
 
 
 @abstract class State:
@@ -276,12 +264,15 @@ class State8 extends State:
 	# NOTE: the parent tag is determined, now check if the last name stub has any matching tags
 	func process():
 		var last_name_stub = string
-		var candidates = Tags.get_child_tags(host.parent_tag)
+		var candidates = Tags.get_descendant_tags(host.parent_tag)
 		host.matches = {}
-		for tag in candidates:
-			var tag_name = Tags.name(tag)
-			if tag_name.begins_with(last_name_stub):
-				host.matches[tag_name] = tag
+		if "" == host.tag_names_full:
+			for tag in candidates:
+				host.matches[Tags.full_name(tag)] = tag
+		else:
+			for tag in candidates:
+				if Tags.full_name(tag).contains(host.tag_names_full):
+					host.matches[Tags.full_name(tag)] = tag
 		if host.matches.size() > 0:
 			return SuccessState.new(host, last_name_stub)
 		return FailState.new(host, last_name_stub)

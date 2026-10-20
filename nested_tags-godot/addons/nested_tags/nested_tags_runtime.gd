@@ -90,6 +90,40 @@ static func get_child_tags(parent_tag):
 	return tags
 
 
+static func get_descendant_tags(parent_tag):
+	ensure_definition()
+	if parent_tag is String or parent_tag is StringName:
+		parent_tag = definition.get_tag(parent_tag)
+	
+	var ret_val = []
+	var pending = []
+	var dismissed = []
+	
+	for tag in definition:
+		if tag == parent_tag:
+			dismissed.push_back(tag)
+		elif definition.get_parent_id(tag) == parent_tag:
+			ret_val.push_back(tag)
+		else:
+			pending.push_back(tag)
+	
+	var finished = false
+	while not finished:
+		finished = true
+		for i in range(pending.size()):
+			var tag = pending[i]
+			if tag == 0:
+				continue
+			elif definition.get_parent_id(tag) in ret_val:
+				ret_val.push_back(tag)
+			elif definition.get_parent_id(tag) in dismissed:
+				dismissed.push_back(tag)
+			finished = false
+			pending[i] = 0
+	
+	return ret_val
+
+
 static func has_tag(tag):
 	ensure_definition()
 	if tag is String or tag is StringName:
