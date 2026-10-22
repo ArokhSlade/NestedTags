@@ -42,4 +42,5 @@ func test():
 	Tags.tag("sh")
 	Tags.tag("")
 	Tags.tag(1)
+	Tags.both("pokemon", "")
 	
