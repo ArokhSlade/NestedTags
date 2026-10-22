@@ -41,4 +41,5 @@ func test():
 	dict2.hello.enum
 	Tags.tag("sh")
 	Tags.tag("")
+	Tags.tag(1)
 	

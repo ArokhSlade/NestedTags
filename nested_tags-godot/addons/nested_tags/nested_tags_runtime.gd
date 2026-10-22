@@ -8,6 +8,7 @@ static var _singleton
 static func _static_init():
 	var definition_path = ProjectSettings.get_setting("nested_tags/nested_tags_definition")
 	definition = load(definition_path)
+	print("definition loaded from ", definition_path)
 
 
 static func get_singleton():

@@ -7,7 +7,9 @@ var s_singleton_name = r"Tags"
 var s_dot = r"."
 var s_quote = "\""
 var s_open_paren = r"("
+var s_open_paren_esc = r"\("
 var s_identifier = r"(?:[A-Za-z_][A-Za-z0-1_]*)"
+var s_identifier_named_group = r"(?<identifier>[A-Za-z_][A-Za-z0-1_]*)"
 var s_optional_alphanum_string = r"(?:[A-Za-z0-1_]*)"
 var s_tag_compound_name_prefix = r"(?:{identifier}\.)+".format({"identifier":s_identifier})
 
@@ -22,6 +24,7 @@ var parent_tag = 0
 var compound_name_prefix := ""
 var last_name_stub := ""
 var matches = {}
+var suggest_integers = false
 
 
 func get_completion_options(editor, left, right):
@@ -59,17 +62,25 @@ func reset(string):
 	compound_name_prefix = ""
 	last_name_stub = ""
 	matches = {}
+	suggest_integers = false
 
  
 func update_completion_options(editor):
 	print(matches)
 	if not matches:
 		return
-	for tag_match in matches:
-		var tag_text = tag_match
-		var insertion_text = tag_text
-		print("adding ", tag_text)
-		editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, insertion_text)
+	if suggest_integers:
+		for tag_match in matches:
+			var tag_id = matches[tag_match]
+			print("adding ", tag_match, " as id: ", tag_id)
+			editor = editor as CodeEdit
+			editor.add_code_completion_option(CodeEdit.KIND_CONSTANT, tag_match, str(tag_id), Color(1, 1, 1, 1), null, tag_id)
+	else:
+		for tag_match in matches:
+			var tag_text = tag_match
+			var insertion_text = tag_text
+			print("adding ", tag_text)
+			editor.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, tag_text, insertion_text)
 	editor.update_code_completion_options(true)
 
 
@@ -173,7 +184,9 @@ class State1 extends State:
 		if string.ends_with(host.s_quote):
 			string = string.trim_suffix(host.s_quote)
 			return State2.new(host, string)
-		return FailState.new(host, str("no match: ", host.s_quote))
+		if host.tag_names_left:
+			return FailState.new(host, str("found name stub ", host.tag_names_left, " left of cursor, but missing a leading '\"'."))
+		return State2_1.new(host, string)
 
 # "| confirmed. now parse (
 class State2 extends State:
@@ -276,3 +289,37 @@ class State8 extends State:
 		if host.matches.size() > 0:
 			return SuccessState.new(host, last_name_stub)
 		return FailState.new(host, last_name_stub)
+
+# confirmed no name stub and no " left of cursor. now parse (
+class State2_1 extends State:
+	func process():
+		var regex_string = str(host.s_singleton_name , host.s_dot , host.s_identifier_named_group , host.s_open_paren_esc , "$")
+		var regex = RegEx.create_from_string(regex_string)
+		var rex_match = regex.search(string)
+		if rex_match:
+			host.method_name = rex_match.get_string("identifier")
+			var methods = Tags.get_singleton().get_method_list()
+			for method in methods:
+				if method.name == host.method_name:
+					assert(host.arg_idx >= 0)
+					if method.args.size() > host.arg_idx:
+						var arg = method.args[host.arg_idx]
+						if arg.hint_string == "nested_tag":
+							print(regex_string)
+							return State8_1.new(host, string)
+						return FailState.new(host, str("argument at index " , host.arg_idx + " does not seem to be a nested tag, at least it's missing a hint string nested_tag"))
+					return FailState.new(host, str("method " , host.method_name , " only takes " , method.args.size() , " args, but arg index was " , host.arg_idx))
+			return FailState.new(host, str("no method " , host.method_name , "found"))
+		return FailState.new(host, str("could not match a valid identifier / method name before ( for regex ", regex_string, " in ", StringUtils.end_of_string(string, 32)))
+
+# valid method and arg idx confirmed, with no string stub. now suggest all existing tags
+class State8_1 extends State:
+	func process():
+		host.matches = {}
+		Tags.ensure_definition()
+		for tag in Tags.definition:
+			host.matches[Tags.full_name(tag)] = tag
+		if host.matches.size() > 0:
+			host.suggest_integers = true
+			return SuccessState.new(host, string)
+		return FailState.new(host, "could not find any tags in Tags definition")
