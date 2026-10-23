@@ -15,7 +15,7 @@ var parsing_debug_object = false
 
 func _parse_begin(object : Object):
 	parsing_debug_object = false
-	if &"EditorDebuggerRemoteObjects" == object.get_class():
+	if "EditorDebuggerRemoteObjects" == object.get_class():
 		for prop in object.get_property_list():
 			if prop.hint_string == "NestedTagsDefinition":
 				parsing_debug_object = true
@@ -39,9 +39,9 @@ func _parse_property(object: Object, type: Variant.Type, name: String, hint_type
 		if hint_string == "nested_tags_definition_data":
 			if TYPE_DICTIONARY == type:
 				add_property_editor(name, NestedTagsDefinitionDataProperty.new())
-	elif &"EditorDebuggerRemoteObjects" == object.get_class():
+	elif "EditorDebuggerRemoteObjects" == object.get_class():
 		if parsing_debug_object:
-			if &"data" == name:
+			if "data" == name:
 				if TYPE_DICTIONARY == type:
 					add_property_editor(name, NestedTagsDefinitionDataProperty.new())
 	return false

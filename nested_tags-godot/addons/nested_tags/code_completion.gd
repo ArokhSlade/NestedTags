@@ -148,7 +148,9 @@ class FailState extends EndState:
 
 class SuccessState extends EndState:
 	pass
-
+ 
+# start. parse for optional identifier left of cursor
+# TODO: for now only first argument can be parsed. 
 class State0 extends State:
 	func process():
 		host.tag_names_left = ""
@@ -160,6 +162,7 @@ class State0 extends State:
 			string = string.trim_suffix(host.tag_names_left)
 		return State0_1.new(host, string) # whether or not we found a name (fragment), proceed to parse dot
 
+# parse leading dot.
 class State0_1 extends State:
 	func process():
 		if string.ends_with(host.s_dot):
@@ -169,6 +172,7 @@ class State0_1 extends State:
 		# TODO: check edge case "1abc - 1 is not a dot, so is ignored... 
 		return State1.new(host, string) # no more parent names, proceed to parse "
 
+# parse leading parent tag name
 class State0_2 extends State:
 	func process():
 		var regex = RegEx.create_from_string(host.s_identifier + "$")
