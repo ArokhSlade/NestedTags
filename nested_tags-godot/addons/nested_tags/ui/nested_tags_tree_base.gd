@@ -35,7 +35,7 @@ func _refresh(tags):
 		while i < max:
 			var tag = pending_tags[i]
 			
-			var parent = tag.parent
+			var parent = tags[tag].parent
 			
 			var parent_item = null
 			if tags_to_items.has(parent):

@@ -9,6 +9,6 @@ point_count = 5
 
 [node name="NestedTagsTest" type="Node2D" unique_id=619940026]
 script = ExtResource("1_a0f2y")
-tag = 6
+tag = 10
 definition = ExtResource("2_6c7yi")
 curve = SubResource("Curve_a0f2y")
