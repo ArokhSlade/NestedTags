@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bur4tcxtlcncr"]
 
 [ext_resource type="Theme" uid="uid://7ehek2fws6x" path="res://addons/nested_tags/ui/nested_tags.theme" id="1_6vbf8"]
-[ext_resource type="Script" uid="uid://baqrjgvs18nm4" path="res://addons/nested_tags/ui/nested_tags_definition/nested_tags_definition_data_tree.gd" id="2_6vbf8"]
+[ext_resource type="Script" uid="uid://baqrjgvs18nm4" path="res://addons/nested_tags/ui/nested_tags_definition_data/nested_tags_definition_data_tree.gd" id="2_6vbf8"]
 [ext_resource type="Script" uid="uid://c7dc3ar5121r3" path="res://addons/nested_tags/ui/nested_tags_definition/tag_adder.gd" id="3_jthbt"]
 
 [node name="NestedTagsDefinitionDataTree" type="Tree" unique_id=203260917]
