@@ -31,5 +31,5 @@ func reset_validity():
 	modulate = Color.WHITE
 
 
-func signal_invalid_input():
+func feedback_invalid_input():
 	modulate = Color(0.95, 0.372, 0.342, 1.0)

@@ -32,6 +32,15 @@ func refresh(definition : NestedTagsDefinition, checked_tag : int):
 	_update_checks(checked_item)
 
 
+func _add_tag(p_tag, p_parent_item, p_tag_name):
+	var _item = super(p_tag, p_parent_item, p_tag_name)
+	_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+	_item.set_text(0, p_tag_name)
+	_item.set_selectable(0, true)
+	_item.set_editable(0, true)
+	return _item
+
+
 func _tags_from_definition(definition):
 	var tags = {}
 	tags[0] = {

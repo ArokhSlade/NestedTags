@@ -57,5 +57,9 @@ data = {
 15: {
 "name": &"mega_banette",
 "parent_id": 14
+},
+16: {
+"name": &"nebulak",
+"parent_id": 12
 }
 }

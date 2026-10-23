@@ -42,7 +42,7 @@ func _refresh(tags):
 				parent_item = tags_to_items[parent]
 				max = max - 1
 				pending_tags[i] = pending_tags[max]
-				add_tag(tag, parent_item, tags[tag].name)
+				_add_tag(tag, parent_item, tags[tag].name)
 			
 			i += 1
 		
@@ -54,16 +54,11 @@ func _refresh(tags):
 	custom_minimum_size.y = new_height
 
 
-func add_tag(p_tag, p_parent_item, p_tag_name):
+func _add_tag(p_tag, p_parent_item, p_tag_name):
 	var _item : TreeItem = create_item(p_parent_item)
-	
-	_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-	_item.set_text(0, p_tag_name)
-	_item.set_selectable(0, true)
-	
-	_item.set_editable(0, true)
 	items_to_tags[_item] = p_tag
 	tags_to_items[p_tag] = _item
+	return _item
 
 
 func clear_all():

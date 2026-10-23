@@ -80,7 +80,8 @@ func undoable_try_rename_tag(tag_id, new_name):
 func try_rename_tag(tag_id, new_name):
 	if not definition.try_rename(tag_id, new_name):
 		var tag = definition.get_tag(tag_id)
-		%NestedTagsDefinitionTree.deny_rename(tag)
+		var old_name = definition.get_name(tag_id)
+		%NestedTagsDefinitionTree.deny_rename(tag, old_name)
 		return false
 	else:
 		tree.refresh(definition)
@@ -100,7 +101,7 @@ func _on_refresh_button_pressed():
 
 func _on_nested_tags_definition_tree_add_tag_requested(tag_name, parent_id):
 	if not try_add_tag(tag_name, parent_id):
-		%NestedTagsDefinitionTree.signal_invalid_input()
+		%NestedTagsDefinitionTree.feedback_invalid_input()
 	else:
 		$%NestedTagsDefinitionTree.confirm_tag_added()
 

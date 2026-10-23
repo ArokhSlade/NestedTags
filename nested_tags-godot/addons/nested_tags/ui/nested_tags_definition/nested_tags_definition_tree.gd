@@ -1,4 +1,5 @@
-@tool extends Tree
+@tool
+extends "res://addons/nested_tags/ui/nested_tags_tree_base.gd"
 
 signal add_tag_requested(name, parent_id)
 signal rename_tag_requested(tag, new_name)
@@ -8,89 +9,36 @@ signal reparent_tag_requested(tag, new_parent_id)
 const BUTTON_ERASE = 1
 const BUTTON_ADD = 2
 
-var definition
-var dict = {}
 var last_hovered_item
 
-
 ## constructs tree from tags. temporarily caches those "pending" tags whose parents it hasn't seen yet
-func refresh(definition : NestedTagsDefinition):
-	self.definition = definition
-	
-	clear_all()
-	
-	select_mode = SelectMode.SELECT_MULTI
-	hide_root = false
-	columns = 1
-	enable_drag_unfolding = true
-	
-	if not definition:
-		return
-	
-	var parent_item = null
-	var item
-	var pending_tags = []
-	
-	for tag in definition:
-		pending_tags.push_back(tag)
-	var old_max = pending_tags.size()
-	
-	var max_item_rect = Rect2i()
-	
-	var root = create_item()
-	
-	root.set_text(0, definition.get_name(0)) # TODO: let definitions have names? show name as root item?
-	root.set_editable(0, false)
-	
-	dict[root] = 0
-	dict[0] = root
-	
-	var add_tag = func(p_tag, p_parent_item):
-		var _item : TreeItem = create_item(p_parent_item)
-		
-		_item.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
-		_item.set_text(0, definition.get_name(p_tag))
-		_item.set_selectable(0, true)
-		
-		_item.set_editable(0, true)
-		dict[p_tag] = _item
-		dict[_item] = p_tag
-		
-		max_item_rect.position = max_item_rect.position.min(get_item_area_rect(_item).position)
-		max_item_rect.size = max_item_rect.size.min(get_item_area_rect(_item).size)
-	
-	while old_max > 0:
-		var i = 0
-		var max = old_max
-		
-		while i < max:
-			var tag = pending_tags[i]
-			
-			var parent = definition.get_parent_id(tag)
-			
-			if 0 == parent:
-				parent_item = null
-				max = max - 1
-				pending_tags[i] = pending_tags[max]
-				add_tag.call(tag, get_root())
-			elif dict.has(parent):
-				parent_item = dict[parent]
-				max = max - 1
-				pending_tags[i] = pending_tags[max]
-				add_tag.call(tag, parent_item)
-			else:
-				pass # continue with pending_tags
-			
-			i += 1
-		
-		if max == old_max:
-			push_error("NestedTagsDefinitionTree.refresh(): child tag without parent tag found")
-			return
-		old_max = max
-	var new_height = compute_height()
-	
-	custom_minimum_size.y = new_height
-	#set_size(Vector2i(0, 599))
+func refresh(definition_ : NestedTagsDefinition):
+	var tags = _tags_from_definition(definition_)
+	_refresh(tags)
+
+
+func _add_tag(p_tag, p_parent_item, p_tag_name):
+	var _item = super(p_tag, p_parent_item, p_tag_name)
+	_item.set_cell_mode(0, TreeItem.CELL_MODE_STRING)
+	_item.set_text(0, p_tag_name)
+	_item.set_selectable(0, true)
+	_item.set_editable(0, true)
+	return _item
+
+
+func _tags_from_definition(definition_):
+	var tags = {
+		0 : {
+			name = definition_.get_null_tag_name(),
+			parent = definition_.get_parent_id(0)
+		}
+	}
+	for tag in definition_:
+		tags[tag] = {
+			name = definition_.get_name(tag),
+			parent = definition_.get_parent_id(tag)
+		}
+	return tags
 
 
 func draw_custom_tree_item(item : TreeItem, rect : Rect2i):
@@ -98,11 +46,6 @@ func draw_custom_tree_item(item : TreeItem, rect : Rect2i):
 	
 	widget.size = rect.size
 	widget.position = rect.position
-
-
-func clear_all():
-	clear()
-	dict.clear()
 
 
 func _gui_input(event : InputEvent):
@@ -125,21 +68,20 @@ func _on_item_edited():
 	match get_edited_column():
 		0:
 			var new_name = item.get_text(get_edited_column())
-			var tag : int = dict[item]
-			if definition.get_name(tag) != new_name:
-				rename_tag_requested.emit(tag, new_name) 
+			var tag : int = items_to_tags[item]
+			rename_tag_requested.emit(tag, new_name) 
 
 
-func deny_rename(tag):
-	if not dict.has(tag):
+func deny_rename(tag, old_name):
+	if not tags_to_items.has(tag):
 		push_error("NestedTagsDefintionTree::deny_rename(): unknown tag")
-	dict[tag].set_text(0, definition.get_name(tag))
+	tags_to_items[tag].set_text(0, old_name)
 
 
 func _on_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
 	match id:
 		BUTTON_ERASE:
-			var tag = dict[item]
+			var tag = items_to_tags[item]
 			erase_tag_requested.emit(tag)
 		BUTTON_ADD:
 			var rect := get_item_area_rect(item)
@@ -156,15 +98,15 @@ func _on_tag_adder_text_submitted(new_text):
 	request_add_tag(last_hovered_item, new_text)
 
 
-func signal_invalid_input():
-	$TagAdder.signal_invalid_input()
+func feedback_invalid_input():
+	$TagAdder.feedback_invalid_input()
 
 
 func request_add_tag(item, name):
 	if null == item:
 		push_error("request_add_tag(%s): invalid item position?" % [name])
 		return
-	var parent_tag : int = dict[item]
+	var parent_tag : int = items_to_tags[item]
 	add_tag_requested.emit(name, parent_tag)
 
 
@@ -219,7 +161,7 @@ func _get_drag_data(at_position):
 	var target_item = get_item_at_position(at_position)
 	if not target_item:
 		return null
-	return dict[target_item]
+	return items_to_tags[target_item]
 
 
 func _can_drop_data(at_position, data):
@@ -234,7 +176,7 @@ func _can_drop_data(at_position, data):
 		return false
 	
 	var target_item = get_item_at_position(at_position)
-	var source_item = dict[data]
+	var source_item = tags_to_items[data]
 	var target_is_descendent = get_closest_shared_ancestor(source_item, target_item) == source_item
 	
 	return not target_is_descendent
@@ -244,32 +186,7 @@ func _drop_data(at_position, data):
 	if not data is int:
 		return
 	var target_item = get_item_at_position(at_position)
-	reparent_tag_requested.emit(data, dict[target_item])
-
-
-func compute_height():
-	var item = get_root().get_next_visible()
-	if not item:
-		return 0
-	var visible_count = 1
-	while item:
-		visible_count += 1
-		item = item.get_next_visible()
-	var row_height = get_theme_constant("v_separation")
-	row_height += get_theme_constant("inner_item_margin_top")
-	row_height += get_theme_constant("inner_item_margin_bottom")
-	row_height += get_theme_font("font").get_height(get_theme_font_size("font_size"))
-	var height = row_height * visible_count
-	return height
-
-
-func depth(root : TreeItem):
-	var depth = 0
-	var cur = root
-	for child in cur.get_children():
-		depth = maxi(depth, depth(child))
-	depth = depth + 1
-	return depth
+	reparent_tag_requested.emit(data, items_to_tags[target_item])
 
 
 func get_closest_shared_ancestor(item_1, item_2):

@@ -147,8 +147,8 @@ func _on_tag_adder_text_submitted(new_text):
 	request_add_tag(last_hovered_item, new_text)
 
 
-func signal_invalid_input():
-	$TagAdder.signal_invalid_input()
+func feedback_invalid_input():
+	$TagAdder.feedback_invalid_input()
 
 
 func request_add_tag(item, name):
