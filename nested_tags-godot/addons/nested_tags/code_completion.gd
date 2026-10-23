@@ -180,11 +180,6 @@ class State0_2 extends State:
 		string = string.trim_suffix(parent_tag_name)
 		return State0_1.new(host, string) # loop back to parse more parents
 
-# parsed a comma, now try parse (...,...,... and count the commas
-class State0_3 extends State:
-	func process():
-		var regex = RegEx.create_from_string(str(host.s_open_paren_esc, r"(?:<arg_w_comma>(?:<arg>.+?),)"))
-
 # <tag name compound opt>| (empty) tag names (left) confirmed. parse "
 class State1 extends State:
 	func process():
@@ -194,16 +189,6 @@ class State1 extends State:
 		if host.tag_names_left:
 			return FailState.new(host, str("found name stub ", host.tag_names_left, " left of cursor, but missing a leading '\"'."))
 		return State2_1.new(host, string)
-
-# parsed quote, now check for comma
-class State1_1 extends State:
-	func process():
-		var regex = RegEx.create_from_string(str(r"(?:<comma>",host.s_space, ")$"))
-		var rex_match = regex.search(string)
-		if rex_match:
-			string = string.trim_suffix(rex_match.get_name("comma"))
-			return State
-		
 
 # "| confirmed. now parse (
 class State2 extends State:
